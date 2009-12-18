@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for plugin &quot;tx_keuserregister_pi1&quot;</description>
+	</meta>
+	<data type="array">
+		<!-- EN-->
+		<languageKey index="default" type="array">
+			
+			<!-- FLEXFORMS -->
+			<label index="ff.main">General</label>
+			<label index="ff.mode">Mode</label>
+			<label index="ff.mode.I.0">Create</label>
+			<label index="ff.mode.I.1">Edit</label>
+			
+			<!-- FORM LABELS -->
+			<label index="label_email">E-Mail</label>
+			<label index="label_username">Username</label>
+			<label index="label_password">Password</label>
+			<label index="label_password_again">Repeat Password</label>
+			<label index="label_first_name">First Name</label>
+			<label index="label_last_name">Last Name</label>
+			<label index="label_gender">Gender</label>
+			<label index="label_gender_0">Mr</label>
+			<label index="label_gender_1">Mrs</label>
+			<label index="label_module_sys_dmail_category">Newsletter</label>
+			
+			<!-- FORM ERRORS -->
+			<label index="error_numeric">Please insert a numeral value</label>
+			<label index="error_integer">Please insert an integer value</label>
+			<label index="error_valid_email">Please insert a valid e-mail address</label>
+			<label index="error_required">Please fill this field</label>
+			<label index="error_password">Please insert the same password twice</label>
+			<label index="error_password_length">The password must contain of at least %s characters</label>
+			<label index="error_username_existent">This username is already in use</label>
+			<label index="error_email_existent">This e-mail address is already in use</label>
+			<label index="error_upload_no_success">The file upload was not successful</label>
+			<label index="error_upload_filesize">The file size is not allowed to be larger than %s.</label>
+			<label index="error_upload_filetype">This filetype is not accepted.</label>
+			
+			<!-- FORM SUCCESS -->
+			<label index="form_success_headline">Registration started</label>
+			<label index="form_success_text">please have a look at your e-mail account for finishing the registration process. We sent you an email containing an confimation link. Please use this link for finishing the registration process.</label>
+			
+			<!-- GENERAL -->
+			<label index="salutation_male">Dear </label>
+			<label index="salutation_female">Dear </label>
+			<label index="farewell_text">Best regards,</label>
+			<label index="already_logged_in_headline">No registration needed</label>
+			<label index="already_logged_in_message">You are already logged in as &lt;b&gt; %s&lt;/b&gt;.</label>
+			<label index="no_login_headline">Login needed</label>
+			<label index="no_login_message">Please login first.</label>
+			
+			<!-- CONFIRMATION REQUEST -->
+			<label index="confirmation_request_subject">Please confirm your registration</label>
+			<label index="confirmation_request_text">thank your for your registration with %s. Please confirm your registration by the following link:</label>
+			<label index="decline_text">Please use the following link to decline your registration:</label>
+			<label index="confirmation_success_headline">Registration successful</label>
+			<label index="confirmation_success_message">You successfully finished the registration and are allowed to login with your data now.</label>
+			<label index="confirmation_error_headline">Registration not successful</label>
+			<label index="confirmation_error_message">Your registration was not confirmed successfully. Please try again to copy the link from the e-mail we sent to you to your browser.</label>
+			<label index="decline_success_headline">Registration cancelled</label>
+			<label index="decline_success_message">Your registration has been cancelled and your data has been deleted.</label>
+			<label index="decline_error_headline">Registration has not been cancelled</label>
+			<label index="decline_error_message">Your registration has not been cancelled successfully. Please try again to copy the link from the e-mail we sent to you to your browser.</label>
+			
+			<!-- EDIT SUCCESS -->
+			<label index="edit_success_headline">Account updated</label>
+			<label index="edit_success_text">Your changes have been saved to your account.</label>
+			<label index="edit_sucess_text_email_change">Your changes habe been saved to your account. &lt;br /&gt;&lt;br /&gt; The updated e-mail address must be confirmed first. Please have a look at your e-mail account.</label>
+
+			<!-- MAIL CONFIRMATION REQUEST -->
+			<label index="mail_confirmation_request_subject">Please confirm the update of your e-mail address</label>
+			<label index="mail_confirmation_request_text">You requested an update of your e-mail address. Please confirm the new e-mail address with the following link:</label>
+			<label index="mail_decline_text">Please use the following link if you want to decline the update of your e-mail address:</label>
+			<label index="mail_confirmation_success_headline">Update successful</label>
+			<label index="mail_confirmation_success_message">You successfully updated your e-mail address.</label>
+			<label index="mail_confirmation_error_headline">Update not successful</label>
+			<label index="mail_confirmation_error_message">Your e-mail address has not been changed. Please try again to copy the link from the e-mail we sent to you to your browser.</label>
+			<label index="mail_decline_success_headline">Update cancelled</label>
+			<label index="mail_decline_success_message">The update of your e-mail address has been cancelled.</label>
+			<label index="mail_decline_error_headline">Update was not cancelled</label>
+			<label index="mail_decline_error_message">The update process has not been cancelled. Please try again to copy the link from the e-mail we sent to you to your browser.</label>
+			
+		</languageKey>
+		
+		<!-- DE -->
+		<languageKey index="de" type="array">
+			
+			<!-- FLEXFORMS -->
+			<label index="ff.main">Allgemein</label>
+			<label index="ff.mode">Modus</label>
+			<label index="ff.mode.I.0">Anlegen</label>
+			<label index="ff.mode.I.1">Bearbeiten</label>
+			
+			<!-- FORM LABELS -->
+			<label index="label_email">E-Mail</label>
+			<label index="label_username">Benutzername</label>
+			<label index="label_password">Passwort</label>
+			<label index="label_password_again">Passwort-Wiederholung</label>
+			<label index="label_first_name">Vorname</label>
+			<label index="label_last_name">Nachname</label>
+			<label index="label_gender">Anrede</label>
+			<label index="label_gender_0">Herr</label>
+			<label index="label_gender_1">Frau</label>
+			<label index="label_module_sys_dmail_category">Newsletter</label>
+			
+			<!-- FORM ERRORS -->
+			<label index="error_numeric">Bitte geben Sie einen numerischen Wert ein</label>
+			<label index="error_integer">Bitte geben Sie eine Ganzzahl ein</label>
+			<label index="error_valid_email">Bitte geben Sie eine gültige E-Mail-Adresse an</label>
+			<label index="error_required">Bitte füllen Sie dieses Feld aus</label>
+			<label index="error_password">Bitte geben Sie das gleiche Passwort zweimal ein</label>
+			<label index="error_password_length">Das Passwort muss mindestens %s Stellen lang sein</label>
+			<label index="error_username_existent">Dieser Benutzername ist bereits vergeben</label>
+			<label index="error_email_existent">Diese E-Mail-Adresse wird bereits verwendet</label>
+			<label index="error_upload_no_success">Die Datei konnte nicht erfolgreich hochgeladen werden</label>
+			<label index="error_upload_filesize">Die Datei darf nicht größer als %s sein.</label>
+			<label index="error_upload_filetype">Dieser Dateityp wird nicht akzeptiert.</label>
+			
+			<!-- FORM SUCCESS -->
+			<label index="form_success_headline">Registrierung gestartet</label>
+			<label index="form_success_text">um die Registrierung erfolgreich abzuschließen, schauen Sie bitte in Ihr E-Mail-Postfach. Wir haben Ihnen eine E-Mail mit einem Bestätigungslink geschickt. Bitte klicken Sie auf diesen Link, um die Registrierung abzuschließen.</label>
+			
+			<!-- GENERAL -->
+			<label index="salutation_male">Sehr geehrter</label>
+			<label index="salutation_female">Sehr geehrte</label>
+			<label index="farewell_text">Mit freundlichen Grüßen,</label>
+			<label index="already_logged_in_headline">Registrierung nicht erforderlich</label>
+			<label index="already_logged_in_message">Sie sind bereits eingeloggt als &lt;b&gt; %s&lt;/b&gt;.</label>
+			<label index="no_login_headline">Login erforderlich</label>
+			<label index="no_login_message">Bitte loggen Sie sich zunächst ein.</label>
+			
+			<!-- CONFIRMATION REQUEST -->
+			<label index="confirmation_request_subject">Bitte bestätigen Sie Ihre Registrierung</label>
+			<label index="confirmation_request_text">vielen Dank für Ihre Registrierung auf der Seite %s. Bitte bestätigen Sie Ihre Registrierung durch Aufruf des folgenden Links:</label>
+			<label index="decline_text">Rufen Sie bitte den folgenden Link auf, falls Sie die Registrierung ablehnen möchten:</label>
+			<label index="confirmation_success_headline">Registrierung erfolgreich</label>
+			<label index="confirmation_success_message">Sie haben die Registrierung erfolgreich abgeschlossen und können sich nun mit Ihren Zugangsdaten anmelden.</label>
+			<label index="confirmation_error_headline">Registrierung nicht erfolgreich</label>
+			<label index="confirmation_error_message">Ihre Registrierung konnte nicht erfolgreich bestätigt werden. Bitte versuchen Sie erneut, den Link aus der E-Mail in Ihren Browser zu kopieren.</label>
+			<label index="decline_success_headline">Registrierung abgebrochen</label>
+			<label index="decline_success_message">Die Registrierung wurde abgebrochen und Ihre Daten wurden gelöscht.</label>
+			<label index="decline_error_headline">Registrierung konnte nicht abgebrochen werden</label>
+			<label index="decline_error_message">Ihre Registrierung konnte nicht erfolgreich abgebrochen werden. Bitte versuchen Sie erneut, den Link aus der E-Mail in Ihren Browser zu kopieren.</label>
+			
+			<!-- EDIT SUCCESS -->
+			<label index="edit_success_headline">Profil aktualisiert</label>
+			<label index="edit_success_text">Ihre Änderungen wurden erfolgreich in Ihrem Profil gespeichert</label>
+			<label index="edit_sucess_text_email_change">Ihre Änderungen wurden erfolgreich in Ihrem Profil gespeichert.&lt;br /&gt;&lt;br /&gt;Die gewünschte Änderung der E-Mail-Adresse muss zunächst bestätigt werden, hierzu erhalten Sie eine E-Mail von uns an die neue E-Mail-Adresse.</label>
+
+			<!-- MAIL CONFIRMATION REQUEST -->
+			<label index="mail_confirmation_request_subject">Bitte bestätigen Sie die neue E-Mail-Adresse</label>
+			<label index="mail_confirmation_request_text">Sie möchten Ihre E-Mail-Adresse ändern. Bitte bestätigen Sie Ihre die neue E-Mail-Adresse durch Aufruf des folgenden Links:</label>
+			<label index="mail_decline_text">Rufen Sie bitte den folgenden Link auf, falls Sie die Änderung Ihrer E-Mail-Adresse abbrechen möchten:</label>
+			<label index="mail_confirmation_success_headline">Änderung erfolgreich</label>
+			<label index="mail_confirmation_success_message">Sie haben Ihre E-Mail-Adresse erfolgreich geändert.</label>
+			<label index="mail_confirmation_error_headline">Änderung nicht erfolgreich</label>
+			<label index="mail_confirmation_error_message">Ihre E-Mail-Adresse konnte nicht geändert werden. Bitte versuchen Sie erneut, den Link aus der E-Mail in Ihren Browser zu kopieren.</label>
+			<label index="mail_decline_success_headline">Änderung abgebrochen</label>
+			<label index="mail_decline_success_message">Die Änderung Ihrer E-Mail-Adresse wurde abgebrochen.</label>
+			<label index="mail_decline_error_headline">Die Änderung Ihrer E-Mail-Adresse konnte nicht abgebrochen werden</label>
+			<label index="mail_decline_error_message">Der Änderungsvorgang konnte nicht abgebrochen werden. Bitte versuchen Sie erneut, den Link aus der E-Mail in Ihren Browser zu kopieren.</label>
+
+			
+		</languageKey>
+		
+	</data>
+</T3locallang>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>database</type>
+		<description>Language labels for database tables/fields belonging to extension 'ke_userregister'</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="tt_content.list_type_pi1">Register Form</label>
+			<label index="tt_content.list_type_pi2">Change Password</label>
+			<label index="tt_content.list_type_pi3">Delete Profile</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="tt_content.list_type_pi1">Registrierungsformular</label>
+			<label index="tt_content.list_type_pi2">Passwort ändern</label>
+			<label index="tt_content.list_type_pi3">Profil löschen</label>
+		</languageKey>
+	</data>
+</T3locallang>

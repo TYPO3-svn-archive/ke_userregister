@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for plugin &quot;tx_keuserregister_pi2&quot;</description>
+	</meta>
+	<data type="array">
+		
+		<!-- EN -->
+		<languageKey index="default" type="array">
+			
+			<!-- FORM FIELD LABELS -->
+			<label index="label_old_password">Old password</label>
+			<label index="label_new_password">New password</label>
+			
+			<!-- ERRORS -->
+			<label index="error_old_password">The old password is not correct</label>
+			<label index="error_new_password">Please insert the new password twice</label>
+			<label index="error_new_password_same_as_old">The new password is the same as the old one</label>
+			<label index="error_new_password_length">The new password must contain at least %s characters</label>
+			<label index="no_login_headline">Login needed</label>
+			<label index="no_login_message">Please login first.</label>
+			
+			<!-- SUCCESS -->
+			<label index="success_password_change_headline">Update succescul</label>
+			<label index="success_password_change_text">Your password has been updated. The new password is valid from now on.</label>
+			
+		</languageKey>
+		
+		<!-- DE -->
+		<languageKey index="de" type="array">
+			
+			<!-- FORM FIELD LABELS -->
+			<label index="label_old_password">Altes Passwort</label>
+			<label index="label_new_password">Neues Passwort</label>
+			
+			<!--ERRORS  -->
+			<label index="error_old_password">Das alte Passwort stimmt nicht</label>
+			<label index="error_new_password">Bitte geben Sie das neue Passwort zweimal gleich ein</label>
+			<label index="error_new_password_same_as_old">Das neue Passwort ist dasselbe wie das alte</label>
+			<label index="error_new_password_length">Das neue Passwort muss mindestens %s Zeichen enthalten</label>
+			<label index="no_login_headline">Login erforderlich</label>
+			<label index="no_login_message">Bitte loggen Sie sich zunächst ein.</label>
+			
+			<!-- SUCCESS -->
+			<label index="success_password_change_headline">Änderung erfolgreich</label>
+			<label index="success_password_change_text">Ihr Passwort wurde geändert. Das neue Passwort ist ab sofort gültig.</label>
+			
+		</languageKey>
+		
+		
+	</data>
+</T3locallang>

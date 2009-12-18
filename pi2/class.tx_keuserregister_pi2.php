@@ -1,0 +1,221 @@
+<?php
+/***************************************************************
+*  Copyright notice
+*
+*  (c) 2009 Andreas Kiefer <kiefer@kennziffer.com>
+*  All rights reserved
+*
+*  This script is part of the TYPO3 project. The TYPO3 project is
+*  free software; you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation; either version 2 of the License, or
+*  (at your option) any later version.
+*
+*  The GNU General Public License can be found at
+*  http://www.gnu.org/copyleft/gpl.html.
+*
+*  This script is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  This copyright notice MUST APPEAR in all copies of the script!
+***************************************************************/
+/**
+ * [CLASS/FUNCTION INDEX of SCRIPT]
+ *
+ * Hint: use extdeveval to insert/update function index above.
+ */
+
+require_once(PATH_tslib.'class.tslib_pibase.php');
+
+
+/**
+ * Plugin 'Change Password' for the 'ke_userregister' extension.
+ *
+ * @author	Andreas Kiefer <kiefer@kennziffer.com>
+ * @package	TYPO3
+ * @subpackage	tx_keuserregister
+ */
+class tx_keuserregister_pi2 extends tslib_pibase {
+	var $prefixId      = 'tx_keuserregister_pi2';		// Same as class name
+	var $scriptRelPath = 'pi2/class.tx_keuserregister_pi2.php';	// Path to this script relative to the extension dir.
+	var $extKey        = 'ke_userregister';	// The extension key.
+	
+	/**
+	 * The main method of the PlugIn
+	 *
+	 * @param	string		$content: The PlugIn content
+	 * @param	array		$conf: The PlugIn configuration
+	 * @return	The content that is displayed on the website
+	 */
+	function main($content, $conf) {
+		$this->conf = $conf;
+		$this->pi_setPiVarDefaults();
+		$this->pi_loadLL();
+		$this->pi_USER_INT_obj = 1;	// Configuring so caching is not expected. This value means that no cHash params are ever set. We do this, because it's a USER_INT object!
+	
+		// get general extension setup
+		$this->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_keuserregister.'];
+	
+		// get html template
+		$this->templateFile = t3lib_extMgm::siteRelPath($this->extKey).'res/template/tx_keuserregister.tmpl';
+		$this->templateCode = $this->cObj->fileResource($this->templateFile);
+		
+		// include css
+		$cssfile = t3lib_extMgm::siteRelPath($this->extKey).'res/css/'.$this->extKey.'.css';
+		$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId] .= '<link rel="stylesheet" type="text/css" href="'.$cssfile.'" />';
+		
+		// check login
+		if (!$GLOBALS['TSFE']->loginUser) {
+			$content = $this->cObj->getSubpart($this->templateCode,'###SUB_MESSAGE###');
+			$content = $this->cObj->substituteMarker($content,'###HEADLINE###',$this->pi_getLL('no_login_headline'));
+			$content = $this->cObj->substituteMarker($content,'###MESSAGE###',sprintf($this->pi_getLL('no_login_message'),$GLOBALS['TSFE']->fe_user->user['username']));
+		}
+		// render the form / evaluate the form
+		else $content = $this->piVars['step'] == 'evaluate' ? $this->evaluateFormData() : $this->renderForm();
+		
+		return $this->pi_wrapInBaseClass($content);
+	}
+	
+	
+	/**
+	* Description
+	*
+	* @param	type		desc
+	* @return	The content that is displayed on the website
+	*/
+	function renderForm($errors=array()) {
+		
+		// generate form action
+		unset($linkconf);
+		$linkconf['parameter'] = $GLOBALS['TSFE']->id;
+		$formAction = $this->cObj->typoLink_URL($linkconf).'#formstart';
+		
+		$content = $this->cObj->getSubpart($this->templateCode,'###EDIT_PASSWORD_FORM###');
+		$markerArray = array (
+			'form_action' => $formAction,
+			'form_name' => 'ke_userregister_change_pwd',
+			'label_old_password' => $this->pi_getLL('label_old_password'),
+			'input_old_password' => $this->renderInputField('old_password'),
+			'error_old_password' => '',
+			'label_new_password' => $this->pi_getLL('label_new_password'),
+			'input_new_password' => $this->renderInputField('new_password'),
+			'error_new_password' => '',
+			'clearer' => $this->cObj->getSubpart($this->templateCode,'###SUB_CLEARER###'),
+		);
+		
+		// set error markers if errors occured
+		if ($errors['old_password']) $markerArray['error_old_password'] = $errors['old_password'];
+		if ($errors['new_password']) $markerArray['error_new_password'] = $errors['new_password'];
+		
+		
+		$content = $this->cObj->substituteMarkerArray($content,$markerArray,$wrap='###|###',$uppercase=1);
+		
+		return $content;
+	}
+	
+	
+	/**
+	* Description
+	*
+	* @param	type		desc
+	* @return	The content that is displayed on the website
+	*/
+	function evaluateFormData() {
+		$errors = array();
+		
+		// check if old password is correct
+		$fields = 'password';
+		$table = 'fe_users';
+		$where = 'uid="'.intval($GLOBALS['TSFE']->fe_user->user['uid']).'" ';
+		$where .= $this->cObj->enableFields($table);
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fields,$table,$where,$groupBy='',$orderBy='',$limit='1');
+		$row=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+		
+		// check if old password is correct
+		$oldPasswordInput = $this->conf['password.']['useMd5'] ? md5(t3lib_div::removeXSS($this->piVars['old_password'])) : t3lib_div::removeXSS($this->piVars['old_password']);
+		if ($oldPasswordInput !== $row['password']) {
+			$errors['old_password'] = $this->pi_getLL('error_old_password');
+		}
+		
+		// check new password
+		$newPasswordInput = $this->conf['password.']['useMd5'] ? md5(t3lib_div::removeXSS($this->piVars['new_password'])) : t3lib_div::removeXSS($this->piVars['new_password']);
+		// both passwords not the same
+		if (t3lib_div::removeXSS($this->piVars['new_password']) !== t3lib_div::removeXSS($this->piVars['new_password_again'])) {
+			$errors['new_password'] = $this->pi_getLL('error_new_password');
+		}
+		// check password length
+		else if (strlen($this->piVars['new_password']) < $this->conf['password.']['minLength']) {
+			$errors['new_password'] = sprintf($this->pi_getLL('error_new_password_length'),$this->conf['password.']['minLength']);
+		}
+		// new password same as old password
+		else if ($newPasswordInput === $row['password']) {
+		#if (t3lib_div::removeXSS($this->piVars['new_password']) === t3lib_div::removeXSS($this->piVars['old_password'])) {
+			$errors['new_password'] = $this->pi_getLL('error_new_password_same_as_old');
+		}
+		
+		
+		// if errors occured: show form again
+		if (sizeof($errors)) {
+			$content = $this->renderForm($errors);
+			return $content;
+		}
+		// save new password in db
+		else {
+			$table = 'fe_users';
+			$where = 'uid="'.intval($GLOBALS['TSFE']->fe_user->user['uid']).'" ';
+			$fields_values = array(
+				'password' => $this->conf['password.']['useMd5'] ? md5(t3lib_div::removeXSS($this->piVars['new_password'])) : t3lib_div::removeXSS($this->piVars['new_password']),
+			);
+			
+			if ($GLOBALS['TYPO3_DB']->exec_UPDATEquery($table,$where,$fields_values,$no_quote_fields=FALSE)) {
+				$content = $this->cObj->getSubpart($this->templateCode,'###SUB_MESSAGE###');
+				$content = $this->cObj->substituteMarker($content,'###HEADLINE###',$this->pi_getLL('success_password_change_headline'));
+				$content = $this->cObj->substituteMarker($content,'###MESSAGE###',$this->pi_getLL('success_password_change_text'));
+				return $content;
+			}
+			else die($this->prefixId.': ERROR: DB error when saving new password');
+		}
+		
+	}
+	
+	
+	/**
+	* Description
+	*
+	* @param	type		desc
+	* @return	The content that is displayed on the website
+	*/
+	function renderInputField($fieldName) {
+		
+		switch ($fieldName) {
+			
+			case 'old_password':
+				$value = $this->piVars['old_password'] ? t3lib_div::removeXSS($this->piVars['old_password']) : '';
+				$content = $this->cObj->getSubpart($this->templateCode,'###SUB_OLD_PASSWORD###');
+				$content = $this->cObj->substituteMarker($content,'###VALUE_OLD_PASSWORD###',$value);
+				break;
+			
+			case 'new_password':
+				$value = $this->piVars['new_password'] ? t3lib_div::removeXSS($this->piVars['new_password']) : '';
+				$valueAgain = $this->piVars['new_password_again'] ? t3lib_div::removeXSS($this->piVars['new_password_again']) : '';
+				$content = $this->cObj->getSubpart($this->templateCode,'###SUB_NEW_PASSWORD###');
+				$content = $this->cObj->substituteMarker($content,'###VALUE_NEW_PASSWORD###',$value);
+				$content = $this->cObj->substituteMarker($content,'###VALUE_NEW_PASSWORD_AGAIN###',$valueAgain);
+				break;
+			
+		}
+		
+		return $content;
+	}
+	
+}
+
+
+
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ke_userregister/pi2/class.tx_keuserregister_pi2.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ke_userregister/pi2/class.tx_keuserregister_pi2.php']);
+}
+
+?>

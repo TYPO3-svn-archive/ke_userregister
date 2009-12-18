@@ -1,0 +1,70 @@
+.clearer {
+    clear: both;
+    font-size: 1px;
+    height: 0;
+    line-height: 0;
+}
+
+.tx-keuserregister-pi1 .fieldset,
+.tx-keuserregister-pi2 .fieldset {
+    padding: 0 0 10px 0;
+}
+
+.tx-keuserregister-pi1 .fieldset label,
+.tx-keuserregister-pi2 .fieldset label {
+    display:block;
+    width: 200px;
+    float: left;
+    font-weight: bold;
+}
+
+.tx-keuserregister-pi1 .req,
+.tx-keuserregister-pi2 .req {
+    color: red;
+}
+
+.tx-keuserregister-pi1 .field,
+.tx-keuserregister-pi2 .field {
+    float:left;
+}
+
+.tx-keuserregister-pi1 select {
+    width: 230px;
+}
+
+.tx-keuserregister-pi1 textarea {
+    width: 230px;
+    height: 60px;
+}
+
+.tx-keuserregister-pi1 .error,
+.tx-keuserregister-pi2 .error {
+    float: left;
+    color: red;
+    font-style: italic;
+    margin: 0 0 0 5px;
+}
+
+.tx-keuserregister-pi3 .confirmation-link {
+    padding: 5px 10px;
+    background: #005DA8;
+    margin: 10px;
+}
+
+.tx-keuserregister-pi3 .confirmation-link a {
+    color: white;
+    font-weight: bold;
+}
+
+
+.tx-keuserregister-pi1 input {
+    width: 230px;
+}
+
+.tx-keuserregister-pi1 input.checkbox{
+    width: auto;
+}
+
+.tx-keuserregister-pi1 .small input {
+    width: 70px;
+}

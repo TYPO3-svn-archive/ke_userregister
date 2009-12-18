@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+    <meta type="array">
+        <type>module</type>
+        <description>Language labels for plugin &quot;tx_keuserregister_pi3&quot;</description>
+    </meta>
+    <data type="array">
+        <languageKey index="de" type="array">
+            <label index="delete_profile_text">Hier haben Sie die Möglichkeit, Ihre Profil komplett zu löschen. Die zu Ihrer Person gespeicherten Daten werden bei Bestätigung vollständig aus unserer Datenbank entfernt.</label>
+            <label index="delete_profile_question">Sind Sie sicher, dass Ihr Profil &lt;b&gt;&quot;%s&quot;&lt;/b&gt; gelöscht werden soll?</label>
+            <label index="delete_profile_yes">JA</label>
+            <label index="error_delete_profile_authorization_headline">Keine Berechtigung</label>
+            <label index="error_delete_profile_authorization_message">Sie sind zur Löschung dieses Profils nicht berechtigt</label>
+            <label index="delete_profile_success_headline">Löschen erfolgreich</label>
+            <label index="delete_profile_success_message">Ihr Benutzerprofil wurde aus unserer Datenbank gelöscht.</label>
+            <label index="no_login_headline">Login erforderlich</label>
+            <label index="no_login_message">Bitte loggen Sie sich zunächst ein.</label>
+            <label index="not_allowed_headline">Keine Berechtigung</label>
+            <label index="not_allowed_message">Sie sind zur Löschung Ihres Profiles nicht berechtigt.</label>
+        </languageKey>
+        <languageKey index="de" type="array">
+            <label index="delete_profile_text">Hier haben Sie die Möglichkeit, Ihre Profil komplett zu löschen. Die zu Ihrer Person gespeicherten Daten werden bei Bestätigung vollständig aus unserer Datenbank entfernt.</label>
+            <label index="delete_profile_question">Sind Sie sicher, dass Ihr Profil &lt;b&gt;&quot;%s&quot;&lt;/b&gt; gelöscht werden soll?</label>
+            <label index="delete_profile_yes">JA</label>
+            <label index="error_delete_profile_authorization_headline">Keine Berechtigung</label>
+            <label index="error_delete_profile_authorization_message">Sie sind zur Löschung dieses Profils nicht berechtigt</label>
+            <label index="delete_profile_success_headline">Löschen erfolgreich</label>
+            <label index="delete_profile_success_message">Ihr Benutzerprofil wurde aus unserer Datenbank gelöscht.</label>
+            <label index="no_login_headline">Login erforderlich</label>
+            <label index="no_login_message">Bitte loggen Sie sich zunächst ein.</label>
+            <label index="not_allowed_headline">Keine Berechtigung</label>
+            <label index="not_allowed_message">Sie sind zur Löschung Ihres Profiles nicht berechtigt.</label>
+        </languageKey>
+        <languageKey index="it" type="array">
+            <label index="delete_profile_text"></label>
+            <label index="delete_profile_question"></label>
+            <label index="delete_profile_yes"></label>
+            <label index="error_delete_profile_authorization_headline"></label>
+            <label index="error_delete_profile_authorization_message"></label>
+            <label index="delete_profile_success_headline"></label>
+            <label index="delete_profile_success_message"></label>
+            <label index="no_login_headline"></label>
+            <label index="no_login_message"></label>
+            <label index="not_allowed_headline"></label>
+            <label index="not_allowed_message"></label>
+        </languageKey>
+        <languageKey index="es" type="array">
+            <label index="delete_profile_text"></label>
+            <label index="delete_profile_question"></label>
+            <label index="delete_profile_yes"></label>
+            <label index="error_delete_profile_authorization_headline"></label>
+            <label index="error_delete_profile_authorization_message"></label>
+            <label index="delete_profile_success_headline"></label>
+            <label index="delete_profile_success_message"></label>
+            <label index="no_login_headline"></label>
+            <label index="no_login_message"></label>
+            <label index="not_allowed_headline"></label>
+            <label index="not_allowed_message"></label>
+        </languageKey>
+        <languageKey index="fr" type="array">
+            <label index="delete_profile_text"></label>
+            <label index="delete_profile_question"></label>
+            <label index="delete_profile_yes"></label>
+            <label index="error_delete_profile_authorization_headline"></label>
+            <label index="error_delete_profile_authorization_message"></label>
+            <label index="delete_profile_success_headline"></label>
+            <label index="delete_profile_success_message"></label>
+            <label index="no_login_headline"></label>
+            <label index="no_login_message"></label>
+            <label index="not_allowed_headline"></label>
+            <label index="not_allowed_message"></label>
+        </languageKey>
+    </data>
+</T3locallang>

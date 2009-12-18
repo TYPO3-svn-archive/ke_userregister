@@ -1,0 +1,194 @@
+<!-- ###REGISTRATION_FORM### start -->
+        <form name="###FORM_NAME###" method="post" action="###FORM_ACTION###">
+                
+                <a name="formstart" /></a>
+                
+                <div class="fieldset">
+                        <label>###LABEL_EMAIL###</label>
+                        <div class="field">###INPUT_EMAIL###</div>
+                        <div class="error">###ERROR_EMAIL###</div>
+                        ###CLEARER###
+                </div>
+                
+                <!-- ###SUB_FIELD_USERNAME### start -->
+                <div class="fieldset">
+                        <label>###LABEL_USERNAME###</label>
+                        <div class="field">###INPUT_USERNAME###</div>
+                        <div class="error">###ERROR_USERNAME###</div>
+                        ###CLEARER###
+                </div>
+                <!-- ###SUB_FIELD_USERNAME### end -->
+                
+                <!-- ###SUB_FIELD_PASSWORD### start -->
+                <div class="fieldset">
+                        <label>###LABEL_PASSWORD###</label>
+                        <div class="field">###INPUT_PASSWORD###</div>
+                        <div class="error">###ERROR_PASSWORD###</div>
+                        ###CLEARER###
+                </div>
+                <!-- ###SUB_FIELD_PASSWORD### end -->
+                
+                <div class="fieldset">
+                        <label>###LABEL_GENDER###</label>
+                        <div class="field">###INPUT_GENDER###</div>
+                        <div class="error">###ERROR_GENDER###</div>
+                        ###CLEARER###
+                </div>
+                
+                <div class="fieldset">
+                        <label>###LABEL_FIRST_NAME###</label>
+                        <div class="field">###INPUT_FIRST_NAME###</div>
+                        <div class="error">###ERROR_FIRST_NAME###</div>
+                        ###CLEARER###
+                </div>
+                
+                <div class="fieldset">
+                        <label>###LABEL_LAST_NAME###</label>
+                        <div class="field">###INPUT_LAST_NAME###</div>
+                        <div class="error">###ERROR_LAST_NAME###</div>
+                        ###CLEARER###
+                </div>
+                
+                <div class="fieldset">
+                        <label>&nbsp;</label>
+                        <input type="submit" />
+                        ###CLEARER###
+                </div>
+                
+                <input type="hidden" name="tx_keuserregister_pi1[step]" value="evaluate" />
+        </form>
+        
+
+<!-- ###REGISTRATION_FORM### end -->
+
+
+<!-- ###EDIT_FORM### start -->
+        <form name="###FORM_NAME###" method="post" action="###FORM_ACTION###">
+                
+                <a name="formstart" /></a>
+                
+                
+                
+                <!-- ###SUB_FIELD_USERNAME### start -->
+                <div class="fieldset">
+                        <label>###LABEL_USERNAME###</label>
+                        <div class="field">###INPUT_USERNAME###</div>
+                        <div class="error">###ERROR_USERNAME###</div>
+                        ###CLEARER###
+                </div>
+                <!-- ###SUB_FIELD_USERNAME### end -->
+
+                <div class="fieldset">
+                        <label>###LABEL_GENDER###</label>
+                        <div class="field">###INPUT_GENDER###</div>
+                        <div class="error">###ERROR_GENDER###</div>
+                        ###CLEARER###
+                </div>
+                
+                <div class="fieldset">
+                        <label>###LABEL_FIRST_NAME###</label>
+                        <div class="field">###INPUT_FIRST_NAME###</div>
+                        <div class="error">###ERROR_FIRST_NAME###</div>
+                        ###CLEARER###
+                </div>
+                
+                <div class="fieldset">
+                        <label>###LABEL_LAST_NAME###</label>
+                        <div class="field">###INPUT_LAST_NAME###</div>
+                        <div class="error">###ERROR_LAST_NAME###</div>
+                        ###CLEARER###
+                </div>
+                
+                <div class="fieldset">
+                        <label>&nbsp;</label>
+                        <input type="submit" />
+                        ###CLEARER###
+                </div>
+                
+                <input type="hidden" name="tx_keuserregister_pi1[step]" value="evaluate" />
+        </form>
+        
+
+<!-- ###EDIT_FORM### end -->
+
+
+
+
+
+<!-- ----------------------------------------
+        SUBPARTS FOR DIFFERENT FORM FIELDS
+---------------------------------------- -->
+
+<!-- ###SUB_INPUT_TEXT### start -->
+        <input type="text" name="###NAME###" value="###VALUE###">
+<!-- ###SUB_INPUT_TEXT### end -->
+
+
+<!-- ###SUB_CHECKBOX_ROW### start -->
+        <input type="checkbox" name="###NAME###" value="###VALUE###" ###CHECKED###>&nbsp;###LABEL###<br />
+<!-- ###SUB_CHECKBOX_ROW### end -->
+
+
+<!-- ###SUB_RADIO_ROW### start -->
+        <input type="radio" name="###NAME###" value="###VALUE###" ###CHECKED###>&nbsp;###LABEL###<br />
+<!-- ###SUB_RADIO_ROW### end -->
+
+
+<!-- ###SUB_SELECT### start -->
+        <select name="###NAME###">
+                <!-- ###SUB_SELECT_OPTION### start -->
+                <option value="###VALUE###" ###SELECTED###>###LABEL###</option>
+                <!-- ###SUB_SELECT_OPTION### end -->
+        </select>
+<!-- ###SUB_SELECT### end -->
+
+
+<!-- ###SUB_PASSWORD### start -->
+        <input type="password" name="tx_keuserregister_pi1[password]" value="###VALUE###" /><br />
+        <input type="password" name="tx_keuserregister_pi1[password_again]" value="###VALUE_AGAIN###" />
+<!-- ###SUB_PASSWORD### end -->
+
+
+
+
+
+
+<!-- ###SUB_REQUIRED### start -->
+        <span class="req"> *</span>
+<!-- ###SUB_REQUIRED### end -->
+
+
+<!-- ###SUB_CLEARER### start -->
+        <div class="clearer">&nbsp;</div>
+<!-- ###SUB_CLEARER### end -->
+
+
+
+<!-- ###FORM_SUCCESS_MESSAGE### start -->
+        <b>###HEADLINE###</b><br /><br />
+        ###SALUTATION### ###FIRST_NAME### ###LAST_NAME###,<br /><br />
+        ###FORM_SUCCESS_TEXT###
+<!-- ###FORM_SUCCESS_MESSAGE### end -->
+
+
+
+<!-- ###CONFIRMATION_REQUEST### start -->
+        <html>
+                <head></head>
+                <body>
+                        ###SALUTATION### ###FIRST_NAME### ###LAST_NAME###,<br /><br />
+                        ###CONFIRMATION_REQUEST_TEXT###<br /><br />
+                        ###CONFIRMATION_LINK###<br /><br />
+                        ###DECLINE_TEXT###<br />
+                        ###DECLINE_LINK###<br /><br />
+                        ###FAREWELL_TEXT###<br />
+                        ###SITE_URL###
+                </body>
+        </html>
+<!-- ###CONFIRMATION_REQUEST### end -->
+
+
+<!-- ###SUB_MESSAGE### start -->
+        <b>###HEADLINE###</b><br /><br />
+        ###MESSAGE###
+<!-- ###SUB_MESSAGE### end -->

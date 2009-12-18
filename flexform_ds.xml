@@ -1,0 +1,38 @@
+<T3DataStructure>
+	<meta>
+	    <langDisable>1</langDisable>
+	</meta>
+	<sheets>
+		<MAIN>
+			<ROOT>
+				<TCEforms>
+					<sheetTitle>LLL:EXT:ke_userregister/pi1/locallang.xml:ff.main</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
+					
+					<mode>
+						<TCEforms>
+							<label>LLL:EXT:ke_userregister/pi1/locallang.xml:ff.mode</label>
+							<config>
+								<type>select</type>
+								<items>
+									<numIndex index="0">
+										<numIndex index="0">LLL:EXT:ke_userregister/pi1/locallang.xml:ff.mode.I.0</numIndex>
+										<numIndex index="1">0</numIndex>
+									</numIndex>
+									<numIndex index="1">
+										<numIndex index="0">LLL:EXT:ke_userregister/pi1/locallang.xml:ff.mode.I.1</numIndex>
+										<numIndex index="1">1</numIndex>
+									</numIndex>
+								</items>
+								<size>1</size>
+							</config>
+						</TCEforms>
+					</mode>
+					
+				</el>
+			</ROOT>
+		</MAIN>
+	</sheets>
+</T3DataStructure>
