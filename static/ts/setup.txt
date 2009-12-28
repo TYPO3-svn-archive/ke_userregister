@@ -1,32 +1,37 @@
 plugin.tx_keuserregister {
-  
-  
+
+  # set user folder and default group
+  userDataPID =
+  defaultUsergroup =
+
+  # set template file and css file
   templateFile = typo3conf/ext/ke_userregister/res/template/tx_keuserregister.tmpl
   cssFile = typo3conf/ext/ke_userregister/res/css/ke_userregister.css
-  
+
   # use email as username?
   emailIsUsername = 1
-  
+
   # password settings
   password {
     minLength = 6
     useMd5 = 1
   }
-  
+
   # email notification settings
   notification {
     from_email = info@example.com
     from_name = USER REGISTRATION
-  } 
-  
+  }
+
   # how long are registration hash values accepted?
   hashDays = 7
-  
+
   upload {
     maxFileSize = 5242880
     allowedFileTypes = jpg,gif,png
   }
-  
+
+  # define the fields used in creation of new users
   create.fields {
     email {
       type = text
@@ -40,7 +45,7 @@ plugin.tx_keuserregister {
       type = password
       eval = required
     }
-    // bei select: values sind die möglichen values der options, die labels werden per locallang gesetzt
+	# select: comma separated values are values of options. labels are set via locallang.
     gender {
       type = select
       values = 0,1
@@ -51,13 +56,14 @@ plugin.tx_keuserregister {
     last_name {
       type = text
     }
-    // bei directmail: values sind die kommagetrennten pids, von denen die kategorien gezogen werden sollen; alle wenn leer
+	# directmail: comma separated pids of categories; leave emptye for "all categories"
     module_sys_dmail_category {
       type = directmail
-      values = 
+      values =
     }
   }
-  
+
+  # define the fields used in edit form
   edit.fields {
     email {
       type = text
@@ -79,8 +85,7 @@ plugin.tx_keuserregister {
     }
     module_sys_dmail_category {
       type = directmail
-      values = 
+      values =
     }
   }
-  
 }
