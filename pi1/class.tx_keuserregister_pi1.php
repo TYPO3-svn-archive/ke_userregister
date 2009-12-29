@@ -56,6 +56,14 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		$this->pi_loadLL();
 		$this->pi_USER_INT_obj = 1;	// Configuring so caching is not expected. This value means that no cHash params are ever set. We do this, because it's a USER_INT object!
 
+		// get tooltip class if extension is installed
+		if (t3lib_extMgm::isLoaded('fe_tooltip')) {
+			require_once(t3lib_extMgm::extPath('fe_tooltip').'class.tx_fetooltip.php');
+			$this->tooltipAvailable = true;
+		} else {
+			$this->tooltipAvailable = false;
+		}
+
 		// get general extension setup
 		$this->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_keuserregister.'];
 
@@ -178,7 +186,6 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	 * @param $userUid int
 	 */
 	function sendConfirmationSuccessMail($userUid) {
-
 		$fields = '*';
 		$table = 'fe_users';
 		$where = 'uid="'.intval($userUid).'" ';
@@ -201,12 +208,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			$subject = $this->pi_getLL('confirmation_success_subject');
 			$this->sendNotificationEmail($row['email'], $subject, $htmlBody);
 		}
-
-
-
 	}
-
-
 
 	/**
 	* Description
@@ -259,8 +261,6 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			return $content;
 		}
 	}
-
-
 
 	/**
 	* Description
@@ -321,9 +321,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		}
 	}
 
-
-
-		/**
+	/**
 	* Description
 	*
 	* @param	type		desc
@@ -371,8 +369,6 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		}
 	}
 
-
-
 	/**
 	* Description
 	*
@@ -385,8 +381,6 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		$where = 'hash="'.$hashCompare.'" ';
 		$GLOBALS['TYPO3_DB']->exec_DELETEquery($table,$where);
 	}
-
-
 
 	/**
 	* Renders the registration form
@@ -404,6 +398,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			$content = $this->cObj->substituteMarker($content,'###MESSAGE###',sprintf($this->pi_getLL('no_login_message'),$GLOBALS['TSFE']->fe_user->user['username']));
 			return $content;
 		}
+
 		// user already logged in
 		else if ($this->mode != 'edit' && $GLOBALS['TSFE']->loginUser) {
 			$content = $this->cObj->getSubpart($this->templateCode,'###SUB_MESSAGE###');
@@ -435,6 +430,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					// form not sent yet
 					if (!isset($this->piVars['step'])) $this->piVars[$fieldName] = $userRow[$fieldName];
 				}
+
 				// direct mail
 				else if ($fieldConf['type'] == 'directmail') {
 					if (!isset($this->piVars[$fieldName])) {
@@ -462,10 +458,6 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					$this->piVars[$fieldName] = $userRow[$fieldName];
 				}
 			}
-
-
-
-
 		}
 
 		foreach ($this->fields as $fieldName => $fieldConf) {
@@ -480,12 +472,18 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			// render input field
 			$this->markerArray['input_'.$fieldName] = $this->renderInputField($fieldConf,$fieldName);
 
+			// wrap input field in error-div if error occured
+			if ($errors[$fieldName]) {
+				$this->markerArray['input_'.$fieldName] =
+					$this->cObj->getSubpart($this->templateCode,'###SUB_ERRORWRAP_BEGIN###')
+					. $this->markerArray['input_'.$fieldName]
+					. $this->cObj->getSubpart($this->templateCode,'###SUB_ERRORWRAP_END###');
+			}
+
 			// mark field when errors occured
 			if ($errors[$fieldName]) $this->markerArray['error_'.$fieldName] = $errors[$fieldName];
 			else $this->markerArray['error_'.$fieldName] = '';
-
 		}
-
 
 		// Hook for additional form markers
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['additionalMarkers'])) {
@@ -509,9 +507,21 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		if ($this->mode == 'edit') $content = $this->cObj->substituteSubpart ($content, '###SUB_FIELD_PASSWORD###', '');
 
 		return $content;
-
 	}
 
+	/**
+	* Renders a tooltip for one form field
+	*
+	* @param	text		Text to display in the tooltip
+	* @return	html code for tooltip
+	*/
+	function renderTooltip($tooltipText) {
+		if ($tooltipText && $this->tooltipAvailable) {
+			return tx_fetooltip::tooltip('help.gif', $tooltipText);
+		} else {
+			return '';
+		}
+	}
 
 	/**
 	* Description
@@ -527,6 +537,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				$tempMarkerArray = array(
 					'name' => $this->prefixId.'['.$fieldName.']',
 					'value' => $this->piVars[$fieldName],
+					'tooltip' => $this->renderTooltip($fieldConf['tooltip'])
 				);
 				$content = $this->cObj->substituteMarkerArray($content,$tempMarkerArray,$wrap='###|###',$uppercase=1);
 				break;
@@ -536,6 +547,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				$tempMarkerArray = array(
 					'name' => $this->prefixId.'['.$fieldName.']',
 					'value' => $this->piVars[$fieldName],
+					'tooltip' => $this->renderTooltip($fieldConf['tooltip'])
 				);
 				$content = $this->cObj->substituteMarkerArray($content,$tempMarkerArray,$wrap='###|###',$uppercase=1);
 				break;
@@ -547,6 +559,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				$content = $this->cObj->substituteMarker($content,'###VALUE###',$value);
 				$content = $this->cObj->substituteMarker($content,'###VALUE_AGAIN###',$valueAgain);
 				$content = $this->cObj->substituteMarker($content,'###LABEL_PASSWORD_AGAIN###',$this->pi_getLL('label_password_again'));
+				$content = $this->cObj->substituteMarker($content,'###TOOLTIP###', $this->renderTooltip($fieldConf['tooltip']));
 				break;
 
 			case 'checkbox':
@@ -566,6 +579,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 						'label' => $this->pi_getLL('label_'.$fieldName.'_'.$value),
 						#'checked' => ($this->piVars[$fieldName] == $value) ? 'checked="checked" ' : '',
 						'checked' => $checked ? 'checked="checked" ' : '',
+						'tooltip' => $this->renderTooltip($fieldConf['tooltip'])
 					);
 
 					$tempContent = $this->cObj->getSubpart($this->templateCode,'###SUB_CHECKBOX_ROW###');
@@ -582,6 +596,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 						'value' => $value,
 						'label' => $this->pi_getLL('label_'.$fieldName.'_'.$value),
 						'checked' => ($this->piVars[$fieldName] == $value) ? 'checked="checked" ' : '',
+						'tooltip' => $this->renderTooltip($fieldConf['tooltip'])
 					);
 
 					$tempContent = $this->cObj->getSubpart($this->templateCode,'###SUB_RADIO_ROW###');
@@ -598,6 +613,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 						'value' => $value,
 						'label' => $this->pi_getLL('label_'.$fieldName.'_'.$value),
 						'selected' => ($this->piVars[$fieldName] == $value) ? 'selected="selected" ' : '',
+						'tooltip' => $this->renderTooltip($fieldConf['tooltip'])
 					);
 					$tempContent = $this->cObj->getSubpart($this->templateCode,'###SUB_SELECT_OPTION###');
 					$tempContent = $this->cObj->substituteMarkerArray($tempContent,$tempMarkerArray,$wrap='###|###',$uppercase=1);
@@ -632,6 +648,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 						'value' => 1,
 						'label' => $row['category'],
 						'checked' => $checked ? 'checked="checked" ' : '',
+						'tooltip' => $this->renderTooltip($fieldConf['tooltip'])
 					);
 					$tempContent = $this->cObj->getSubpart($this->templateCode,'###SUB_CHECKBOX_ROW###');
 					$tempContent = $this->cObj->substituteMarkerArray($tempContent,$tempMarkerArray,$wrap='###|###',$uppercase=1);
@@ -656,6 +673,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 						'filename' => $this->piVars[$fieldName],
 						'fieldname' => $this->prefixId.'['.$fieldName.']',
 						'name_upload_new' => $this->prefixId.'['.$fieldName.'_new]',
+						'tooltip' => $this->renderTooltip($fieldConf['tooltip'])
 					);
 					$content = $this->cObj->substituteMarkerArray($content,$tempMarkerArray,$wrap='###|###',$uppercase=1);
 				}
@@ -665,6 +683,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					$tempMarkerArray = array(
 						'name' => $this->prefixId.'['.$fieldName.']',
 						//'value' => $this->piVars[$fieldName],
+						'tooltip' => $this->renderTooltip($fieldConf['tooltip'])
 					);
 					$content = $this->cObj->substituteMarkerArray($content,$tempMarkerArray,$wrap='###|###',$uppercase=1);
 				}
@@ -708,6 +727,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					$content = $this->cObj->getSubpart($this->templateCode,'###SUB_SELECT###');
 					$content = $this->cObj->substituteMarker($content,'###NAME###',$this->prefixId.'['.$fieldName.']');
 					$content = $this->cObj->substituteSubpart ($content, '###SUB_SELECT_OPTION###', $optionsContent);
+					$content = $this->cObj->substituteMarker($content,'###TOOLTIP###', $this->renderTooltip($fieldConf['tooltip']));
 				}
 				// not loaded
 				else {
@@ -719,8 +739,6 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		}
 		return $content;
 	}
-
-
 
 	/**
 	* Get general markers as array
@@ -743,8 +761,6 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 
 		return $generalMarkers;
 	}
-
-
 
 	/**
 	* process form field evaluations
@@ -880,8 +896,6 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					else $errors[$fieldName] = $this->pi_getLL('error_upload_no_success');
 				}
 			}
-
-
 		}
 
 		// Hook for further evaluations

@@ -37,6 +37,10 @@
     height: 60px;
 }
 
+.tx-keuserregister-pi1 .error_input textearea {
+	border:2px solid red;
+}
+
 .tx-keuserregister-pi1 .error,
 .tx-keuserregister-pi2 .error {
     float: left;
@@ -61,10 +65,18 @@
     width: 230px;
 }
 
+.tx-keuserregister-pi1 .error_input input {
+	border:2px solid red;
+}
+
 .tx-keuserregister-pi1 input.checkbox{
     width: auto;
 }
 
 .tx-keuserregister-pi1 .small input {
     width: 70px;
+}
+
+.tx-keuserregister-pi1 .error_input .small input {
+	border:2px solid red;
 }

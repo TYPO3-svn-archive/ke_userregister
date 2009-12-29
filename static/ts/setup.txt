@@ -52,14 +52,17 @@ plugin.tx_keuserregister {
     }
     first_name {
       type = text
+	  tooltip = Please enter your first name.
     }
     last_name {
       type = text
+	  tooltip = Please enter your last name.
     }
 	# directmail: comma separated pids of pages with direct_mail-categories, leave emptye for "all categories"
     module_sys_dmail_category {
       type = directmail
       values =
+	  tooltip = Register our newsletter.
     }
   }
 

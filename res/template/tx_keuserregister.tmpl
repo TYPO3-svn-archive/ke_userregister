@@ -4,16 +4,16 @@
 
 <!-- ###REGISTRATION_FORM### start -->
         <form name="###FORM_NAME###" method="post" action="###FORM_ACTION###" enctype="multipart/form-data">
-                
+
                 <a name="formstart" /></a>
-                
+
                 <div class="fieldset">
                         <label>###LABEL_EMAIL###</label>
                         <div class="field">###INPUT_EMAIL###</div>
                         <div class="error">###ERROR_EMAIL###</div>
                         ###CLEARER###
                 </div>
-                
+
                 <!-- ###SUB_FIELD_USERNAME### start -->
                 <div class="fieldset">
                         <label>###LABEL_USERNAME###</label>
@@ -22,7 +22,7 @@
                         ###CLEARER###
                 </div>
                 <!-- ###SUB_FIELD_USERNAME### end -->
-                
+
                 <!-- ###SUB_FIELD_PASSWORD### start -->
                 <div class="fieldset">
                         <label>###LABEL_PASSWORD###</label>
@@ -31,52 +31,52 @@
                         ###CLEARER###
                 </div>
                 <!-- ###SUB_FIELD_PASSWORD### end -->
-                
+
                 <div class="fieldset">
                         <label>###LABEL_GENDER###</label>
                         <div class="field">###INPUT_GENDER###</div>
                         <div class="error">###ERROR_GENDER###</div>
                         ###CLEARER###
                 </div>
-                
+
                 <div class="fieldset">
                         <label>###LABEL_FIRST_NAME###</label>
                         <div class="field">###INPUT_FIRST_NAME###</div>
                         <div class="error">###ERROR_FIRST_NAME###</div>
                         ###CLEARER###
                 </div>
-                
+
                 <div class="fieldset">
                         <label>###LABEL_LAST_NAME###</label>
                         <div class="field">###INPUT_LAST_NAME###</div>
                         <div class="error">###ERROR_LAST_NAME###</div>
                         ###CLEARER###
                 </div>
-                
+
                 <div class="fieldset">
                         <label>###LABEL_COUNTRY###</label>
                         <div class="field">###INPUT_COUNTRY###</div>
                         <div class="error">###ERROR_COUNTRY###</div>
                         ###CLEARER###
                 </div>
-                
+
                 <div class="fieldset">
                         <label>###LABEL_MODULE_SYS_DMAIL_CATEGORY###</label>
                         <div class="field">###INPUT_MODULE_SYS_DMAIL_CATEGORY###</div>
                         <div class="error">###ERROR_MODULE_SYS_DMAIL_CATEGORY###</div>
                         ###CLEARER###
                 </div>
-                
-                
+
+
                 <div class="fieldset">
                         <label>&nbsp;</label>
                         <input type="submit" />
                         ###CLEARER###
                 </div>
-                
+
                 <input type="hidden" name="tx_keuserregister_pi1[step]" value="evaluate" />
         </form>
-        
+
 
 <!-- ###REGISTRATION_FORM### end -->
 
@@ -89,16 +89,16 @@
 
 <!-- ###EDIT_FORM### start -->
         <form name="###FORM_NAME###" method="post" action="###FORM_ACTION###"  enctype="multipart/form-data">
-                
+
                 <a name="formstart" /></a>
-                
+
                  <div class="fieldset">
                         <label>###LABEL_EMAIL###</label>
                         <div class="field">###INPUT_EMAIL###</div>
                         <div class="error">###ERROR_EMAIL###</div>
                         ###CLEARER###
                 </div>
-                
+
                 <!-- ###SUB_FIELD_USERNAME### start -->
                 <div class="fieldset">
                         <label>###LABEL_USERNAME###</label>
@@ -114,37 +114,37 @@
                         <div class="error">###ERROR_GENDER###</div>
                         ###CLEARER###
                 </div>
-                
+
                 <div class="fieldset">
                         <label>###LABEL_FIRST_NAME###</label>
                         <div class="field">###INPUT_FIRST_NAME###</div>
                         <div class="error">###ERROR_FIRST_NAME###</div>
                         ###CLEARER###
                 </div>
-                
+
                 <div class="fieldset">
                         <label>###LABEL_LAST_NAME###</label>
                         <div class="field">###INPUT_LAST_NAME###</div>
                         <div class="error">###ERROR_LAST_NAME###</div>
                         ###CLEARER###
                 </div>
-                
+
                 <div class="fieldset">
                         <label>###LABEL_MODULE_SYS_DMAIL_CATEGORY###</label>
                         <div class="field">###INPUT_MODULE_SYS_DMAIL_CATEGORY###</div>
                         <div class="error">###ERROR_MODULE_SYS_DMAIL_CATEGORY###</div>
                         ###CLEARER###
                 </div>
-                
+
                 <div class="fieldset">
                         <label>&nbsp;</label>
                         <input type="submit" />
                         ###CLEARER###
                 </div>
-                
+
                 <input type="hidden" name="tx_keuserregister_pi1[step]" value="evaluate" />
         </form>
-        
+
 
 <!-- ###EDIT_FORM### end -->
 
@@ -155,7 +155,7 @@
 ---------------------------------------- -->
 
 <!-- ###EDIT_PASSWORD_FORM### start -->
-        
+
         <form name="###FORM_NAME###" method="post" action="###FORM_ACTION###">
                 <div class="fieldset">
                         <label>###LABEL_OLD_PASSWORD###</label>
@@ -163,24 +163,24 @@
                         <div class="error">###ERROR_OLD_PASSWORD###</div>
                         ###CLEARER###
                 </div>
-                
+
                 <div class="fieldset">
                         <label>###LABEL_NEW_PASSWORD###</label>
                         <div class="field">###INPUT_NEW_PASSWORD###</div>
                         <div class="error">###ERROR_NEW_PASSWORD###</div>
                         ###CLEARER###
                 </div>
-                
+
                 <div class="fieldset">
                         <label>&nbsp;</label>
                         <input type="submit" />
                         ###CLEARER###
                 </div>
-                
+
                 <input type="hidden" name="tx_keuserregister_pi2[step]" value="evaluate" />
-                
+
         </form>
-        
+
 <!-- ###EDIT_PASSWORD_FORM### end -->
 
 
@@ -203,55 +203,51 @@
 ---------------------------------------- -->
 
 <!-- ###SUB_INPUT_TEXT### start -->
-        <input type="text" name="###NAME###" value="###VALUE###">
+        <input type="text" name="###NAME###" value="###VALUE###"> ###TOOLTIP###
 <!-- ###SUB_INPUT_TEXT### end -->
 
 
 <!-- ###SUB_INPUT_TEXTAREA### start -->
-        <textarea name="###NAME###">###VALUE###</textarea>
+        <textarea name="###NAME###">###VALUE###</textarea> ###TOOLTIP###
 <!-- ###SUB_INPUT_TEXTAREA### end -->
 
-
 <!-- ###SUB_CHECKBOX_ROW### start -->
-        <input type="checkbox" name="###NAME###" value="###VALUE###" ###CHECKED###>&nbsp;###LABEL###<br />
+        <input type="checkbox" name="###NAME###" value="###VALUE###" ###CHECKED###>&nbsp;###LABEL###<br /> ###TOOLTIP###
 <!-- ###SUB_CHECKBOX_ROW### end -->
 
-
 <!-- ###SUB_RADIO_ROW### start -->
-        <input type="radio" name="###NAME###" value="###VALUE###" ###CHECKED###>&nbsp;###LABEL###<br />
+        <input type="radio" name="###NAME###" value="###VALUE###" ###CHECKED###>&nbsp;###LABEL###<br /> ###TOOLTIP###
 <!-- ###SUB_RADIO_ROW### end -->
-
 
 <!-- ###SUB_SELECT### start -->
         <select name="###NAME###">
                 <!-- ###SUB_SELECT_OPTION### start -->
-                <option value="###VALUE###" ###SELECTED###>###LABEL###</option>
+                <option value="###VALUE###" ###SELECTED###>###LABEL###</option> ###TOOLTIP###
                 <!-- ###SUB_SELECT_OPTION### end -->
         </select>
 <!-- ###SUB_SELECT### end -->
 
-
 <!-- ###SUB_PASSWORD### start -->
-        <input type="password" name="tx_keuserregister_pi1[password]" value="###VALUE###" /><br />
+        <input type="password" name="tx_keuserregister_pi1[password]" value="###VALUE###" /><br /> ###TOOLTIP###
         <input type="password" name="tx_keuserregister_pi1[password_again]" value="###VALUE_AGAIN###" />
 <!-- ###SUB_PASSWORD### end -->
 
 <!-- ###SUB_INPUT_IMAGE### start -->
-        <input type="file" name="###NAME###" value="###VALUE###" />
+        <input type="file" name="###NAME###" value="###VALUE###" /> ###TOOLTIP###
 <!-- ###SUB_INPUT_IMAGE### end -->
 
 <!-- ###SUB_INPUT_IMAGE_UPLOADED### start -->
         <div>###THUMBNAIL### ###FILENAME###</div>
-        <input type="hidden" name="###FIELDNAME###" value="###FILENAME###">
+        <input type="hidden" name="###FIELDNAME###" value="###FILENAME###"> ###TOOLTIP###
         <input type="file" name="###NAME_UPLOAD_NEW###" />
 <!-- ###SUB_INPUT_IMAGE_UPLOADED### end -->
 
 <!-- ###SUB_OLD_PASSWORD### start -->
-        <input type="password" name="tx_keuserregister_pi2[old_password]" value="###VALUE_OLD_PASSWORD###" />
+        <input type="password" name="tx_keuserregister_pi2[old_password]" value="###VALUE_OLD_PASSWORD###" /> ###TOOLTIP###
 <!-- ###SUB_OLD_PASSWORD### end -->
 
 <!-- ###SUB_NEW_PASSWORD### start -->
-        <input type="password" name="tx_keuserregister_pi2[new_password]" value="###VALUE_NEW_PASSWORD###" /><br />
+        <input type="password" name="tx_keuserregister_pi2[new_password]" value="###VALUE_NEW_PASSWORD###" /><br /> ###TOOLTIP###
         <input type="password" name="tx_keuserregister_pi2[new_password_again]" value="###VALUE_NEW_PASSWORD_AGAIN###" />
 <!-- ###SUB_NEW_PASSWORD### end -->
 
@@ -264,6 +260,14 @@
 <!-- ###SUB_REQUIRED### start -->
         <span class="req"> *</span>
 <!-- ###SUB_REQUIRED### end -->
+
+<!-- ###SUB_ERRORWRAP_BEGIN### start -->
+        <span class="error_input">
+<!-- ###SUB_ERRORWRAP_BEGIN### end -->
+
+<!-- ###SUB_ERRORWRAP_END### start -->
+        </span>
+<!-- ###SUB_ERRORWRAP_END### end -->
 
 
 <!-- ###SUB_CLEARER### start -->
