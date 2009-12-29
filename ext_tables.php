@@ -38,10 +38,13 @@ $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY.'_pi1']='pi_fle
 // Configure FlexForm field
 t3lib_extMgm::addPiFlexFormValue($_EXTKEY.'_pi1','FILE:EXT:ke_userregister/flexform_ds.xml');
 
+// Hide not used plugin options
+$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi1'] = 'layout,select_key,pages,recursive';
+$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi2'] = 'layout,select_key,pages,recursive';
+$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi3'] = 'layout,select_key,pages,recursive';
+
 // setup first_name, last_name and gender
-
 t3lib_div::loadTCA('fe_users');
-
 
 t3lib_extMgm::addTCAcolumns('fe_users', Array(
 	'first_name' => Array (

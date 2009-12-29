@@ -472,7 +472,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			// render input field
 			$this->markerArray['input_'.$fieldName] = $this->renderInputField($fieldConf,$fieldName);
 
-			// wrap input field in error-div if error occured
+			// wrap input field if error occured
 			if ($errors[$fieldName]) {
 				$this->markerArray['input_'.$fieldName] =
 					$this->cObj->getSubpart($this->templateCode,'###SUB_ERRORWRAP_BEGIN###')
@@ -489,7 +489,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['additionalMarkers'])) {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['additionalMarkers'] as $_classRef) {
 				$_procObj = & t3lib_div::getUserObj($_classRef);
-				$_procObj->additionalMarkers(&$this->markerArray,&$this);
+				$_procObj->additionalMarkers(&$this->markerArray,&$this,$errors);
 			}
 		}
 
