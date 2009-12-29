@@ -56,7 +56,7 @@ plugin.tx_keuserregister {
     last_name {
       type = text
     }
-	# directmail: comma separated pids of categories; leave emptye for "all categories"
+	# directmail: comma separated pids of pages with direct_mail-categories, leave emptye for "all categories"
     module_sys_dmail_category {
       type = directmail
       values =
