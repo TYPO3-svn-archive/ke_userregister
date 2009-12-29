@@ -19,7 +19,6 @@
             <label index="label_gender">Gender</label>
             <label index="label_gender_0">Mr</label>
             <label index="label_gender_1">Mrs</label>
-            <label index="label_tx_extenduser_display_email">Meine E-Mail-Adresse soll in der User-Galerie angezeigt werden</label>
             <label index="label_address">Adresse</label>
             <label index="label_zip">Postleitzahl</label>
             <label index="label_city">Ort</label>
@@ -28,11 +27,7 @@
             <label index="label_fax">Fax</label>
             <label index="label_www">Homepage</label>
             <label index="label_image">Profile image</label>
-            <label index="label_tx_extenduser_equipment">My photo equipment</label>
             <label index="label_comments">About me</label>
-            <label index="label_tx_extenduser_conditions_accepted">I accept the conditions of participation from the user galery.</label>
-            <label index="label_tx_extenduser_display_data">My personal data may not be publicized on the TAMRON-Website (First and last name, homepage).</label>
-            <label index="label_tx_extenduser_use_gallery">I would like to participate in the Tamron user gallery. </label>
             <label index="label_module_sys_dmail_category">Newsletter</label>
             <label index="error_numeric">Please include a numeric value.</label>
             <label index="error_integer">Please include an integer value.</label>
@@ -96,7 +91,6 @@
             <label index="label_gender">Anrede</label>
             <label index="label_gender_0">Herr</label>
             <label index="label_gender_1">Frau</label>
-            <label index="label_tx_extenduser_display_email">Meine E-Mail-Adresse soll in der User-Galerie angezeigt werden</label>
             <label index="label_address">Adresse</label>
             <label index="label_zip">Postleitzahl</label>
             <label index="label_city">Ort</label>
@@ -105,11 +99,7 @@
             <label index="label_fax">Fax</label>
             <label index="label_www">Homepage</label>
             <label index="label_image">Profilbild</label>
-            <label index="label_tx_extenduser_equipment">Meine Fotoausrüstung</label>
             <label index="label_comments">Über mich</label>
-            <label index="label_tx_extenduser_conditions_accepted">Ich akzeptiere die Teilnahmebedingungen der User-Galerie.</label>
-            <label index="label_tx_extenduser_display_data">Meine persönlichen Daten dürfen auf der TAMRON-Website veröffentlicht werden (Vor-/ Nachname, Homepage).</label>
-            <label index="label_tx_extenduser_use_gallery">Ich möchte an der User-Galerie teilnehmen</label>
             <label index="label_module_sys_dmail_category">Newsletter</label>
             <label index="error_numeric">Bitte geben Sie einen numerischen Wert ein</label>
             <label index="error_integer">Bitte geben Sie eine Ganzzahl ein</label>
@@ -159,7 +149,7 @@
             <label index="mail_decline_error_message">Der Änderungsvorgang konnte nicht abgebrochen werden. Bitte versuchen Sie erneut, den Link aus der E-Mail in Ihren Browser zu kopieren.</label>
             <label index="confirmation_success_subject">Bestätigung Ihrer Registrierung</label>
             <label index="confirmation_success_text">Ihr Benutzer wurde freigeschaltet. Sie können Sich ab sofort mit Ihrer E-Mail-Adresse und Ihrem Passwort einloggen.</label>
-            
+
         </languageKey>
         <languageKey index="fr" type="array">
             <label index="ff.main">Général</label>
