@@ -7,6 +7,7 @@
     <data type="array">
         <languageKey index="default" type="array">
             <label index="ff.main">General</label>
+            <label index="ff.mode_not_defined">Mode not defined</label>
             <label index="ff.mode">Mode</label>
             <label index="ff.mode.I.0">Create</label>
             <label index="ff.mode.I.1">Edit</label>
@@ -80,6 +81,7 @@
         <languageKey index="de" type="array">
             <label index="ff.main">Allgemein</label>
             <label index="ff.mode">Modus</label>
+            <label index="ff.mode_not_defined">Modus nicht definiert</label>
             <label index="ff.mode.I.0">Anlegen</label>
             <label index="ff.mode.I.1">Bearbeiten</label>
             <label index="label_email">E-Mail</label>

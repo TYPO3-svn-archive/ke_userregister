@@ -997,6 +997,13 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				}
 			}
 
+			// Hook for further data processing after saving to db
+			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['specialDataProcessingAfterSaveToDB'])) {
+				foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['specialDataProcessingAfterSaveToDB'] as $_classRef) {
+					$_procObj = & t3lib_div::getUserObj($_classRef);
+					$_procObj->processSpecialDataProcessingAfterSaveToDB(&$fields_values,$this,$feuser_uid);
+				}
+			}
 
 			// generate hash and save in database
 			$hash = $this->getUniqueCode();
