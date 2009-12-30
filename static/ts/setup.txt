@@ -36,33 +36,37 @@ plugin.tx_keuserregister {
     email {
       type = text
       eval = required,email
+	  tooltip =
     }
     username {
       type = text
       eval = required
+	  tooltip =
     }
     password {
       type = password
       eval = required
+	  tooltip =
     }
 	# select: comma separated values are values of options. labels are set via locallang.
     gender {
       type = select
       values = 0,1
+	  tooltip =
     }
     first_name {
       type = text
-	  tooltip = Please enter your first name.
+	  tooltip =
     }
     last_name {
       type = text
-	  tooltip = Please enter your last name.
+	  tooltip =
     }
 	# directmail: comma separated pids of pages with direct_mail-categories, leave emptye for "all categories"
     module_sys_dmail_category {
       type = directmail
       values =
-	  tooltip = Register our newsletter.
+	  tooltip =
     }
   }
 
