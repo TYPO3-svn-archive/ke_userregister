@@ -37,9 +37,6 @@
     height: 60px;
 }
 
-.tx-keuserregister-pi1 .error_input textearea {
-	border:2px solid red;
-}
 
 .tx-keuserregister-pi1 .error,
 .tx-keuserregister-pi2 .error {
@@ -65,9 +62,6 @@
     width: 230px;
 }
 
-.tx-keuserregister-pi1 .error_input input {
-	border:2px solid red;
-}
 
 .tx-keuserregister-pi1 input.checkbox{
     width: auto;
@@ -77,6 +71,20 @@
     width: 70px;
 }
 
+/* red border for fields with errors */
+
+.tx-keuserregister-pi1 .error_input input {
+	border:2px solid red;
+}
+
+.tx-keuserregister-pi1 .error_input textearea {
+	border:2px solid red;
+}
+
 .tx-keuserregister-pi1 .error_input .small input {
+	border:2px solid red;
+}
+
+.tx-keuserregister-pi1 .error_input select {
 	border:2px solid red;
 }
