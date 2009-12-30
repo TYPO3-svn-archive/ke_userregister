@@ -73,18 +73,8 @@
 
 /* red border for fields with errors */
 
-.tx-keuserregister-pi1 .error_input input {
-	border:2px solid red;
-}
-
+.tx-keuserregister-pi1 .error_input select,
+.tx-keuserregister-pi1 .error_input .small input,
+.tx-keuserregister-pi1 .error_input input,
 .tx-keuserregister-pi1 .error_input textearea {
 	border:2px solid red;
-}
-
-.tx-keuserregister-pi1 .error_input .small input {
-	border:2px solid red;
-}
-
-.tx-keuserregister-pi1 .error_input select {
-	border:2px solid red;
-}
