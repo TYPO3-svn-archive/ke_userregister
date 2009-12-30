@@ -41,6 +41,7 @@
             <label index="error_upload_no_success">The file upload was not successful.</label>
             <label index="error_upload_filesize">The file size my not be larger than %s.</label>
             <label index="error_upload_filetype">This file type is not accepted.</label>
+            <label index="error_date">The date is not correct.</label>
             <label index="form_success_headline">Registration started</label>
             <label index="form_success_text">Please follow the link in the e-mail that we just sent you to confirm your registration and complete the registration process.</label>
             <label index="salutation_male">Dear </label>
@@ -114,6 +115,7 @@
             <label index="error_upload_no_success">Die Datei konnte nicht erfolgreich hochgeladen werden</label>
             <label index="error_upload_filesize">Die Datei darf nicht größer als %s sein.</label>
             <label index="error_upload_filetype">Dieser Dateityp wird nicht akzeptiert.</label>
+            <label index="error_date">Das Datum ist nicht korrekt.</label>
             <label index="form_success_headline">Registrierung gestartet</label>
             <label index="form_success_text">um die Registrierung erfolgreich abzuschließen, schauen Sie bitte in Ihr E-Mail-Postfach. Wir haben Ihnen eine E-Mail mit einem Bestätigungslink geschickt. Bitte klicken Sie auf diesen Link, um die Registrierung abzuschließen.</label>
             <label index="salutation_male">Sehr geehrter</label>

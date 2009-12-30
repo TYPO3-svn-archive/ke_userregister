@@ -48,7 +48,7 @@ t3lib_div::loadTCA('fe_users');
 
 t3lib_extMgm::addTCAcolumns('fe_users', Array(
 	'first_name' => Array (
-		'exclude' => 0,
+		'exclude' => 1,
 		'label' => 'LLL:EXT:ke_userregister/locallang_db.xml:fe_users.first_name',
 		'config' => Array (
 			'type' => 'input',
@@ -59,7 +59,7 @@ t3lib_extMgm::addTCAcolumns('fe_users', Array(
 		)
 	),
 	'last_name' => Array (
-		'exclude' => 0,
+		'exclude' => 1,
 		'label' => 'LLL:EXT:ke_userregister/locallang_db.xml:fe_users.last_name',
 		'config' => Array (
 			'type' => 'input',
@@ -70,7 +70,7 @@ t3lib_extMgm::addTCAcolumns('fe_users', Array(
 		)
 	),
 	'gender' => Array (
-		'exclude' => 0,
+		'exclude' => 1,
 		'label' => 'LLL:EXT:ke_userregister/locallang_db.xml:fe_users.gender',
 		'config' => Array (
 			'type' => 'radio',
@@ -80,10 +80,20 @@ t3lib_extMgm::addTCAcolumns('fe_users', Array(
 			),
 		)
 	),
+	'registerdate' => array (
+		'exclude' => 1,
+		'label' => 'LLL:EXT:ke_userregister/locallang_db.xml:fe_users.registerdate',
+		'config'  => array (
+			'type' => 'input',
+			'readOnly' => '1',
+			'eval' => 'datetime',
+			'size' => '12',
+			'default'  => '0'
+		)
+	),
 ));
 
 $TCA['fe_users']['interface']['showRecordFieldList'] = str_replace('title,', 'gender,first_name,last_name,title,', $TCA['fe_users']['interface']['showRecordFieldList']);
-
 $TCA['fe_users']['feInterface']['fe_admin_fieldList'] = str_replace(',title', ',gender,first_name,last_name,title', $TCA['fe_users']['feInterface']['fe_admin_fieldList']);
 $lastPalette = 0;
 for ($i=0; $i<10; $i++)	{
@@ -95,4 +105,7 @@ for ($i=0; $i<10; $i++)	{
 $TCA['fe_users']['palettes'][$lastPalette+1]['showitem'] = 'gender,first_name';
 $TCA['fe_users']['types']['0']['showitem'] = str_replace(', name', ',last_name;;'.($lastPalette+1).';;1-1-1, name', $TCA['fe_users']['types']['0']['showitem']);
 $TCA['fe_users']['ctrl']['thumbnail'] = 'image';
+
+// add register date
+t3lib_extMgm::addToAllTCAtypes('fe_users','registerdate','','before:lastlogin');
 ?>

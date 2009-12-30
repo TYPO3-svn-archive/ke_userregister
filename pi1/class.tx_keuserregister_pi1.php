@@ -763,6 +763,42 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	}
 
 	/**
+	* check for german date format which is DD.MM.YYYY
+	*
+	* @param string $date_string
+	* @return	bool
+	*/
+	function is_german_date($date_string = '') {
+		$result = true;
+		if ($date_string) {
+			$date_array = t3lib_div::trimExplode('.', $date_string);
+			$day = intval($date_array[0]);
+			$month = intval($date_array[1]);
+			$year = intval($date_array[2]);
+			$result = checkdate($month, $day, $year);
+		}
+		return $result;
+	}
+
+	/**
+	* check for us date format which is DD.MM.YYYY
+	*
+	* @param string $date_string
+	* @return	bool
+	*/
+	function is_us_date($date_string = '') {
+		$result = true;
+		if ($date_string) {
+			$date_array = t3lib_div::trimExplode('/', $date_string);
+			$day = intval($date_array[1]);
+			$month = intval($date_array[0]);
+			$year = intval($date_array[2]);
+			$result = checkdate($month, $day, $year);
+		}
+		return $result;
+	}
+
+	/**
 	* process form field evaluations
 	*
 	* @return	The content that is displayed on the website
@@ -793,6 +829,16 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			// check if field value is int
 			if (strstr($fieldConf['eval'], 'integer') && !$this->is_unsigned_int($this->piVars[$fieldName])) {
 				$errors[$fieldName] = $this->pi_getLL('error_integer');
+			}
+
+			// check for german date format which is DD.MM.YYYY
+			if (strstr($fieldConf['eval'], 'date-de') && !$this->is_german_date($this->piVars[$fieldName])) {
+				$errors[$fieldName] = $this->pi_getLL('error_date');
+			}
+
+			// check for us date format which is MM/DD/YYYY
+			if (strstr($fieldConf['eval'], 'date-us') && !$this->is_us_date($this->piVars[$fieldName])) {
+				$errors[$fieldName] = $this->pi_getLL('error_date');
 			}
 
 			// checks for already existent username
@@ -826,33 +872,34 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				}
 			}
 
-
 			// special evalutation for password field
 			if ($fieldName == 'password') {
+
 				// password and password again filled and equal values?
 				if (empty($this->piVars['password']) || empty($this->piVars['password_again']) || ($this->piVars['password'] != $this->piVars['password_again'])) {
 					$errors[$fieldName] = $this->pi_getLL('error_password');
 				}
+
 				// check password min length
 				else if (strlen($this->piVars['password']) < $this->conf['password.']['minLength']) {
 					$errors[$fieldName] = sprintf($this->pi_getLL('error_password_length'),$this->conf['password.']['minLength']);
 				}
 			}
 
-
 			// special processing of image field
 			// process uploaded file?
 			if ($fieldConf['type'] == 'image' && !empty($GLOBALS['_FILES'][$this->prefixId]['name'][$fieldName])) {
-
 				$uploadData = $GLOBALS['_FILES'][$this->prefixId];
 				$process = true;
 				if ($uploadData['size'][$fieldName] > 0) {
-					// datei zu groß?
+
+					// file too big
 					if ($uploadData['size'][$fieldName] > $this->conf['upload.']['maxFileSize']) {
 						$errors[$fieldName] =  sprintf($this->pi_getLL('error_upload_filesize'), $uploadData['name'][$fieldName], $this->filesize_format($this->maxFileSize, '', ''));
 						$process = false;
 					}
-					// dateityp nicht erlaubt
+
+					// file type not allowed
 					$allowedFileTypes  =  t3lib_div::trimExplode(',',$this->conf['upload.']['allowedFileTypes']);
 					$dotPos = strpos($uploadData['name'][$fieldName],'.');
 					$fileEnding = substr($uploadData['name'][$fieldName],$dotPos+1);
@@ -861,26 +908,28 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 						$process = false;
 					}
 				}
-				// wenn ok -> feld schreiben
+
+				// write field if OK
 				if ($process) {
 					$uploadedFileName = $this->handleUpload($fieldName);
 					if (!empty($uploadedFileName)) $this->piVars[$fieldName] = $uploadedFileName;
 					else $errors[$fieldName] = $this->pi_getLL('error_upload_no_success');
 				}
-
-
 			}
+
 			// process new upload --> overwrite old file
 			if ($fieldConf['type'] == 'image' && !empty($GLOBALS['_FILES'][$this->prefixId]['name'][$fieldName.'_new'])) {
 				$uploadData = $GLOBALS['_FILES'][$this->prefixId];
 				$process = true;
 				if ($uploadData['size'][$fieldName.'_new'] > 0) {
-					// datei zu groß?
+
+					// file too big
 					if ($uploadData['size'][$fieldName.'_new'] > $this->conf['upload.']['maxFileSize']) {
 						$errors[$fieldName] =  sprintf($this->pi_getLL('error_upload_filesize'), $uploadData['name'][$fieldName.'_new'], $this->filesize_format($this->maxFileSize, '', ''));
 						$process = false;
 					}
-					// dateityp nicht erlaubt
+
+					// file type not allowed
 					$allowedFileTypes  =  t3lib_div::trimExplode(',',$this->conf['upload.']['allowedFileTypes']);
 					$dotPos = strpos($uploadData['name'][$fieldName.'_new'],'.');
 					$fileEnding = substr($uploadData['name'][$fieldName.'_new'],$dotPos+1);
@@ -889,7 +938,8 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 						$process = false;
 					}
 				}
-				// wenn ok -> feld schreiben
+
+				// write field if OK
 				if ($process) {
 					$uploadedFileName = $this->handleUpload($fieldName.'_new');
 					if (!empty($uploadedFileName)) $this->piVars[$fieldName] = $uploadedFileName;
@@ -906,7 +956,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			}
 		}
 
-		// if errors ocured: render form with error messages
+		// if errors occured: render form with error messages
 		if (sizeof($errors)) return $this->renderForm($errors);
 		// otherwise: process form data
 		else {
@@ -916,7 +966,6 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			else if ($this->mode == 'create') return $this->processRegistrationFormData();
 		}
 	}
-
 
 	/**
 	* Description
@@ -932,7 +981,6 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		// check if default usergroup is set
 		if (!$this->conf['defaultUsergroup']) die($this->prefixId.': ERROR: No default usergroup defined');
 
-
 		// save fe_user with disabled=1
 		$table = 'fe_users';
 		$fields_values = array(
@@ -940,6 +988,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			'tstamp' => time(),
 			'disable' => 1,
 			'crdate' => time(),
+			'registerdate' => time(),
 			'usergroup' => $this->conf['defaultUsergroup'],
 		);
 
