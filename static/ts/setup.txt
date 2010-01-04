@@ -29,6 +29,7 @@ plugin.tx_keuserregister {
   upload {
     maxFileSize = 5242880
     allowedFileTypes = jpg,gif,png
+	path = uploads/tx_keuserregister/
   }
 
   # define the fields used in creation of new users
@@ -68,6 +69,11 @@ plugin.tx_keuserregister {
       values =
 	  tooltip =
     }
+	image {
+		type = image
+		file.maxW = 50
+		file.maxH = 50
+	}
   }
 
   # define the fields used in edit form

@@ -68,7 +68,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		$this->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_keuserregister.'];
 
 		// folder for uploads
-		$this->fileUploadDir = 'uploads/tx_keuserregister/';
+		$this->fileUploadDir = $this->conf['upload.']['path'] ? $this->conf['upload.']['path'] : 'uploads/tx_keuserregister/';
 
 		// GET FLEXFORM DATA
 		$this->pi_initPIflexForm();
@@ -656,14 +656,46 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				}
 				break;
 
+			case 'select_db_relation':
+				/*
+				 example TS -configuration:
+				   myDatabaseField {
+					type = select_db_relation
+					pid = 3
+					displayField = name
+				  }
+				*/
+				// compile sql query for select values
+				$fields = '*';
+				$table = $fieldConf['table'];
+				$where = '1=1';
+				if ($fieldConf['pid']) $where .= ' AND pid=' . intval($fieldConf['pid']);
+				$where .= $this->cObj->enableFields($table);
+				//$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fields,$table,$where,$groupBy='',$orderBy=,$limit='');
+				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fields, $table, $where, '', $fieldConf['displayField']);
+
+				// build options
+				$optionsContent = '';
+				while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
+				   $optionsContent .= '<option value="' . $row['uid'] . '" ';
+				   if ($this->piVars[$fieldName] == $row['uid']) $optionsContent .= ' selected="selected" ';
+				   $optionsContent .= '>'.$row[$fieldConf['displayField']].'</option>';
+				}
+
+				// compile
+				$content = $this->cObj->getSubpart($this->templateCode,'###SUB_SELECT###');
+				$content = $this->cObj->substituteMarker($content,'###NAME###',$this->prefixId.'['.$fieldName.']');
+				$content = $this->cObj->substituteSubpart ($content, '###SUB_SELECT_OPTION###', $optionsContent);
+				$content = $this->cObj->substituteMarker($content,'###TOOLTIP###', $this->renderTooltip($fieldConf['tooltip']));
+				break;
+
 			case 'image':
 				// file already uploaded
 				if ($this->piVars[$fieldName] != "") {
 
 					// generate thumbnail
-					$imageConf['file'] = $this->fileUploadDir.$this->piVars[$fieldName];
-					$imageConf['file.']['maxW'] = 50;
-					$imageConf['file.']['maxH'] = 50;
+					$imageConf['file.'] = $fieldConf['file.'];
+					$imageConf['file'] = $this->fileUploadDir . $this->piVars[$fieldName];
 					$imageConf['altText'] = $this->piVars[$fieldName];
 					$thumbnail=$this->cObj->IMAGE($imageConf);
 
@@ -734,8 +766,6 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					$content = 'static_info_tables not loaded';
 				}
 				break;
-
-
 		}
 		return $content;
 	}
@@ -900,9 +930,9 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					}
 
 					// file type not allowed
-					$allowedFileTypes  =  t3lib_div::trimExplode(',',$this->conf['upload.']['allowedFileTypes']);
+					$allowedFileTypes  =  t3lib_div::trimExplode(',',strtolower($this->conf['upload.']['allowedFileTypes']));
 					$dotPos = strpos($uploadData['name'][$fieldName],'.');
-					$fileEnding = substr($uploadData['name'][$fieldName],$dotPos+1);
+					$fileEnding = strtolower(substr($uploadData['name'][$fieldName],$dotPos+1));
 					if (!in_array($fileEnding, $allowedFileTypes)) {
 						$errors[$fieldName] =  sprintf($this->pi_getLL('error_upload_filetype'), $uploadData['name'][$fieldName]);
 						$process = false;

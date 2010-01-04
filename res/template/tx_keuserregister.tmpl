@@ -26,7 +26,7 @@
                 <!-- ###SUB_FIELD_PASSWORD### start -->
                 <div class="fieldset">
                         <label>###LABEL_PASSWORD###</label>
-                        <div class="field">###INPUT_PASSWORD###</div>
+                        ###INPUT_PASSWORD###
                         <div class="error">###ERROR_PASSWORD###</div>
                         ###CLEARER###
                 </div>
@@ -50,6 +50,20 @@
                         <label>###LABEL_LAST_NAME###</label>
                         <div class="field">###INPUT_LAST_NAME###</div>
                         <div class="error">###ERROR_LAST_NAME###</div>
+                        ###CLEARER###
+                </div>
+
+                <div class="fieldset">
+                        <label>###LABEL_ADDRESS###</label>
+                        <div class="field">###INPUT_ADDRESS###</div>
+                        <div class="error">###ERROR_ADDRESS###</div>
+                        ###CLEARER###
+                </div>
+
+                <div class="fieldset">
+                        <label>###CUSTOMTEXT_ZIPCITY###</label>
+                        <div class="field"><span class="input_zip">###INPUT_ZIP###</span> <div class="error">###ERROR_ZIP###</div> <span class="input_city">###INPUT_CITY###</span></div>
+                        <div class="error">###ERROR_CITY###</div>
                         ###CLEARER###
                 </div>
 
@@ -126,6 +140,20 @@
                         <label>###LABEL_LAST_NAME###</label>
                         <div class="field">###INPUT_LAST_NAME###</div>
                         <div class="error">###ERROR_LAST_NAME###</div>
+                        ###CLEARER###
+                </div>
+
+                <div class="fieldset">
+                        <label>###LABEL_ADDRESS###</label>
+                        <div class="field">###INPUT_ADDRESS###</div>
+                        <div class="error">###ERROR_ADDRESS###</div>
+                        ###CLEARER###
+                </div>
+
+                <div class="fieldset">
+                        <label>###CUSTOMTEXT_ZIPCITY###</label>
+                        <div class="field"><span class="input_zip">###INPUT_ZIP###</span> <div class="error">###ERROR_ZIP###</div> <span class="input_city">###INPUT_CITY###</span></div>
+                        <div class="error">###ERROR_CITY###</div>
                         ###CLEARER###
                 </div>
 
@@ -228,8 +256,9 @@
 <!-- ###SUB_SELECT### end -->
 
 <!-- ###SUB_PASSWORD### start -->
-        <input type="password" name="tx_keuserregister_pi1[password]" value="###VALUE###" /><br /> ###TOOLTIP###
-        <input type="password" name="tx_keuserregister_pi1[password_again]" value="###VALUE_AGAIN###" />
+        <div class="field"><input type="password" name="tx_keuserregister_pi1[password]" value="###VALUE###" /> ###TOOLTIP###</div>
+        <label style="clear:left;">###LABEL_PASSWORD_AGAIN###</label>
+		<div class="field"><input type="password" name="tx_keuserregister_pi1[password_again]" value="###VALUE_AGAIN###" /></div>
 <!-- ###SUB_PASSWORD### end -->
 
 <!-- ###SUB_INPUT_IMAGE### start -->

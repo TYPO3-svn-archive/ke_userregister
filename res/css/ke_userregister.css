@@ -67,8 +67,13 @@
     width: auto;
 }
 
+.tx-keuserregister-pi1 .input_zip input,
 .tx-keuserregister-pi1 .small input {
     width: 70px;
+}
+
+.tx-keuserregister-pi1 .input_city input {
+    width: 155px;
 }
 
 /* red border for fields with errors */
