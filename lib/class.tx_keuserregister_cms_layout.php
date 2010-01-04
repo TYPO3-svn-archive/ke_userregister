@@ -39,7 +39,6 @@ class tx_keuserregister_cms_layout {
 	function getExtensionSummary($params, &$pObj) {
 		if ($params['row']['list_type'] == 'ke_userregister_pi1') {
 			$data = t3lib_div::xml2array($params['row']['pi_flexform']);
-			debug($data['data']['MAIN']['lDEF']['mode']['vDEF']);
 
 			if (is_array($data)) {
 				$key = strtolower($data['data']['MAIN']['lDEF']['mode']['vDEF']);
