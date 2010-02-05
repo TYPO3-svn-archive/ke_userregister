@@ -1363,7 +1363,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 
 		// Only ASCII is allowed in the header
 		$subject = html_entity_decode(t3lib_div::deHSCentities($subject), ENT_QUOTES, $GLOBALS['TSFE']->renderCharset);
-		$subject = t3lib_div::encodeHeader($subject, 'base64');
+		$subject = t3lib_div::encodeHeader($subject, 'base64', $GLOBALS['TSFE']->renderCharset);
 
 		// create the plain message body
 		$message = html_entity_decode(strip_tags($html_body), ENT_QUOTES, $GLOBALS['TSFE']->renderCharset);
