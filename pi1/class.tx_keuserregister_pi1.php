@@ -109,7 +109,9 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
 
 		// include css
-		$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId] .= '<link rel="stylesheet" type="text/css" href="'.$this->conf['cssFile'].'" />';
+		if ($this->conf['cssFile']) {
+			$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId] .= '<link rel="stylesheet" type="text/css" href="'.$this->conf['cssFile'].'" />';
+		}
 
 		// process incoming registration confirmation
 		if (t3lib_div::_GET('confirm')) $content = $this->processConfirm();
