@@ -14,13 +14,19 @@ plugin.tx_keuserregister {
   # password settings
   password {
     minLength = 6
-    useMd5 = 1
+
+	# OBSOLETE: Use "encryption" instead
+	# useMd5 = 1
+
+	# possible values: none, md5, salted
+	# use "salted" if you use the extension "saltedpasswords" with TYPO3 4.3
+	encryption = salted
   }
 
   # email notification settings
   notification {
-    from_email = info@example.com
-    from_name = USER REGISTRATION
+    from_email =
+    from_name = TYPO3 User Registration
   }
 
   # how long are registration hash values accepted?

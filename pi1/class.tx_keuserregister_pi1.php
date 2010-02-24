@@ -28,8 +28,9 @@
  */
 
 require_once(PATH_tslib.'class.tslib_pibase.php');
-require_once (PATH_t3lib.'class.t3lib_htmlmail.php');
+require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
 require_once(PATH_t3lib.'class.t3lib_basicfilefunc.php');
+require_once(t3lib_extMgm::extPath('ke_userregister', 'lib/class.tx_keuserregister_lib.php'));
 
 /**
  * Plugin 'Register Form' for the 'ke_userregister' extension.
@@ -63,6 +64,9 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		} else {
 			$this->tooltipAvailable = false;
 		}
+
+		// init lib
+		$this->lib = t3lib_div::makeInstance('tx_keuserregister_lib');
 
 		// get general extension setup
 		$this->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_keuserregister.'];
@@ -1046,9 +1050,8 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		if ($this->conf['emailIsUsername']) $fields_values['username'] = t3lib_div::removeXSS($this->piVars['email']);
 		else $fields_values['username'] = t3lib_div::removeXSS($this->piVars['username']);
 
-		// set password with md5 encryption if defined
-		if ($this->conf['password.']['useMd5']) $fields_values['password'] = md5(t3lib_div::removeXSS($this->piVars['password']));
-		else $fields_values['password'] = t3lib_div::removeXSS($this->piVars['password']);
+		// encrypt password if defined in ts in $this->conf['password.']['encryption']
+		$fields_values['password'] = $this->lib->encryptPassword(t3lib_div::removeXSS($this->piVars['password']), $this->conf['password.']['encryption']);
 
 		// Hook for further data processing before saving to db
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['specialDataProcessing'])) {
@@ -1148,8 +1151,6 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		}
 		else die($this->prefixId.': ERROR: DATABASE ERROR WHEN SAVING RECORD');
 	}
-
-
 
 	/**
 	* Description
