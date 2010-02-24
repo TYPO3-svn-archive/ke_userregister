@@ -62,12 +62,10 @@ class tx_keuserregister_pi2 extends tslib_pibase {
 		$this->lib = t3lib_div::makeInstance('tx_keuserregister_lib');
 
 		// get html template
-		$this->templateFile = t3lib_extMgm::siteRelPath($this->extKey).'res/template/tx_keuserregister.tmpl';
-		$this->templateCode = $this->cObj->fileResource($this->templateFile);
+		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
 
 		// include css
-		$cssfile = t3lib_extMgm::siteRelPath($this->extKey).'res/css/'.$this->extKey.'.css';
-		$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId] .= '<link rel="stylesheet" type="text/css" href="'.$cssfile.'" />';
+		$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId] .= '<link rel="stylesheet" type="text/css" href="'.$this->conf['cssFile'].'" />';
 
 		// check login
 		if (!$GLOBALS['TSFE']->loginUser) {

@@ -41,7 +41,7 @@ class tx_keuserregister_pi3 extends tslib_pibase {
 	var $prefixId      = 'tx_keuserregister_pi3';		// Same as class name
 	var $scriptRelPath = 'pi3/class.tx_keuserregister_pi3.php';	// Path to this script relative to the extension dir.
 	var $extKey        = 'ke_userregister';	// The extension key.
-	
+
 	/**
 	 * The main method of the PlugIn
 	 *
@@ -54,19 +54,16 @@ class tx_keuserregister_pi3 extends tslib_pibase {
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
 		$this->pi_USER_INT_obj = 1;	// Configuring so caching is not expected. This value means that no cHash params are ever set. We do this, because it's a USER_INT object!
-	
+
 		// get general extension setup
 		$this->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_keuserregister.'];
-		
+
 		// get html template
-		$this->templateFile = t3lib_extMgm::siteRelPath($this->extKey).'res/template/tx_keuserregister.tmpl';
-		$this->templateCode = $this->cObj->fileResource($this->templateFile);
-		
+		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
+
 		// include css
-		$cssfile = t3lib_extMgm::siteRelPath($this->extKey).'res/css/'.$this->extKey.'.css';
-		$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId] .= '<link rel="stylesheet" type="text/css" href="'.$cssfile.'" />';
-		
-		
+		$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId] .= '<link rel="stylesheet" type="text/css" href="'.$this->conf['cssFile'].'" />';
+
 		// check login
 		if (!$GLOBALS['TSFE']->loginUser) {
 			$content = $this->cObj->getSubpart($this->templateCode,'###SUB_MESSAGE###');
@@ -83,7 +80,7 @@ class tx_keuserregister_pi3 extends tslib_pibase {
 					if (t3lib_div::inList($GLOBALS['TSFE']->fe_user->user['usergroup'], $groupId)) $disallowed = true;
 				}
 			}
-			
+
 			// if deletion is disallowed: print message
 			if ($disallowed) {
 				$content = $this->cObj->getSubpart($this->templateCode,'###SUB_MESSAGE###');
@@ -92,14 +89,14 @@ class tx_keuserregister_pi3 extends tslib_pibase {
 			}
 			// ask for confirmation or process deletion
 			else $content = $this->piVars['delete'] ? $this->processDeletion() : $this->askForConfirmation();
-			
+
 		}
-		
-		
+
+
 		return $this->pi_wrapInBaseClass($content);
 	}
-	
-	
+
+
 	/**
 	* Description
 	*
@@ -107,13 +104,13 @@ class tx_keuserregister_pi3 extends tslib_pibase {
 	* @return	The content that is displayed on the website
 	*/
 	function askForConfirmation() {
-		
+
 		// generate confirmation link
 		unset($linkconf);
 		$linkconf['parameter'] = $GLOBALS['TSFE']->id;
 		$linkconf['additionalParams'] = '&'.$this->prefixId.'[delete]='.$GLOBALS['TSFE']->fe_user->user['uid'];
 		$confirmLink =$this->cObj->typoLink($this->pi_getLL('delete_profile_yes'),$linkconf);
-		
+
 		$content = $this->cObj->getSubpart($this->templateCode,'###DELETION_CONFIRMATION###');
 		$markerArray = array(
 			'text' => $this->pi_getLL('delete_profile_text'),
@@ -121,11 +118,11 @@ class tx_keuserregister_pi3 extends tslib_pibase {
 			'confirm_link' => $confirmLink,
 		);
 		$content = $this->cObj->substituteMarkerArray($content,$markerArray,$wrap='###|###',$uppercase=1);
-		
+
 		return $content;
 	}
-	
-	
+
+
 	/**
 	* Description
 	*
@@ -133,7 +130,7 @@ class tx_keuserregister_pi3 extends tslib_pibase {
 	* @return	The content that is displayed on the website
 	*/
 	function processDeletion() {
-		
+
 		// check if user is the one that should be deleted
 		// otherwise: error
 		if (t3lib_div::removeXSS($this->piVars['delete']) != $GLOBALS['TSFE']->fe_user->user['uid']) {
@@ -153,9 +150,9 @@ class tx_keuserregister_pi3 extends tslib_pibase {
 				return $content;
 			}
 		}
-		
+
 	}
-	
+
 }
 
 
