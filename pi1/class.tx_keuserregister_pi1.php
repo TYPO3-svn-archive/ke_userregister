@@ -309,6 +309,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			$where = 'uid="'.intval($hashRow['feuser_uid']).'" ';
 			$fields_values['tstamp'] = time();
 			$fields_values['email'] = t3lib_div::removeXSS($hashRow['new_email']);
+
 			// set username too if email is used as username
 			if ($this->conf['emailIsUsername']) $fields_values['username'] = t3lib_div::removeXSS($hashRow['new_email']);
 
@@ -877,10 +878,10 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				$errors[$fieldName] = $this->pi_getLL('error_date');
 			}
 
-			// checks for already existent username
+			// checks for already existent username if username differs from the current username
 			// (email is not used as username)
 			if (!$this->conf['emailIsUsername'] && $fieldName == 'username') {
-				if (!empty($this->piVars[$fieldName])) {
+				if (!empty($this->piVars[$fieldName]) && ($this->piVars[$fieldName] != $GLOBALS['TSFE']->fe_user->user['username'])) {
 					$where = 'username="'.t3lib_div::removeXSS($this->piVars[$fieldName]).'" AND deleted != 1';
 					$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid','fe_users',$where);
 					$anz = $GLOBALS['TYPO3_DB']->sql_num_rows($res);
