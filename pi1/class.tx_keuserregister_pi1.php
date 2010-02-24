@@ -463,6 +463,28 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				}
 				else if (!isset($this->piVars[$fieldName])) {
 					$this->piVars[$fieldName] = $userRow[$fieldName];
+
+					// special handling for date fields
+					// check for german date format which is DD.MM.YYYY
+					if (strstr($fieldConf['eval'], 'date-de')) {
+						$this->piVars[$fieldName] = date('d.m.Y', $this->piVars[$fieldName]);
+					}
+
+					// check for us date format which is MM/DD/YYYY
+					if (strstr($fieldConf['eval'], 'date-us')) {
+						$this->piVars[$fieldName] = date('m/d/Y', $this->piVars[$fieldName]);
+					}
+
+					// Hook for own prefill values
+					// You will have to define one class per prefill Value
+					// example:
+					// $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['prefillValue_gender'][] = 'EXT:ke_userregisterhooks/class.user_keuserregisterhooks.php:&user_keuserregisterhooks_prefillValueGender';
+					if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['prefillValue_' . $fieldName])) {
+						foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['prefillValue_' . $fieldName] as $_classRef) {
+							$_procObj = & t3lib_div::getUserObj($_classRef);
+							$this->piVars[$fieldName] = $_procObj->generatePrefillValue($this->piVars[$fieldName],$this);
+						}
+					}
 				}
 			}
 		}
