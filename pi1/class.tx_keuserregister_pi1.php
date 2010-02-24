@@ -655,11 +655,8 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 
 
 			case 'directmail':
-				#debug($fieldName);
-				#debug($this->piVars,'pi field');
 				$fields = '*';
 				$table = 'sys_dmail_category';
-				#$where = '1=1 ';
 				$where = 'sys_language_uid="'.$GLOBALS['TSFE']->sys_language_uid.'" ';
 				if (!empty($fieldConf['values'])) $where .= 'AND pid in("'.t3lib_div::removeXSS($fieldConf['values']).'") ';
 				$where .= $this->cObj->enableFields($table);
@@ -989,9 +986,9 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					}
 
 					// file type not allowed
-					$allowedFileTypes  =  t3lib_div::trimExplode(',',$this->conf['upload.']['allowedFileTypes']);
+					$allowedFileTypes  =  t3lib_div::trimExplode(',',strtolower($this->conf['upload.']['allowedFileTypes']));
 					$dotPos = strpos($uploadData['name'][$fieldName.'_new'],'.');
-					$fileEnding = substr($uploadData['name'][$fieldName.'_new'],$dotPos+1);
+					$fileEnding = strtolower(substr($uploadData['name'][$fieldName.'_new'],$dotPos+1));
 					if (!in_array($fileEnding, $allowedFileTypes)) {
 						$errors[$fieldName] =  sprintf($this->pi_getLL('error_upload_filetype'), $uploadData['name'][$fieldName]);
 						$process = false;
