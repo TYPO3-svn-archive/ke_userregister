@@ -683,16 +683,6 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				break;
 
 			case 'select_db_relation':
-				/*
-				 example TS -configuration:
-				   myDatabaseField {
-					type = select_db_relation
-					# optional: set values via typoscript (additional to the values from the db result)
-					values = 0,1,2
-					pid = 3
-					displayField = name
-				  }
-				*/
 				// compile sql query for select values
 				$fields = '*';
 				$table = $fieldConf['table'];
