@@ -687,6 +687,8 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				 example TS -configuration:
 				   myDatabaseField {
 					type = select_db_relation
+					# optional: set values via typoscript (additional to the values from the db result)
+					values = 0,1,2
 					pid = 3
 					displayField = name
 				  }
@@ -701,6 +703,22 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fields, $table, $where, '', $fieldConf['displayField']);
 
 				// build options
+
+				// options from ts setup
+				$fieldValues = explode(',',$fieldConf['values']);
+				foreach ($fieldValues as $key => $value) {
+					$tempMarkerArray = array(
+						'value' => $value,
+						'label' => $this->pi_getLL('label_'.$fieldName.'_'.$value),
+						'selected' => ($this->piVars[$fieldName] == $value) ? 'selected="selected" ' : '',
+						'tooltip' => $this->renderTooltip($fieldConf['tooltip'])
+					);
+					$tempContent = $this->cObj->getSubpart($this->templateCode,'###SUB_SELECT_OPTION###');
+					$tempContent = $this->cObj->substituteMarkerArray($tempContent,$tempMarkerArray,$wrap='###|###',$uppercase=1);
+					$optionsContent .= $tempContent;
+				}
+
+				// options from db result
 				$optionsContent = '';
 				while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
 				   $optionsContent .= '<option value="' . $row['uid'] . '" ';
