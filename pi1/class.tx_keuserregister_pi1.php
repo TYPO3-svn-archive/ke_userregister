@@ -98,7 +98,15 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 
 		// get fields from configuration
 		$this->fields = $this->conf[$this->mode.'.']['fields.'];
-
+		
+		// get fields that are evaluated as email and trim its value
+		foreach ($this->fields as $name => $conf) {
+			$fieldName = substr($name, 0, -1);
+			if (strstr($conf['eval'], 'email') && !empty($this->piVars[$fieldName])) {
+				$this->piVars[$fieldName] = trim($this->piVars[$fieldName]);
+			}
+		}
+		
 		// overwrite username config if email is used as username
 		if ($this->conf['emailIsUsername']) unset($this->fields['username.']);
 
@@ -518,7 +526,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['additionalMarkers'])) {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['additionalMarkers'] as $_classRef) {
 				$_procObj = & t3lib_div::getUserObj($_classRef);
-				$_procObj->additionalMarkers(&$this->markerArray,&$this,$errors);
+				$_procObj->additionalMarkers($this->markerArray,$this,$errors);
 			}
 		}
 
@@ -1016,7 +1024,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['specialEvaluations'])) {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['specialEvaluations'] as $_classRef) {
 				$_procObj = & t3lib_div::getUserObj($_classRef);
-				$_procObj->processSpecialEvaluations(&$errors,$this);
+				$_procObj->processSpecialEvaluations($errors,$this);
 			}
 		}
 
@@ -1087,7 +1095,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['specialDataProcessing'])) {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['specialDataProcessing'] as $_classRef) {
 				$_procObj = & t3lib_div::getUserObj($_classRef);
-				$_procObj->processSpecialDataProcessing(&$fields_values,$this);
+				$_procObj->processSpecialDataProcessing($fields_values,$this);
 			}
 		}
 
@@ -1113,7 +1121,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['specialDataProcessingAfterSaveToDB'])) {
 				foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['specialDataProcessingAfterSaveToDB'] as $_classRef) {
 					$_procObj = & t3lib_div::getUserObj($_classRef);
-					$_procObj->processSpecialDataProcessingAfterSaveToDB(&$fields_values,$this,$feuser_uid);
+					$_procObj->processSpecialDataProcessingAfterSaveToDB($fields_values,$this,$feuser_uid);
 				}
 			}
 
@@ -1217,7 +1225,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['specialDataProcessing'])) {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['specialDataProcessing'] as $_classRef) {
 				$_procObj = &t3lib_div::getUserObj($_classRef);
-				$_procObj->processSpecialDataProcessing(&$fields_values,$this);
+				$_procObj->processSpecialDataProcessing($fields_values,$this);
 			}
 		}
 
