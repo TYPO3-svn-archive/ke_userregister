@@ -146,25 +146,42 @@ class tx_keuserregister_pi2 extends tslib_pibase {
 		}
 		*/
 
-		if (t3lib_extMgm::isLoaded('saltedpasswords')) {
-			if (tx_saltedpasswords_div::isUsageEnabled('FE')) {
-				$objSalt = tx_saltedpasswords_salts_factory::getSaltingInstance($row['password']);
-				if (is_object($objSalt)) {
-					$success = $objSalt->checkPassword($this->piVars['old_password'], $row['password']);
+		// t3lib_div::debug($this->conf['password.']['encryption'],'conf');
+
+		// check salted
+		if ($this->conf['password.']['encryption'] == 'salted') {
+			if (t3lib_extMgm::isLoaded('saltedpasswords')) {
+				if (tx_saltedpasswords_div::isUsageEnabled('FE')) {
+					$objSalt = tx_saltedpasswords_salts_factory::getSaltingInstance($row['password']);
+					if (is_object($objSalt)) {
+						$success = $objSalt->checkPassword($this->piVars['old_password'], $row['password']);
+					} else {
+						die($this->prefixId.': ERROR: Initialization of saltedpasswords failed.');
+					}
 				} else {
-					die($this->prefixId.': ERROR: Initialization of saltedpasswords failed.');
+					die($this->prefixId.': ERROR: Salted passwords are not enabled in extension saltedpasswords.');
 				}
 			} else {
-				die($this->prefixId.': ERROR: Salted passwords are not enabled in extension saltedpasswords.');
+				die($this->prefixId.': ERROR: Extension saltedpasswords is not available.');
 			}
-		} else {
-			die($this->prefixId.': ERROR: Extension saltedpasswords is not available.');
+			
+			if (!$success) {
+				$errors['old_password'] = $this->pi_getLL('error_old_password');
+			}
 		}
-
-		if (!$success) {
-			$errors['old_password'] = $this->pi_getLL('error_old_password');
+		// check plaintext
+		else if ($this->conf['password.']['encryption'] == 'none' ) {
+			if (t3lib_div::removeXSS($this->piVars['old_password']) !== $row['password']) {
+				$errors['old_password'] = $this->pi_getLL('error_old_password');
+			}
 		}
-
+		// check md5
+		else if ($this->conf['password.']['encryption'] == 'md5' ) {
+			if (md5(t3lib_div::removeXSS($this->piVars['old_password'])) !== $row['password']) {
+				$errors['old_password'] = $this->pi_getLL('error_old_password');
+			}
+		}
+		
 		// check new password
 		// encrypt password if defined in ts in $this->conf['password.']['encryption']
 		// obsolete: $newPasswordInput = $this->conf['password.']['useMd5'] ? md5(t3lib_div::removeXSS($this->piVars['new_password'])) : t3lib_div::removeXSS($this->piVars['new_password']);
