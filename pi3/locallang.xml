@@ -5,22 +5,22 @@
         <description>Language labels for plugin &quot;tx_keuserregister_pi3&quot;</description>
     </meta>
     <data type="array">
-        <languageKey index="de" type="array">
-            <label index="delete_profile_text">Hier haben Sie die Möglichkeit, Ihre Profil komplett zu löschen. Die zu Ihrer Person gespeicherten Daten werden bei Bestätigung vollständig aus unserer Datenbank entfernt.</label>
-            <label index="delete_profile_question">Sind Sie sicher, dass Ihr Profil &lt;b&gt;&quot;%s&quot;&lt;/b&gt; gelöscht werden soll?</label>
-            <label index="delete_profile_yes">JA</label>
-            <label index="error_delete_profile_authorization_headline">Keine Berechtigung</label>
-            <label index="error_delete_profile_authorization_message">Sie sind zur Löschung dieses Profils nicht berechtigt</label>
-            <label index="delete_profile_success_headline">Löschen erfolgreich</label>
-            <label index="delete_profile_success_message">Ihr Benutzerprofil wurde aus unserer Datenbank gelöscht.</label>
-            <label index="no_login_headline">Login erforderlich</label>
-            <label index="no_login_message">Bitte loggen Sie sich zunächst ein.</label>
-            <label index="not_allowed_headline">Keine Berechtigung</label>
-            <label index="not_allowed_message">Sie sind zur Löschung Ihres Profiles nicht berechtigt.</label>
+        <languageKey index="default" type="array">
+            <label index="delete_profile_text">You can delete your profile here. All information regarding your person will be completely deleted from our database when confirmed.</label>
+            <label index="delete_profile_question"><![CDATA[Are you sure you want to delete your profile <b>"%s"</b>?]]></label>
+            <label index="delete_profile_yes">YES</label>
+            <label index="error_delete_profile_authorization_headline">No authorization</label>
+            <label index="error_delete_profile_authorization_message">You are not authorized to delete this profile</label>
+            <label index="delete_profile_success_headline">Deletion successful</label>
+            <label index="delete_profile_success_message">Your profile has been removed from our database.</label>
+            <label index="no_login_headline">Log-in required</label>
+            <label index="no_login_message">Please log-in first.</label>
+            <label index="not_allowed_headline">No authorization</label>
+            <label index="not_allowed_message">You are not authorized to delete your profile.</label>
         </languageKey>
         <languageKey index="de" type="array">
             <label index="delete_profile_text">Hier haben Sie die Möglichkeit, Ihre Profil komplett zu löschen. Die zu Ihrer Person gespeicherten Daten werden bei Bestätigung vollständig aus unserer Datenbank entfernt.</label>
-            <label index="delete_profile_question">Sind Sie sicher, dass Ihr Profil &lt;b&gt;&quot;%s&quot;&lt;/b&gt; gelöscht werden soll?</label>
+            <label index="delete_profile_question"><![CDATA[Sind Sie sicher, dass Ihr Profil <b>"%s"</b> gelöscht werden soll?]]></label>
             <label index="delete_profile_yes">JA</label>
             <label index="error_delete_profile_authorization_headline">Keine Berechtigung</label>
             <label index="error_delete_profile_authorization_message">Sie sind zur Löschung dieses Profils nicht berechtigt</label>

@@ -18,8 +18,8 @@
 			<label index="error_new_password">Please insert the new password twice!</label>
 			<label index="error_new_password_same_as_old">The new password must be different from the old one!</label>
 			<label index="error_new_password_length">The new password must contain at least %s characters!</label>
-			<label index="no_login_headline">Login required</label>
-			<label index="no_login_message">Please login first.</label>
+			<label index="no_login_headline">Log-in required</label>
+			<label index="no_login_message">Please log-in first.</label>
 
 			<!-- SUCCESS -->
 			<label index="success_password_change_headline">Update succescul</label>

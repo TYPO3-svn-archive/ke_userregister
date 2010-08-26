@@ -49,7 +49,7 @@
             <label index="farewell_text">Best regards,</label>
             <label index="already_logged_in_headline">No registration needed</label>
             <label index="already_logged_in_message">You are already logged in as &lt;b&gt; %s&lt;/b&gt;.</label>
-            <label index="no_login_headline">Log-in needed</label>
+            <label index="no_login_headline">Log-in required</label>
             <label index="no_login_message">Please log-in first.</label>
             <label index="confirmation_request_subject">Please confirm your registration.</label>
             <label index="confirmation_request_text">Thank your for your registration with %s. Please confirm your registration by the following link:</label>
