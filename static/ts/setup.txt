@@ -52,7 +52,7 @@ plugin.tx_keuserregister {
       eval = required
       tooltip =
     }
-	# select: comma separated values are values of options. labels are set via locallang.
+    # select: comma separated values are values of options. labels are set via locallang.
     gender {
       type = select
       values = 0,1
@@ -65,17 +65,6 @@ plugin.tx_keuserregister {
     last_name {
       type = text
       tooltip =
-    }
-    # directmail: comma separated pids of pages with direct_mail-categories, leave emptye for "all categories"
-    module_sys_dmail_category {
-      type = directmail
-      values =
-      tooltip =
-    }
-    image {
-      type = image
-      file.maxW = 50
-      file.maxH = 50
     }
   }
 
@@ -98,10 +87,6 @@ plugin.tx_keuserregister {
     }
     last_name {
       type = text
-    }
-    module_sys_dmail_category {
-      type = directmail
-      values =
     }
   }
 }
