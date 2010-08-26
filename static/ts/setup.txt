@@ -14,13 +14,10 @@ plugin.tx_keuserregister {
   # password settings
   password {
     minLength = 6
-
-	# OBSOLETE: Use "encryption" instead
-	# useMd5 = 1
-
-	# possible values: none, md5, salted
-	# use "salted" if you use the extension "saltedpasswords" with TYPO3 4.3
-	encryption = salted
+    
+    # possible values: none, md5, salted
+    # use "salted" if you use the extension "saltedpasswords" with TYPO3 4.3
+    encryption = salted
   }
 
   # email notification settings
@@ -35,7 +32,7 @@ plugin.tx_keuserregister {
   upload {
     maxFileSize = 5242880
     allowedFileTypes = jpg,gif,png
-	path = uploads/tx_keuserregister/
+    path = uploads/tx_keuserregister/
   }
 
   # define the fields used in creation of new users
@@ -43,43 +40,43 @@ plugin.tx_keuserregister {
     email {
       type = text
       eval = required,email
-	  tooltip =
+      tooltip =
     }
     username {
       type = text
       eval = required
-	  tooltip =
+      tooltip =
     }
     password {
       type = password
       eval = required
-	  tooltip =
+      tooltip =
     }
 	# select: comma separated values are values of options. labels are set via locallang.
     gender {
       type = select
       values = 0,1
-	  tooltip =
+      tooltip =
     }
     first_name {
       type = text
-	  tooltip =
+      tooltip =
     }
     last_name {
       type = text
-	  tooltip =
+      tooltip =
     }
-	# directmail: comma separated pids of pages with direct_mail-categories, leave emptye for "all categories"
+    # directmail: comma separated pids of pages with direct_mail-categories, leave emptye for "all categories"
     module_sys_dmail_category {
       type = directmail
       values =
-	  tooltip =
+      tooltip =
     }
-	image {
-		type = image
-		file.maxW = 50
-		file.maxH = 50
-	}
+    image {
+      type = image
+      file.maxW = 50
+      file.maxH = 50
+    }
   }
 
   # define the fields used in edit form
