@@ -11,7 +11,7 @@
 ########################################################################
 
 $EM_CONF[$_EXTKEY] = array(
-	'title' => 'Kennziffer Frontend User Registration',
+	'title' => 'Frontend User Registration',
 	'description' => 'Frontend User Registration; create and edit user profiles, change passwords and delete profiles; supports md5 and salted passwords',
 	'category' => 'plugin',
 	'author' => 'A. Kiefer, C. Buelter (kennziffer.com)',
