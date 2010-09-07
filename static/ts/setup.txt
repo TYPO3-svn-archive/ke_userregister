@@ -15,6 +15,9 @@ plugin.tx_keuserregister {
   password {
     minLength = 6
     
+    # check if password contains at least this amount of numeric characters
+    minNumeric = 0
+    
     # possible values: none, md5, salted
     # use "salted" if you use the extension "saltedpasswords" with TYPO3 4.3
     encryption = salted

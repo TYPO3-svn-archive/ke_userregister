@@ -32,6 +32,7 @@ require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
 require_once(PATH_t3lib.'class.t3lib_basicfilefunc.php');
 require_once(t3lib_extMgm::extPath('ke_userregister', 'lib/class.tx_keuserregister_lib.php'));
 
+
 /**
  * Plugin 'Register Form' for the 'ke_userregister' extension.
  *
@@ -951,13 +952,27 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				if (empty($this->piVars['password']) || empty($this->piVars['password_again']) || ($this->piVars['password'] != $this->piVars['password_again'])) {
 					$errors[$fieldName] = $this->pi_getLL('error_password');
 				}
-
+				
 				// check password min length
 				else if (strlen($this->piVars['password']) < $this->conf['password.']['minLength']) {
 					$errors[$fieldName] = sprintf($this->pi_getLL('error_password_length'),$this->conf['password.']['minLength']);
 				}
+				
+				// check if password contains enough numeric chars
+                else if ($this->conf['password.']['minNumeric'] > 0){
+                    $temp_check = str_split($this->piVars['password']);
+                    $temp_nums = 0;
+                    foreach ($temp_check as $check_num){
+                        if (is_numeric($check_num)){
+                            $temp_nums ++;
+                        }
+                    }
+                    if ($temp_nums < $this->conf['password.']['minNumeric']) {
+                        $errors[$fieldName] = sprintf($this->pi_getLL('error_password_numerics'),$this->conf['password.']['minNumeric']);
+                    }
+                }
 			}
-
+			
 			// special processing of image field
 			// process uploaded file?
 			if ($fieldConf['type'] == 'image' && !empty($GLOBALS['_FILES'][$this->prefixId]['name'][$fieldName])) {

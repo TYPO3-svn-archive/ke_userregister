@@ -36,6 +36,7 @@
             <label index="error_required">Please complete this field.</label>
             <label index="error_password">Please enter the same password twice.</label>
             <label index="error_password_length">The password must contain of at least %s characters.</label>
+            <label index="error_password_numerics">The password must contain of at least %s numeric characters.</label>
             <label index="error_username_existent">This user name is already in use.</label>
             <label index="error_email_existent">This e-mail address is already in use.</label>
             <label index="error_upload_no_success">The file upload was not successful.</label>
@@ -110,6 +111,7 @@
             <label index="error_required">Bitte füllen Sie dieses Feld aus.</label>
             <label index="error_password">Bitte geben Sie das gleiche Passwort zweimal ein.</label>
             <label index="error_password_length">Das Passwort muss mindestens %s Stellen lang sein.</label>
+            <label index="error_password_numerics">Das Passwort muss mindestens %s Zahlen beinhalten.</label>
             <label index="error_username_existent">Dieser Benutzername ist bereits vergeben.</label>
             <label index="error_email_existent">Diese E-Mail-Adresse wird bereits verwendet.</label>
             <label index="error_upload_no_success">Die Datei konnte nicht erfolgreich hochgeladen werden.</label>
@@ -131,7 +133,6 @@
             <label index="confirmation_success_headline">Registrierung erfolgreich</label>
             <label index="confirmation_success_message">Sie haben die Registrierung erfolgreich abgeschlossen und können sich nun mit Ihren Zugangsdaten anmelden.</label>
             <label index="confirmation_error_headline">Registrierung nicht erfolgreich</label>
-            <!-- <label index="confirmation_error_message">Ihre Registrierung konnte nicht erfolgreich bestätigt werden. Bitte versuchen Sie erneut, den Link aus der E-Mail in Ihren Browser zu kopieren.</label> -->
             <label index="confirmation_error_message">Ihre Registrierung konnte nicht erfolgreich bestätigt werden. Bitte versuchen Sie erneut, den Link aus der E-Mail in Ihren Browser zu kopieren. Oder haben Sie den Bestätigungslink vielleicht bereits aufgerufen? In diesem Fall haben wir Ihnen eine Bestätigungsmail gesendet.</label>
             <label index="decline_success_headline">Registrierung abgebrochen</label>
             <label index="decline_success_message">Die Registrierung wurde abgebrochen und Ihre Daten wurden gelöscht.</label>

@@ -27,6 +27,7 @@
  * Hint: use extdeveval to insert/update function index above.
  */
 
+
 require_once(PATH_tslib.'class.tslib_pibase.php');
 require_once(t3lib_extMgm::extPath('ke_userregister', 'lib/class.tx_keuserregister_lib.php'));
 
@@ -199,6 +200,19 @@ class tx_keuserregister_pi2 extends tslib_pibase {
 		else if ($this->piVars['new_password'] === $this->piVars['old_password']) {
 			$errors['new_password'] = $this->pi_getLL('error_new_password_same_as_old');
 		}
+		// check if password contains enough numeric chars
+        else if ($this->conf['password.']['minNumeric'] > 0) {
+            $temp_check = str_split($this->piVars['new_password']);
+            $temp_nums = 0;
+            foreach ($temp_check as $check_num){
+                if (is_numeric($check_num)){
+                    $temp_nums ++;
+                }
+            }
+            if ($temp_nums < $this->conf['password.']['minNumeric']){
+                $errors['new_password'] = sprintf($this->pi_getLL('error_password_numerics'),$this->conf['password.']['minNumeric']);
+            }
+        }
 
 		// if errors occured: show form again
 		if (sizeof($errors)) {
