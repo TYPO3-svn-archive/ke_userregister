@@ -40,7 +40,7 @@
             <label index="error_username_existent">This user name is already in use.</label>
             <label index="error_email_existent">This e-mail address is already in use.</label>
             <label index="error_upload_no_success">The file upload was not successful.</label>
-            <label index="error_upload_filesize">The file size my not be larger than %s.</label>
+            <label index="error_upload_filesize">The file size must not be larger than %s.</label>
             <label index="error_upload_filetype">This file type is not accepted.</label>
             <label index="error_date">The date is not correct.</label>
             <label index="form_success_headline">Registration started</label>

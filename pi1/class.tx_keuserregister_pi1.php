@@ -982,7 +982,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 
 					// file too big
 					if ($uploadData['size'][$fieldName] > $this->conf['upload.']['maxFileSize']) {
-						$errors[$fieldName] =  sprintf($this->pi_getLL('error_upload_filesize'), $uploadData['name'][$fieldName], $this->filesize_format($this->maxFileSize, '', ''));
+						$errors[$fieldName] =  sprintf($this->pi_getLL('error_upload_filesize'), $this->filesize_format($this->conf['upload.']['maxFileSize'], '', ''));
 						$process = false;
 					}
 
