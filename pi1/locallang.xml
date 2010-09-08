@@ -57,6 +57,8 @@
             <label index="decline_text">Please use the following link to decline your registration:</label>
             <label index="confirmation_success_headline">Registration successful</label>
             <label index="confirmation_success_message">You successfully completed the registration process and may now log-in using your log-in data.</label>
+            <label index="confirmation_success_message_autologin">You successfully completed the registration process. You have been logged in.</label>
+            <label index="confirmation_success_redirect_link">Back to last visited page</label>
             <label index="confirmation_error_headline">Registration was unsuccessful</label>
             <label index="confirmation_error_message">Your registration was not completed successfully. Please try again by copying the confirmation link that we sent you and pasting it directly in the white address bar at the top of your browser.</label>
             <label index="decline_success_headline">Registration cancelled</label>
@@ -132,6 +134,8 @@
             <label index="decline_text">Rufen Sie bitte den folgenden Link auf, falls Sie die Registrierung ablehnen möchten:</label>
             <label index="confirmation_success_headline">Registrierung erfolgreich</label>
             <label index="confirmation_success_message">Sie haben die Registrierung erfolgreich abgeschlossen und können sich nun mit Ihren Zugangsdaten anmelden.</label>
+            <label index="confirmation_success_message_autologin">Sie haben die Registrierung erfolgreich abgeschlossen und wurden automatisch eingeloggt.</label>
+            <label index="confirmation_success_redirect_link">Zurück zur zuletzt aufgerufenen Seite</label>
             <label index="confirmation_error_headline">Registrierung nicht erfolgreich</label>
             <label index="confirmation_error_message">Ihre Registrierung konnte nicht erfolgreich bestätigt werden. Bitte versuchen Sie erneut, den Link aus der E-Mail in Ihren Browser zu kopieren. Oder haben Sie den Bestätigungslink vielleicht bereits aufgerufen? In diesem Fall haben wir Ihnen eine Bestätigungsmail gesendet.</label>
             <label index="decline_success_headline">Registrierung abgebrochen</label>

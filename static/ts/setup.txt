@@ -24,7 +24,10 @@ plugin.tx_keuserregister {
   }
   
   # send mail to user after successful double-opt-in?
-  successMail = 1
+  successMailAfterConfirmation = 1
+  
+  # auto-login user after confirmation of registration?
+  autoLoginAfterConfirmation = 1
   
   # email notification settings
   notification {

@@ -187,13 +187,24 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				'message' => sprintf($this->pi_getLL('confirmation_success_message'),t3lib_div::getIndpEnv('TYPO3_SITE_URL')),
 			);
 			// send success e-mail
-			if ($this->conf['successMail']) $this->sendConfirmationSuccessMail($hashRow['feuser_uid']);
+			if ($this->conf['successMailAfterConfirmation']) {
+				$this->sendConfirmationSuccessMail($hashRow['feuser_uid']);
+			}
+			
+			// auto-login new user?
+			if ($this->conf['autoLoginAfterConfirmation']) {
+				// get userdata and process auto-login
+				$userRecord = $this->getUserRecord($hashRow['feuser_uid']);
+				if ($this->autoLogin($userRecord['username'], $userRecord['password'])) {
+					// login succesful?
+					$markerArray['message'] = $this->pi_getLL('confirmation_success_message_autologin');
+				}
+			}
 			
 			$content = $this->cObj->substituteMarkerArray($content,$markerArray,$wrap='###|###',$uppercase=1);
 			return $content;
 		}
 	}
-
 
 
 	/*
@@ -1503,6 +1514,55 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		if ($power === false) $power = $bytes > 0 ? floor(log($bytes, 1024)) : 0;
 		return sprintf($format, $bytes / pow(1024, $power), $units[$power]);
 	}
+	
+	
+	/*
+	 * function getUserRecord
+	 * @param int $userId
+	 */
+	function getUserRecord($userId) {
+		$fields = '*';
+		$table = 'fe_users';
+		$where = 'uid="'.intval($userId).'" ';
+		$where .= $this->cObj->enableFields($table);
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fields,$table,$where,$groupBy='',$orderBy='',$limit='1');
+		return $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+	}
+
+
+	/*
+	 * function autoLogin
+	 *
+	 * automatically login a user by code
+	 * @param string $username
+	 * @param string $password
+	 * @return bool	 true if login successful, false if login failed
+	 */	
+	function autoLogin($username, $password) {
+		
+		$loginData=array(
+			'uname' => $username, //username
+			'uident' => $password, //password
+			'status' => 'login',
+		);
+		
+		$GLOBALS['TSFE']->fe_user->checkPid=0; //do not use a particular pid
+		$GLOBALS['TSFE']->fe_user->user = $GLOBALS['TSFE']->fe_user->fetchUserSession();
+		$GLOBALS['TSFE']->fe_user->fetchGroupData(); 
+		$info= $GLOBALS['TSFE']->fe_user->getAuthInfoArray();
+		$user=$GLOBALS['TSFE']->fe_user->fetchUserRecord($info['db_user'],$loginData['uname']);
+		
+		$ok=$GLOBALS['TSFE']->fe_user->compareUident($user,$loginData);
+		if($ok) {
+			//login successfull
+			$GLOBALS['TSFE']->fe_user->createUserSession($user);
+			return true;
+		} else {
+			//login failed
+			return false;
+		}
+	}
+	
 
 }
 
