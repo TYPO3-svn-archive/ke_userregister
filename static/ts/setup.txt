@@ -29,6 +29,15 @@ plugin.tx_keuserregister {
   # auto-login user after confirmation of registration?
   autoLoginAfterConfirmation = 1
   
+  
+  backlink {
+    # activate backlink generation after successful confirmation?
+    generate = 0
+    # comma seperated values of get params that will be used for backlink generation
+    parameters = 
+  }
+  
+  
   # email notification settings
   notification {
     from_email =

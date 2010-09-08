@@ -110,18 +110,18 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		
 		// overwrite username config if email is used as username
 		if ($this->conf['emailIsUsername']) unset($this->fields['username.']);
-
+		
 		// overwrite password field if edit mode is set
 		if ($this->mode == 'edit') unset($this->fields['password.']);
-
+		
 		// get html template
 		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
-
+		
 		// include css
 		if ($this->conf['cssFile']) {
 			$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId] .= '<link rel="stylesheet" type="text/css" href="'.$this->conf['cssFile'].'" />';
 		}
-
+		
 		// process incoming registration confirmation
 		if (t3lib_div::_GET('confirm')) $content = $this->processConfirm();
 		// process incoming registration decline
@@ -132,7 +132,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		else if (t3lib_div::_GET('maildecline')) $content = $this->processEmailChangeDecline();
 		// show registration / edit form
 		else $content = $this->piVars['step'] == 'evaluate' ? $this->evaluateFormData() : $this->renderForm();
-
+		
 		return $this->pi_wrapInBaseClass($content);
 	}
 
@@ -202,6 +202,38 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			}
 			
 			$content = $this->cObj->substituteMarkerArray($content,$markerArray,$wrap='###|###',$uppercase=1);
+			
+			// show backlink?
+			if ($this->conf['backlink.']['generate']) {
+				
+				// get backlink params from hash table
+				$backlinkParamsArray = t3lib_div::xml2array($hashRow['backlinkparams']);
+				
+				// process backlink params
+				$backlinkParamsString = '';
+				if (is_array($backlinkParamsArray)) {
+					foreach ($backlinkParamsArray as $param => $value) {
+						if (is_array($value)) {
+							foreach ($value as $index => $val) {
+								$backlinkParamsString .= '&'.$param.'['.$index.']='.$val;
+							}
+						}
+					}
+				}
+				
+				// generate backlink
+				unset($linkconf);
+				$linkconf['parameter'] = intval($hashRow['backlinkpid']);
+				$linkconf['additionalParams'] = $backlinkParamsString;
+				$backlink = $this->cObj->typoLink($this->pi_getLL('backlink_text'),$linkconf);
+				
+				// add backlink to content
+				$content .= $this->cObj->getSubpart($this->templateCode,'###SUB_CONFIRMATION_SUCCESS_BACKLINK###');
+				$content = $this->cObj->substituteMarker($content,'###BACKLINK###', $backlink);
+				
+			}
+			
+			
 			return $content;
 		}
 	}
@@ -436,7 +468,35 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 
 		// get general markers
 		$this->markerArray = $this->getGeneralMarkers();
-
+		
+		// generate backlink?
+		if ($this->conf['backlink.']['generate']) {
+			$backlinkHiddenContent = '';
+			// set backlink pid as hidden field
+			if ($this->piVars['backlinkPid']) $backlinkHiddenContent = '<input type="hidden" name="'.$this->prefixId.'[backlinkPid]" value="'.intval($this->piVars['backlinkPid']).'" />';
+			
+			// get backlink params values 
+			$backlinkParams = $this->getBacklinkParamsArray();
+			
+			// generate params as hidden fields
+			if (sizeof($backlinkParams)) {
+				foreach($backlinkParams as $param => $value) {
+					if (is_array($value)) {
+						foreach ($value as $index => $val) {
+							$name = $param.'['.$index.']';
+							$backlinkHiddenContent .= '<input type="hidden" name="'.$name.'" value="'.t3lib_div::removeXSS($val).'" />';
+						}
+					}
+					else $backlinkHiddenContent .= '<input type="hidden" name="'.$param.'" value="'.t3lib_div::removeXSS($value).'" />';
+				}
+			}
+			// fill marker
+			$this->markerArray['backlink_hidden'] = $backlinkHiddenContent;
+		} else {
+			// fill marker with empty content if backlink generation deactivated
+			$this->markerArray['backlink_hidden'] = '';
+		}
+		
 		// get data from db when editing profile
 		if ($this->mode == 'edit') {
 			$fields = '*';
@@ -557,7 +617,39 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 
 		return $content;
 	}
-
+	
+	
+	/*
+	 * function getBacklinkParamsArray
+	 *
+	 * @return array
+	 */
+	function getBacklinkParamsArray() {
+		$backlinkParams = t3lib_div::trimExplode(',',$this->conf['backlink.']['parameters'],true);
+		if (sizeof($backlinkParams)) {
+			foreach ($backlinkParams as $param) {
+				// check if param is an array element
+				if (strpos($param, '[')) {
+					// param is array element
+					$posBrace = strpos($param, '[');
+					$extPart = substr($param, 0, $posBrace);
+					$paramPart = substr($param, $posBrace+1, -1);
+					$extGet = t3lib_div::_GP($extPart);
+					$value = $extGet[$paramPart];
+					$backlinkHiddenArray[$extPart][$paramPart] = $extGet[$paramPart];
+				} else {
+					// "normal" get value
+					$backlinkHiddenArray[$extPart][$paramPart] = t3lib_div::_GP($param);
+				}
+			}
+			return $backlinkHiddenArray;
+		}
+	}
+	
+	
+	
+	
+	
 	/**
 	* Renders a tooltip for one form field
 	*
@@ -835,14 +927,13 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		unset($linkconf);
 		$linkconf['parameter'] = $GLOBALS['TSFE']->id;
 		$formAction = $this->cObj->typoLink_URL($linkconf).'#formstart';
-
+		
 		$generalMarkers = array(
 			'clearer' => $this->cObj->getSubpart($this->templateCode,'###SUB_CLEARER###'),
 			'form_name' => 'ke_userregister_registration_form',
 			'form_action' => $formAction,
 		);
-
-
+		
 		return $generalMarkers;
 	}
 
@@ -1116,7 +1207,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 
 		// encrypt password if defined in ts in $this->conf['password.']['encryption']
 		$fields_values['password'] = $this->lib->encryptPassword(t3lib_div::removeXSS($this->piVars['password']), $this->conf['password.']['encryption']);
-
+		
 		// Hook for further data processing before saving to db
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['specialDataProcessing'])) {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['specialDataProcessing'] as $_classRef) {
@@ -1154,11 +1245,18 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			// generate hash and save in database
 			$hash = $this->getUniqueCode();
 			$table = 'tx_keuserregister_hash';
-			$fields_values = array(
+			$fields_values = array (
 				'hash' => $hash,
 				'feuser_uid' => $feuser_uid,
 				'tstamp' => time(),
 			);
+			
+			// process backlink params if activated
+			if ($this->conf['backlink.']['generate']) {
+				$fields_values['backlinkpid'] = intval($this->piVars['backlinkPid']);
+				$fields_values['backlinkparams'] = t3lib_div::array2xml($this->getBacklinkParamsArray());
+			}
+			
 			if ($GLOBALS['TYPO3_DB']->exec_INSERTquery($table,$fields_values,$no_quote_fields=FALSE)) {
 
 				// generate html mail content
@@ -1271,12 +1369,12 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					$GLOBALS['TYPO3_DB']->exec_INSERTquery($table,$fields_values,$no_quote_fields=FALSE);
 				}
 			}
-
-
+			
+			
 			$content = $this->cObj->getSubpart($this->templateCode,'###SUB_MESSAGE###');
 			$content = $this->cObj->substituteMarker($content,'###HEADLINE###',$this->pi_getLL('edit_success_headline'));
 			#$content = $this->cObj->substituteMarker($content,'###MESSAGE###',$this->pi_getLL('edit_success_text'));
-
+			
 			// email has changed
 			// check if valid and not already used in db
 			// do not process until user confirms the change
@@ -1293,20 +1391,20 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					'new_email' => t3lib_div::removeXSS($this->piVars['email']),
 				);
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery($hashTable,$hashFieldsValues);
-
+				
 				// send email confirmation request to user's new email address
 				$this->sendEmailChangeConfirmationRequestMail();
-
+				
 				// print success message
 				$content = $this->cObj->substituteMarker($content,'###MESSAGE###',$this->pi_getLL('edit_sucess_text_email_change'));
 			}
 			else $content = $this->cObj->substituteMarker($content,'###MESSAGE###',$this->pi_getLL('edit_success_text'));
-
+			
 			return $content;
-
+			
 		}
 		else die($this->prefixId.': ERROR: DB error when saving data');
-
+		
 	}
 
 

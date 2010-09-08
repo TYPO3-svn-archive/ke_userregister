@@ -81,6 +81,7 @@
             <label index="mail_decline_error_message">The update process has not been cancelled. Please try again by copying the confirmation link that we sent you and pasting it directly in the white address bar at the top of your browser.</label>
             <label index="confirmation_success_subject">Registration Confirmation</label>
             <label index="confirmation_success_text">Your user has been activated. You can log in with your e-Mail and password now.</label>
+            <label index="backlink_text">Back to last visited page</label>
         </languageKey>
         <languageKey index="de" type="array">
             <label index="ff.main">Allgemein</label>
@@ -158,6 +159,7 @@
             <label index="mail_decline_error_message">Der Änderungsvorgang konnte nicht abgebrochen werden. Bitte versuchen Sie erneut, den Link aus der E-Mail in Ihren Browser zu kopieren.</label>
             <label index="confirmation_success_subject">Bestätigung Ihrer Registrierung</label>
             <label index="confirmation_success_text">Ihr Benutzer wurde freigeschaltet. Sie können Sich ab sofort mit Ihrer E-Mail-Adresse und Ihrem Passwort einloggen.</label>
+            <label index="backlink_text">Zurück zur zuletzt aufgerufenen Seite</label>
 
         </languageKey>
         <languageKey index="fr" type="array">
