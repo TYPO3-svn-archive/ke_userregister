@@ -22,7 +22,10 @@ plugin.tx_keuserregister {
     # use "salted" if you use the extension "saltedpasswords" with TYPO3 4.3
     encryption = salted
   }
-
+  
+  # send mail to user after successful double-opt-in?
+  successMail = 1
+  
   # email notification settings
   notification {
     from_email =

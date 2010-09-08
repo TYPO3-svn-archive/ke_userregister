@@ -187,8 +187,8 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				'message' => sprintf($this->pi_getLL('confirmation_success_message'),t3lib_div::getIndpEnv('TYPO3_SITE_URL')),
 			);
 			// send success e-mail
-			$this->sendConfirmationSuccessMail($hashRow['feuser_uid']);
-
+			if ($this->conf['successMail']) $this->sendConfirmationSuccessMail($hashRow['feuser_uid']);
+			
 			$content = $this->cObj->substituteMarkerArray($content,$markerArray,$wrap='###|###',$uppercase=1);
 			return $content;
 		}
