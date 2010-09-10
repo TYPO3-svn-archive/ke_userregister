@@ -70,6 +70,28 @@ class tx_keuserregister_lib {
 		}
 		return $encrypted_password;
 	}
+	
+	
+	/**
+	* Use removeXSS function from t3lib_div if exists
+	* otherwise use removeXSS class included in this extension
+	* (e.g. for older TYPO3 versions)
+	*
+	* @param	string		value
+	* @return	string 		XSS safe value
+	*/
+	function removeXSS($value) {
+		
+		if (method_exists(t3lib_div,'removeXSS')) {
+			return t3lib_div::removeXSS($value);
+		} else {
+			require_once(t3lib_extMgm::extPath($this->extKey).'res/scripts/RemoveXSS.php');
+			return  RemoveXSS::process($value);
+		}
+		
+	}
+	
+	
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ke_userregister/lib/class.tx_keuserregister_cms_layout.php'])	{

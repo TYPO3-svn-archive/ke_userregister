@@ -29,7 +29,7 @@
 
 
 require_once(PATH_tslib.'class.tslib_pibase.php');
-
+require_once(t3lib_extMgm::extPath('ke_userregister', 'lib/class.tx_keuserregister_lib.php'));
 
 /**
  * Plugin 'Delete Profile' for the 'ke_userregister' extension.
@@ -55,10 +55,13 @@ class tx_keuserregister_pi3 extends tslib_pibase {
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
 		$this->pi_USER_INT_obj = 1;	// Configuring so caching is not expected. This value means that no cHash params are ever set. We do this, because it's a USER_INT object!
-
+		
 		// get general extension setup
 		$this->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_keuserregister.'];
-
+		
+		// init lib
+		$this->lib = t3lib_div::makeInstance('tx_keuserregister_lib');
+		
 		// get html template
 		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
 
@@ -136,7 +139,7 @@ class tx_keuserregister_pi3 extends tslib_pibase {
 
 		// check if user is the one that should be deleted
 		// otherwise: error
-		if (t3lib_div::removeXSS($this->piVars['delete']) != $GLOBALS['TSFE']->fe_user->user['uid']) {
+		if ($this->lib->removeXSS($this->piVars['delete']) != $GLOBALS['TSFE']->fe_user->user['uid']) {
 			$content = $this->cObj->getSubpart($this->templateCode,'###SUB_MESSAGE###');
 			$content = $this->cObj->substituteMarker($content,'###HEADLINE###',$this->pi_getLL('error_delete_profile_authorization_headline'));
 			$content = $this->cObj->substituteMarker($content,'###MESSAGE###',$this->pi_getLL('error_delete_profile_authorization_message'));
@@ -145,7 +148,7 @@ class tx_keuserregister_pi3 extends tslib_pibase {
 		// logged in user is the one whose account has to be deleted
 		else {
 			$table = 'fe_users';
-			$where = 'uid="'.t3lib_div::removeXSS($this->piVars['delete']).'" ';
+			$where = 'uid="'.$this->lib->removeXSS($this->piVars['delete']).'" ';
 			if ($GLOBALS['TYPO3_DB']->exec_DELETEquery($table,$where)) {
 				$content = $this->cObj->getSubpart($this->templateCode,'###SUB_MESSAGE###');
 				$content = $this->cObj->substituteMarker($content,'###HEADLINE###',$this->pi_getLL('delete_profile_success_headline'));

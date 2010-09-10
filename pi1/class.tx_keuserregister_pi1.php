@@ -68,7 +68,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 
 		// init lib
 		$this->lib = t3lib_div::makeInstance('tx_keuserregister_lib');
-
+		
 		// get general extension setup
 		$this->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_keuserregister.'];
 
@@ -154,7 +154,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		// select from hash table
 		$fields = '*';
 		$table = 'tx_keuserregister_hash';
-		$hashCompare = t3lib_div::removeXSS(t3lib_div::_GET('confirm'));
+		$hashCompare = $this->lib->removeXSS(t3lib_div::_GET('confirm'));
 		$where = 'hash="'.$hashCompare.'" ';
 		$where .= 'and tstamp>'.$tstampCalculated.'  ';
 		$hashRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fields,$table,$where,$groupBy='',$orderBy='',$limit='');
@@ -285,7 +285,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		// select from hash table
 		$fields = '*';
 		$table = 'tx_keuserregister_hash';
-		$hashCompare = t3lib_div::removeXSS(t3lib_div::_GET('decline'));
+		$hashCompare = $this->lib->removeXSS(t3lib_div::_GET('decline'));
 		$where = 'hash="'.$hashCompare.'" ';
 		$where .= 'and tstamp>'.$tstampCalculated.'  ';
 		$hashRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fields,$table,$where,$groupBy='',$orderBy='',$limit='');
@@ -336,7 +336,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		// select from hash table
 		$fields = '*';
 		$table = 'tx_keuserregister_hash';
-		$hashCompare = t3lib_div::removeXSS(t3lib_div::_GET('mailconfirm'));
+		$hashCompare = $this->lib->removeXSS(t3lib_div::_GET('mailconfirm'));
 		$where = 'hash="'.$hashCompare.'" ';
 		$where .= 'and tstamp>'.$tstampCalculated.'  ';
 		$hashRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fields,$table,$where,$groupBy='',$orderBy='',$limit='');
@@ -360,10 +360,10 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			$table = 'fe_users';
 			$where = 'uid="'.intval($hashRow['feuser_uid']).'" ';
 			$fields_values['tstamp'] = time();
-			$fields_values['email'] = t3lib_div::removeXSS($hashRow['new_email']);
+			$fields_values['email'] = $this->lib->removeXSS($hashRow['new_email']);
 
 			// set username too if email is used as username
-			if ($this->conf['emailIsUsername']) $fields_values['username'] = t3lib_div::removeXSS($hashRow['new_email']);
+			if ($this->conf['emailIsUsername']) $fields_values['username'] = $this->lib->removeXSS($hashRow['new_email']);
 
 			// delete hash after processing
 			if ($GLOBALS['TYPO3_DB']->exec_UPDATEquery($table,$where,$fields_values,$no_quote_fields=FALSE)) {
@@ -397,7 +397,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		// select from hash table
 		$fields = '*';
 		$table = 'tx_keuserregister_hash';
-		$hashCompare = t3lib_div::removeXSS(t3lib_div::_GET('maildecline'));
+		$hashCompare = $this->lib->removeXSS(t3lib_div::_GET('maildecline'));
 		$where = 'hash="'.$hashCompare.'" ';
 		$where .= 'and tstamp>'.$tstampCalculated.'  ';
 		$hashRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fields,$table,$where,$groupBy='',$orderBy='',$limit='');
@@ -436,7 +436,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	*/
 	function deleteHashEntry($hash) {
 		$table = 'tx_keuserregister_hash';
-		$hashCompare = t3lib_div::removeXSS($hash);
+		$hashCompare = $this->lib->removeXSS($hash);
 		$where = 'hash="'.$hashCompare.'" ';
 		$GLOBALS['TYPO3_DB']->exec_DELETEquery($table,$where);
 	}
@@ -484,10 +484,10 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					if (is_array($value)) {
 						foreach ($value as $index => $val) {
 							$name = $param.'['.$index.']';
-							$backlinkHiddenContent .= '<input type="hidden" name="'.$name.'" value="'.t3lib_div::removeXSS($val).'" />';
+							$backlinkHiddenContent .= '<input type="hidden" name="'.$name.'" value="'.$this->lib->removeXSS($val).'" />';
 						}
 					}
-					else $backlinkHiddenContent .= '<input type="hidden" name="'.$param.'" value="'.t3lib_div::removeXSS($value).'" />';
+					else $backlinkHiddenContent .= '<input type="hidden" name="'.$param.'" value="'.$this->lib->removeXSS($value).'" />';
 				}
 			}
 			// fill marker
@@ -770,7 +770,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				$fields = '*';
 				$table = 'sys_dmail_category';
 				$where = 'sys_language_uid="'.$GLOBALS['TSFE']->sys_language_uid.'" ';
-				if (!empty($fieldConf['values'])) $where .= 'AND pid in("'.t3lib_div::removeXSS($fieldConf['values']).'") ';
+				if (!empty($fieldConf['values'])) $where .= 'AND pid in("'.$this->lib->removeXSS($fieldConf['values']).'") ';
 				$where .= $this->cObj->enableFields($table);
 				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fields,$table,$where,$groupBy='',$orderBy='',$limit='');
 				while ($row=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
@@ -1020,7 +1020,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			// (email is not used as username)
 			if (!$this->conf['emailIsUsername'] && $fieldName == 'username') {
 				if (!empty($this->piVars[$fieldName]) && ($this->piVars[$fieldName] != $GLOBALS['TSFE']->fe_user->user['username'])) {
-					$where = 'username="'.t3lib_div::removeXSS($this->piVars[$fieldName]).'" AND deleted != 1';
+					$where = 'username="'.$this->lib->removeXSS($this->piVars[$fieldName]).'" AND deleted != 1';
 					$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid','fe_users',$where);
 					$anz = $GLOBALS['TYPO3_DB']->sql_num_rows($res);
 					if ($anz) {
@@ -1036,7 +1036,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				// check only if create user or user edited email value
 				if ($this->mode == 'create' || ($this->mode == 'edit' && $this->emailHasChanged())) {
 					if (!empty($this->piVars[$fieldName])) {
-						$where = 'username="'.t3lib_div::removeXSS($this->piVars[$fieldName]).'" AND deleted != 1';
+						$where = 'username="'.$this->lib->removeXSS($this->piVars[$fieldName]).'" AND deleted != 1';
 						$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid','fe_users',$where);
 						$anz = $GLOBALS['TYPO3_DB']->sql_num_rows($res);
 						if ($anz) {
@@ -1194,19 +1194,19 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				}
 			}
 			// save all fields that are not marked as "doNotSaveInDB"
-			else if (!$fieldConf['doNotSaveInDB']) $fields_values[$fieldName] = t3lib_div::removeXSS($this->piVars[$fieldName]);
+			else if (!$fieldConf['doNotSaveInDB']) $fields_values[$fieldName] = $this->lib->removeXSS($this->piVars[$fieldName]);
 
 		}
 
 		// set name
-		$fields_values['name'] = t3lib_div::removeXSS($this->piVars['first_name'].' '.$this->piVars['last_name']);
+		$fields_values['name'] = $this->lib->removeXSS($this->piVars['first_name'].' '.$this->piVars['last_name']);
 
 		// set email address as username if defined
-		if ($this->conf['emailIsUsername']) $fields_values['username'] = t3lib_div::removeXSS($this->piVars['email']);
-		else $fields_values['username'] = t3lib_div::removeXSS($this->piVars['username']);
+		if ($this->conf['emailIsUsername']) $fields_values['username'] = $this->lib->removeXSS($this->piVars['email']);
+		else $fields_values['username'] = $this->lib->removeXSS($this->piVars['username']);
 
 		// encrypt password if defined in ts in $this->conf['password.']['encryption']
-		$fields_values['password'] = $this->lib->encryptPassword(t3lib_div::removeXSS($this->piVars['password']), $this->conf['password.']['encryption']);
+		$fields_values['password'] = $this->lib->encryptPassword($this->lib->removeXSS($this->piVars['password']), $this->conf['password.']['encryption']);
 		
 		// Hook for further data processing before saving to db
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['specialDataProcessing'])) {
@@ -1341,7 +1341,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				}
 			}
 			// save all fields that are not marked as "doNotSaveInDB"
-			else if (!$fieldConf['doNotSaveInDB']) $fields_values[$fieldName] = t3lib_div::removeXSS($this->piVars[$fieldName]);
+			else if (!$fieldConf['doNotSaveInDB']) $fields_values[$fieldName] = $this->lib->removeXSS($this->piVars[$fieldName]);
 
 		}
 
@@ -1388,7 +1388,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					'hash' => $this->emailChangeHash,
 					'feuser_uid' => intval($GLOBALS['TSFE']->fe_user->user['uid']),
 					'tstamp' => time(),
-					'new_email' => t3lib_div::removeXSS($this->piVars['email']),
+					'new_email' => $this->lib->removeXSS($this->piVars['email']),
 				);
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery($hashTable,$hashFieldsValues);
 				
@@ -1472,7 +1472,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fields,$table,$where,$groupBy='',$orderBy='',$limit='1');
 		$anz = $GLOBALS['TYPO3_DB']->sql_num_rows($res);
 		$userRow=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-		if ($userRow['email'] != t3lib_div::removeXSS($this->piVars['email'])) return true;
+		if ($userRow['email'] != $this->lib->removeXSS($this->piVars['email'])) return true;
 		else return false;
 	}
 

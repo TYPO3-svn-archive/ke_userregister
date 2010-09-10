@@ -141,7 +141,7 @@ class tx_keuserregister_pi2 extends tslib_pibase {
 		// encrypt password if defined in ts in $this->conf['password.']['encryption']
 		/*
 		// obsolete:
-		$oldPasswordInput = $this->conf['password.']['useMd5'] ? md5(t3lib_div::removeXSS($this->piVars['old_password'])) : t3lib_div::removeXSS($this->piVars['old_password']);
+		$oldPasswordInput = $this->conf['password.']['useMd5'] ? md5($this->lib->removeXSS($this->piVars['old_password'])) : $this->lib->removeXSS($this->piVars['old_password']);
 		if ($oldPasswordInput !== $row['password']) {
 			$errors['old_password'] = $this->pi_getLL('error_old_password');
 		}
@@ -172,24 +172,24 @@ class tx_keuserregister_pi2 extends tslib_pibase {
 		}
 		// check plaintext
 		else if ($this->conf['password.']['encryption'] == 'none' ) {
-			if (t3lib_div::removeXSS($this->piVars['old_password']) !== $row['password']) {
+			if ($this->lib->removeXSS($this->piVars['old_password']) !== $row['password']) {
 				$errors['old_password'] = $this->pi_getLL('error_old_password');
 			}
 		}
 		// check md5
 		else if ($this->conf['password.']['encryption'] == 'md5' ) {
-			if (md5(t3lib_div::removeXSS($this->piVars['old_password'])) !== $row['password']) {
+			if (md5($this->lib->removeXSS($this->piVars['old_password'])) !== $row['password']) {
 				$errors['old_password'] = $this->pi_getLL('error_old_password');
 			}
 		}
 		
 		// check new password
 		// encrypt password if defined in ts in $this->conf['password.']['encryption']
-		// obsolete: $newPasswordInput = $this->conf['password.']['useMd5'] ? md5(t3lib_div::removeXSS($this->piVars['new_password'])) : t3lib_div::removeXSS($this->piVars['new_password']);
-		$newPasswordInput = $this->lib->encryptPassword(t3lib_div::removeXSS($this->piVars['new_password']), $this->conf['password.']['encryption']);
+		// obsolete: $newPasswordInput = $this->conf['password.']['useMd5'] ? md5($this->lib->removeXSS($this->piVars['new_password'])) : $this->lib->removeXSS($this->piVars['new_password']);
+		$newPasswordInput = $this->lib->encryptPassword($this->lib->removeXSS($this->piVars['new_password']), $this->conf['password.']['encryption']);
 
 		// both passwords not the same
-		if (t3lib_div::removeXSS($this->piVars['new_password']) !== t3lib_div::removeXSS($this->piVars['new_password_again'])) {
+		if ($this->lib->removeXSS($this->piVars['new_password']) !== $this->lib->removeXSS($this->piVars['new_password_again'])) {
 			$errors['new_password'] = $this->pi_getLL('error_new_password');
 		}
 		// check password length
@@ -224,8 +224,8 @@ class tx_keuserregister_pi2 extends tslib_pibase {
 			$table = 'fe_users';
 			$where = 'uid='.intval($GLOBALS['TSFE']->fe_user->user['uid']);
 			$fields_values = array(
-				// 'password' => $this->conf['password.']['useMd5'] ? md5(t3lib_div::removeXSS($this->piVars['new_password'])) : t3lib_div::removeXSS($this->piVars['new_password']),
-				'password' => $this->lib->encryptPassword(t3lib_div::removeXSS($this->piVars['new_password']), $this->conf['password.']['encryption'])
+				// 'password' => $this->conf['password.']['useMd5'] ? md5($this->lib->removeXSS($this->piVars['new_password'])) : $this->lib->removeXSS($this->piVars['new_password']),
+				'password' => $this->lib->encryptPassword($this->lib->removeXSS($this->piVars['new_password']), $this->conf['password.']['encryption'])
 			);
 
 			if ($GLOBALS['TYPO3_DB']->exec_UPDATEquery($table,$where,$fields_values,$no_quote_fields=FALSE)) {
@@ -254,14 +254,14 @@ class tx_keuserregister_pi2 extends tslib_pibase {
 		switch ($fieldName) {
 
 			case 'old_password':
-				$value = $this->piVars['old_password'] ? t3lib_div::removeXSS($this->piVars['old_password']) : '';
+				$value = $this->piVars['old_password'] ? $this->lib->removeXSS($this->piVars['old_password']) : '';
 				$content = $this->cObj->getSubpart($this->templateCode,'###SUB_OLD_PASSWORD###');
 				$content = $this->cObj->substituteMarker($content,'###VALUE_OLD_PASSWORD###',$value);
 				break;
 
 			case 'new_password':
-				$value = $this->piVars['new_password'] ? t3lib_div::removeXSS($this->piVars['new_password']) : '';
-				$valueAgain = $this->piVars['new_password_again'] ? t3lib_div::removeXSS($this->piVars['new_password_again']) : '';
+				$value = $this->piVars['new_password'] ? $this->lib->removeXSS($this->piVars['new_password']) : '';
+				$valueAgain = $this->piVars['new_password_again'] ? $this->lib->removeXSS($this->piVars['new_password_again']) : '';
 				$content = $this->cObj->getSubpart($this->templateCode,'###SUB_NEW_PASSWORD###');
 				$content = $this->cObj->substituteMarker($content,'###VALUE_NEW_PASSWORD###',$value);
 				$content = $this->cObj->substituteMarker($content,'###VALUE_NEW_PASSWORD_AGAIN###',$valueAgain);
