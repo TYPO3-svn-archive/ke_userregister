@@ -107,5 +107,5 @@ $TCA['fe_users']['types']['0']['showitem'] = str_replace(', name', ',last_name;;
 $TCA['fe_users']['ctrl']['thumbnail'] = 'image';
 
 // add register date
-t3lib_extMgm::addToAllTCAtypes('fe_users','registerdate','','before:lastlogin');
+t3lib_extMgm::addToAllTCAtypes('fe_users','registerdate','','after:usergroup');
 ?>
