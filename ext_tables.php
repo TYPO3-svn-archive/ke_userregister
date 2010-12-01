@@ -91,10 +91,45 @@ t3lib_extMgm::addTCAcolumns('fe_users', Array(
 			'default'  => '0'
 		)
 	),
+	'dayofbirth' => Array (
+		'exclude' => 1,
+		'label' => 'LLL:EXT:ke_userregister_birthday/locallang_db.xml:fe_users.dayofbirth',
+		'config' => Array (
+			'type' => 'select',
+			'size' => '1',
+			'max' => '1',
+			'items' => make_selector(31),
+			'eval' => 'trim',
+			'default' => ''
+		)
+	),
+	'monthofbirth' => Array (
+		'exclude' => 1,
+		'label' => 'LLL:EXT:ke_userregister_birthday/locallang_db.xml:fe_users.monthofbirth',
+		'config' => Array (
+			'type' => 'select',
+			'size' => '1',
+			'max' => '1',
+			'items' => apply_strftime(make_selector(12)),
+			'eval' => 'trim',
+			'default' => ''
+		)
+	),
+	'yearofbirth' => Array (
+		'exclude' => 1,
+		'label' => 'LLL:EXT:ke_userregister_birthday/locallang_db.xml:fe_users.yearofbirth',
+		'config' => Array (
+			'type' => 'input',
+			'size' => '4',
+			'max' => '4',
+			'eval' => 'trim',
+			'default' => ' '
+		)
+	),
 ));
 
-$TCA['fe_users']['interface']['showRecordFieldList'] = str_replace('title,', 'gender,first_name,last_name,title,', $TCA['fe_users']['interface']['showRecordFieldList']);
-$TCA['fe_users']['feInterface']['fe_admin_fieldList'] = str_replace(',title', ',gender,first_name,last_name,title', $TCA['fe_users']['feInterface']['fe_admin_fieldList']);
+$TCA['fe_users']['interface']['showRecordFieldList'] = str_replace('title,', 'gender,first_name,last_name,title,dayofbirth,monthofbirth,yearofbirth', $TCA['fe_users']['interface']['showRecordFieldList']);
+$TCA['fe_users']['feInterface']['fe_admin_fieldList'] = str_replace(',title', ',gender,first_name,last_name,title,dayofbirth,monthofbirth,yearofbirth', $TCA['fe_users']['feInterface']['fe_admin_fieldList']);
 $lastPalette = 0;
 for ($i=0; $i<10; $i++)	{
 	if (isset($TCA['fe_users']['palettes'][$i]) && is_array($TCA['fe_users']['palettes'][$i]))	{
@@ -108,4 +143,71 @@ $TCA['fe_users']['ctrl']['thumbnail'] = 'image';
 
 // add register date
 t3lib_extMgm::addToAllTCAtypes('fe_users','registerdate','','after:usergroup');
+
+
+// add birthday fields
+// t3lib_div::loadTCA('fe_users');
+
+function make_selector($to_number) {
+  $options = array();
+  $options[] = array(''=>0);
+  for($i=1; $i<=$to_number; $i++) {
+    $options[] = array($i, $i);
+  }
+  return $options;
+}
+
+function apply_strftime($data) {
+  $newdata = array();
+  foreach ($data as $item) {
+    if ($item[1]==0) { 
+      $newdata[] = array(''=>0); continue; 
+    }
+    $newdata[]= array(strftime("%B", mktime(0, 0, 0, $item[0]+1, 0, 0, 0)), $item[1]);
+  }
+  return $newdata;
+}
+
+
+t3lib_extMgm::addTCAcolumns('fe_users', Array(
+	'dayofbirth' => Array (
+		'exclude' => 1,
+		'label' => 'LLL:EXT:ke_userregister/locallang_db.xml:fe_users.dayofbirth',
+		'config' => Array (
+			'type' => 'select',
+			'size' => '1',
+			'max' => '1',
+			'items' => make_selector(31),
+			'eval' => 'trim',
+			'default' => ''
+		)
+	),
+	'monthofbirth' => Array (
+		'exclude' => 1,
+		'label' => 'LLL:EXT:ke_userregister/locallang_db.xml:fe_users.monthofbirth',
+		'config' => Array (
+			'type' => 'select',
+			'size' => '1',
+			'max' => '1',
+			'items' => apply_strftime(make_selector(12)),
+			'eval' => 'trim',
+			'default' => ''
+		)
+	),
+	'yearofbirth' => Array (
+		'exclude' => 1,
+		'label' => 'LLL:EXT:ke_userregister/locallang_db.xml:fe_users.yearofbirth',
+		'config' => Array (
+			'type' => 'input',
+			'size' => '4',
+			'max' => '4',
+			'eval' => 'trim',
+			'default' => ' '
+		)
+	),
+));
+
+t3lib_extMgm::addToAllTCAtypes("fe_users","dayofbirth, monthofbirth, yearofbirth", "", "after:name");
+
+
 ?>

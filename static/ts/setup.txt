@@ -84,6 +84,21 @@ plugin.tx_keuserregister {
       type = text
       tooltip =
     }
+    dayofbirth {
+      type = dayofbirth
+      eval = required
+    }
+    monthofbirth {
+      type = monthofbirth
+      eval = required
+    }
+    yearofbirth {
+      type = yearofbirth
+      low = 1960
+      high = 1991
+      eval = required
+    }
+
   }
 
   # define the fields used in edit form
@@ -106,5 +121,21 @@ plugin.tx_keuserregister {
     last_name {
       type = text
     }
+    dayofbirth {
+      type = dayofbirth
+      eval = required
+    }
+    monthofbirth {
+      type = monthofbirth
+      eval = required
+    }
+    yearofbirth {
+      type = yearofbirth
+      low = 1960
+      high = 1991
+      eval = required
+    }
+
+    
   }
 }

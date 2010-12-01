@@ -2,8 +2,12 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009 Andreas Kiefer <kiefer@kennziffer.com>
+*  (c) 2009-2010 Andreas Kiefer <kiefer@kennziffer.com>
 *  All rights reserved
+*
+*	Fields to select day, month and year of birth:
+*  (c) 2010 Ingvar Harjaks <ingvar@somecodehere.com>
+*      
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
 *  free software; you can redistribute it and/or modify
@@ -21,11 +25,6 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-/**
- * [CLASS/FUNCTION INDEX of SCRIPT]
- *
- * Hint: use extdeveval to insert/update function index above.
- */
 
 require_once(PATH_tslib.'class.tslib_pibase.php');
 require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
@@ -911,6 +910,68 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				else {
 					$content = 'static_info_tables not loaded';
 				}
+				break;
+			
+			
+			// Day of birth dropdown field
+			case 'dayofbirth':
+				$low = (isset($fieldConf['low']) ? (int)$fieldConf['low'] : 1);
+				$high = (isset($fieldConf['high']) ? (int)$fieldConf['high'] : 31);
+				foreach (range(1, 31) as $key => $value) {
+					$tempMarkerArray = array(
+						'value' => $value,
+						'label' => $value,
+						'selected' => ($this->piVars[$fieldName] == $value) ? 'selected="selected" ' : '',
+						'tooltip' => $this->renderTooltip($fieldConf['tooltip']),
+					);
+					$tempContent = $this->cObj->getSubpart($this->templateCode,'###SUB_SELECT_OPTION###');
+					$tempContent = $this->cObj->substituteMarkerArray($tempContent,$tempMarkerArray,$wrap='###|###',$uppercase=1);
+					$optionsContent .= $tempContent;
+				}
+				$content = $this->cObj->getSubpart($this->templateCode,'###SUB_SELECT###');
+				$content = $this->cObj->substituteMarker($content,'###NAME###',$this->prefixId.'['.$fieldName.']');
+				$content = $this->cObj->substituteSubpart ($content, '###SUB_SELECT_OPTION###', $optionsContent);
+				break;
+			
+			
+			// month of birth dropdown field
+			case 'monthofbirth':
+				foreach (range(1, 12) as $key => $value) {
+					$label = strftime("%B", mktime(0, 0, 0, $value+1, 0, 0, 0));
+					$tempMarkerArray = array(
+						'value' => $value,
+						'label' => $label,
+						'selected' => ($this->piVars[$fieldName] == $value) ? 'selected="selected" ' : '',
+						'tooltip' => $this->renderTooltip($fieldConf['tooltip']),
+					);
+					$tempContent = $this->cObj->getSubpart($this->templateCode,'###SUB_SELECT_OPTION###');
+					$tempContent = $this->cObj->substituteMarkerArray($tempContent,$tempMarkerArray,$wrap='###|###',$uppercase=1);
+					$optionsContent .= $tempContent;
+				}
+				$content = $this->cObj->getSubpart($this->templateCode,'###SUB_SELECT###');
+				$content = $this->cObj->substituteMarker($content,'###NAME###',$this->prefixId.'['.$fieldName.']');
+				$content = $this->cObj->substituteSubpart ($content, '###SUB_SELECT_OPTION###', $optionsContent);
+				break;
+			
+			
+			// Year of birth dropdown field
+			case 'yearofbirth':
+				$low = (isset($fieldConf['low']) ? (int)$fieldConf['low'] : 1970);
+				$high = (isset($fieldConf['high']) ? (int)$fieldConf['high'] : strftime('%Y'));
+				foreach (range($low, $high) as $key => $value) {
+					$tempMarkerArray = array(
+						'value' => $value,
+						'label' => $value,
+						'selected' => ($this->piVars[$fieldName] == $value) ? 'selected="selected" ' : '',
+						'tooltip' => $this->renderTooltip($fieldConf['tooltip']),
+					);
+					$tempContent = $this->cObj->getSubpart($this->templateCode,'###SUB_SELECT_OPTION###');
+					$tempContent = $this->cObj->substituteMarkerArray($tempContent,$tempMarkerArray,$wrap='###|###',$uppercase=1);
+					$optionsContent .= $tempContent;
+				}
+				$content = $this->cObj->getSubpart($this->templateCode,'###SUB_SELECT###');
+				$content = $this->cObj->substituteMarker($content,'###NAME###',$this->prefixId.'['.$fieldName.']');
+				$content = $this->cObj->substituteSubpart ($content, '###SUB_SELECT_OPTION###', $optionsContent);
 				break;
 		}
 		return $content;

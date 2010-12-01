@@ -9,24 +9,29 @@
 			<label index="tt_content.list_type_pi1">Register Form</label>
 			<label index="tt_content.list_type_pi2">Change Password</label>
 			<label index="tt_content.list_type_pi3">Delete Profile</label>
-            <label index="fe_users.first_name">First Name</label>
-            <label index="fe_users.last_name">Last Name</label>
-            <label index="fe_users.registerdate">Register date (frontend registration)</label>
-            <label index="fe_users.gender">Mr/Ms</label>
-            <label index="fe_users.gender.I.0">Mr</label>
-            <label index="fe_users.gender.I.1">Ms</label>
-			<label index="fe_users.gender.I.99">  </label>
+			<label index="fe_users.first_name">First Name</label>
+			<label index="fe_users.last_name">Last Name</label>
+			<label index="fe_users.registerdate">Register date (frontend registration)</label>
+			<label index="fe_users.gender">Mr/Ms</label>
+			<label index="fe_users.gender.I.0">Mr</label>
+			<label index="fe_users.gender.I.1">Ms</label>
+			<label index="fe_users.dayofbirth">Day of birth</label>
+			<label index="fe_users.monthofbirth">Month of birth</label>
+			<label index="fe_users.yearofbirth">Year of birth</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.list_type_pi1">Registrierungsformular</label>
 			<label index="tt_content.list_type_pi2">Passwort ändern</label>
 			<label index="tt_content.list_type_pi3">Profil löschen</label>
-            <label index="fe_users.first_name">Vorname</label>
-            <label index="fe_users.last_name">Nachname</label>
-            <label index="fe_users.registerdate">Registrierungsdatum (Frontend-Registrierung)</label>
-            <label index="fe_users.gender">Hr./Fr.</label>
-            <label index="fe_users.gender.I.0">Hr.</label>
-            <label index="fe_users.gender.I.1">Fr.</label>
+			<label index="fe_users.first_name">Vorname</label>
+			<label index="fe_users.last_name">Nachname</label>
+			<label index="fe_users.registerdate">Registrierungsdatum (Frontend-Registrierung)</label>
+			<label index="fe_users.gender">Hr./Fr.</label>
+			<label index="fe_users.gender.I.0">Hr.</label>
+			<label index="fe_users.gender.I.1">Fr.</label>
+			<label index="fe_users.dayofbirth">Tag der Geburt</label>
+			<label index="fe_users.monthofbirth">Monat der Geburt</label>
+			<label index="fe_users.yearofbirth">Jahr der Geburt</label>
 		</languageKey>
 	</data>
 </T3locallang>
