@@ -1307,6 +1307,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					$valueSum = 0;
 					if (is_array($this->piVars[$fieldName])) {
 						foreach ($this->piVars[$fieldName] as $key => $val) {
+							//t3lib_div::debug($val,1);
 							$valueSum += pow(2,$val-1);
 						}
 					}
@@ -1321,7 +1322,8 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				$fields_values[$fieldName] = $this->lib->removeXSS($this->piVars[$fieldName]);
 			}
 		}
-
+		
+		
 		// set name
 		$fields_values['name'] = $this->lib->removeXSS($this->piVars['first_name'].' '.$this->piVars['last_name']);
 
