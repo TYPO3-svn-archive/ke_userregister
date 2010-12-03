@@ -455,7 +455,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			$content = $this->cObj->substituteMarker($content,'###HEADLINE###',$this->pi_getLL('no_login_headline'));
 			$content = $this->cObj->substituteMarker($content,'###MESSAGE###',sprintf($this->pi_getLL('no_login_message'),$GLOBALS['TSFE']->fe_user->user['username']));
 			return $content;
-		}
+		} 
 
 		// user already logged in
 		else if ($this->mode != 'edit' && $GLOBALS['TSFE']->loginUser) {
@@ -464,7 +464,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			$content = $this->cObj->substituteMarker($content,'###MESSAGE###',sprintf($this->pi_getLL('already_logged_in_message'),$GLOBALS['TSFE']->fe_user->user['username']));
 			return $content;
 		}
-
+		
 		// get general markers
 		$this->markerArray = $this->getGeneralMarkers();
 		
@@ -600,11 +600,22 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				$_procObj->additionalMarkers($this->markerArray,$this,$errors);
 			}
 		}
-
+		
+		
+		// generate salutation for edit form
+		// use salutation based on users gender
+		if ($this->mode == 'edit' && isset($this->piVars['first_name']) && isset($this->piVars['last_name']) && isset($this->piVars['gender'])) {
+			$salutationCode = $this->piVars['gender'] == 1 ? 'female' : 'male';
+			$this->markerArray['salutation'] = $this->pi_getLL('salutation_'.$salutationCode);
+			$this->markerArray['edit_welcome_text'] = $this->pi_getLL('edit_welcome_text');
+			$this->markerArray['first_name'] = $this->piVars['first_name'];
+			$this->markerArray['last_name'] = $this->piVars['last_name'];
+		}
+		
 		// get subpart
 		if ($this->mode == 'edit') $content = $this->cObj->getSubpart($this->templateCode,'###EDIT_FORM###');
 		else $content = $this->cObj->getSubpart($this->templateCode,'###REGISTRATION_FORM###');
-
+		
 		// substitute marker array
 		$content = $this->cObj->substituteMarkerArray($content,$this->markerArray,$wrap='###|###',$uppercase=1);
 

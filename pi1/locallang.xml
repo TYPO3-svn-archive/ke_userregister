@@ -85,6 +85,7 @@
             <label index="day">Day</label>
             <label index="month">Month</label>
             <label index="year">Year</label>
+            <label index="edit_welcome_text">you can edit your profile data here.</label>
         </languageKey>
         <languageKey index="de" type="array">
             <label index="ff.main">Allgemein</label>
@@ -166,6 +167,7 @@
             <label index="day">Tag</label>
             <label index="month">Monat</label>
             <label index="year">Jahr</label>
+            <label index="edit_welcome_text">Bitte bearbeiten Sie hier Ihre Daten:</label>
         </languageKey>
         <languageKey index="fr" type="array">
             <label index="ff.main">Général</label>
@@ -232,6 +234,8 @@
             <label index="day">Day</label>
             <label index="month">Month</label>
             <label index="year">Year</label>
+            <label index="edit_welcome_text">you can edit your profile data here.</label>
+            
         </languageKey>
         <languageKey index="es" type="array">
             <label index="ff.main">General</label>
@@ -298,6 +302,7 @@
             <label index="day">Day</label>
             <label index="month">Month</label>
             <label index="year">Year</label>
+            <label index="edit_welcome_text">you can edit your profile data here.</label>
         </languageKey>
         <languageKey index="it" type="array">
             <label index="ff.main">Generale</label>
@@ -364,6 +369,7 @@
             <label index="day">Day</label>
             <label index="month">Month</label>
             <label index="year">Year</label>
+            <label index="edit_welcome_text">you can edit your profile data here.</label>
         </languageKey>
     </data>
 </T3locallang>
