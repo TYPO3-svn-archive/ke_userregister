@@ -703,18 +703,29 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				break;
 
 			case 'checkbox':
+				
 				$fieldValues = explode(',',$fieldConf['values']);
+				$numberOfValues = count($fieldValues);
 				foreach ($fieldValues as $key => $value) {
-
+					
 					$checked = false;
 					// set default value if create mode and form not sent
 					if ($this->mode == 'create' && empty($this->piVars['step'])) {
 						if ($value == $fieldConf['default']) $checked = true;
 					}
-					else $checked = $this->piVars[$fieldName] == $value ? true : false;
-
+					else {
+						if ($numberOfValues > 1) {
+							// multiple
+							if (($this->piVars[$fieldName] >> $value-1) & 1) $checked = true;
+							else $checked = false;
+						} else {
+							// single
+							$checked = $this->piVars[$fieldName] == $value ? true : false;
+						}
+					}
+					
 					$tempMarkerArray = array(
-						'name' => $this->prefixId.'['.$fieldName.']',
+						'name' => count($fieldValues) > 1 ? $this->prefixId.'['.$fieldName.'][]' : $this->prefixId.'['.$fieldName.']',
 						'value' => $value,
 						'label' => $this->pi_getLL('label_'.$fieldName.'_'.$value),
 						#'checked' => ($this->piVars[$fieldName] == $value) ? 'checked="checked" ' : '',
@@ -773,8 +784,6 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				$where .= $this->cObj->enableFields($table);
 				$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fields,$table,$where,$groupBy='',$orderBy='',$limit='');
 				while ($row=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-
-					#$checked = t3lib_div::inList($this->piVars[$fieldName],$row['uid']);
 					if (is_array($this->dmailValues)) {
 						$checked = in_array($row['uid'],$this->dmailValues);
 					}
@@ -915,6 +924,18 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			
 			// Day of birth dropdown field
 			case 'dayofbirth':
+				// set default option
+				$tempContent = $this->cObj->getSubpart($this->templateCode,'###SUB_SELECT_OPTION###');
+				$tempMarkerArray = array(
+					'value' => '',
+					'label' => $this->pi_getLL('day'),
+					'selected' => ($this->piVars[$fieldName] == $value) ? 'selected="selected" ' : '',
+					'tooltip' => $this->renderTooltip($fieldConf['tooltip']),
+				);
+				$tempContent = $this->cObj->substituteMarkerArray($tempContent,$tempMarkerArray,$wrap='###|###',$uppercase=1);
+				$optionsContent .= $tempContent;
+				
+				// loop options
 				$low = (isset($fieldConf['low']) ? (int)$fieldConf['low'] : 1);
 				$high = (isset($fieldConf['high']) ? (int)$fieldConf['high'] : 31);
 				foreach (range(1, 31) as $key => $value) {
@@ -936,6 +957,19 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			
 			// month of birth dropdown field
 			case 'monthofbirth':
+				
+				// set default option
+				$tempContent = $this->cObj->getSubpart($this->templateCode,'###SUB_SELECT_OPTION###');
+				$tempMarkerArray = array(
+					'value' => '',
+					'label' => $this->pi_getLL('month'),
+					'selected' => ($this->piVars[$fieldName] == $value) ? 'selected="selected" ' : '',
+					'tooltip' => $this->renderTooltip($fieldConf['tooltip']),
+				);
+				$tempContent = $this->cObj->substituteMarkerArray($tempContent,$tempMarkerArray,$wrap='###|###',$uppercase=1);
+				$optionsContent .= $tempContent;
+				
+				// loop options
 				foreach (range(1, 12) as $key => $value) {
 					$label = strftime("%B", mktime(0, 0, 0, $value+1, 0, 0, 0));
 					$tempMarkerArray = array(
@@ -956,6 +990,18 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			
 			// Year of birth dropdown field
 			case 'yearofbirth':
+				
+				// set default option
+				$tempContent = $this->cObj->getSubpart($this->templateCode,'###SUB_SELECT_OPTION###');
+				$tempMarkerArray = array(
+					'value' => '',
+					'label' => $this->pi_getLL('year'),
+					'selected' => ($this->piVars[$fieldName] == $value) ? 'selected="selected" ' : '',
+					'tooltip' => $this->renderTooltip($fieldConf['tooltip']),
+				);
+				$tempContent = $this->cObj->substituteMarkerArray($tempContent,$tempMarkerArray,$wrap='###|###',$uppercase=1);
+				$optionsContent .= $tempContent;
+				
 				$low = (isset($fieldConf['low']) ? (int)$fieldConf['low'] : 1970);
 				$high = (isset($fieldConf['high']) ? (int)$fieldConf['high'] : strftime('%Y'));
 				foreach (range($low, $high) as $key => $value) {
@@ -1400,9 +1446,30 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 						if ($value == 1) $dmailInsertValues[] = $catUid;
 					}
 				}
+			} else if ($fieldConf['type'] == checkbox) {
+				// special handling for multiple checkboxes
+				$fieldValues = explode(',',$fieldConf['values']);
+				if (count($fieldValues)>1) {
+					// multiple
+					$valueSum = 0;
+					if (is_array($this->piVars[$fieldName])) {
+						foreach ($this->piVars[$fieldName] as $key => $val) {
+							$valueSum += pow(2,$val-1);
+						}
+					}
+					$checkboxDBVal = intval($valueSum);
+				} else {
+					// single
+					$checkboxDBVal = intval($this->piVars[$fieldName]);
+				}
+				$fields_values[$fieldName] = $this->lib->removeXSS($checkboxDBVal);
+			} else if (!$fieldConf['doNotSaveInDB']) {
+				// save all fields that are not marked as "doNotSaveInDB"
+				$fields_values[$fieldName] = $this->lib->removeXSS($this->piVars[$fieldName]);
 			}
-			// save all fields that are not marked as "doNotSaveInDB"
-			else if (!$fieldConf['doNotSaveInDB']) $fields_values[$fieldName] = $this->lib->removeXSS($this->piVars[$fieldName]);
+			
+			
+			
 
 		}
 
@@ -1416,7 +1483,8 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 
 		// do not process email change here
 		if ($this->mode == 'edit') unset($fields_values['email']);
-
+		
+		// save data in db
 		if ($GLOBALS['TYPO3_DB']->exec_UPDATEquery($table,$where,$fields_values,$no_quote_fields=FALSE)) {
 
 			// process directmail values

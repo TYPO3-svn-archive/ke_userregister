@@ -20,11 +20,11 @@
             <label index="label_gender">Gender</label>
             <label index="label_gender_0">Mr</label>
             <label index="label_gender_1">Mrs</label>
-            <label index="label_address">Adresse</label>
-            <label index="label_zip">Postleitzahl</label>
-            <label index="label_city">Ort</label>
-            <label index="label_country">Land</label>
-            <label index="label_telephone">Telefon</label>
+            <label index="label_address">Address</label>
+            <label index="label_zip">Zip</label>
+            <label index="label_city">City</label>
+            <label index="label_country">Country</label>
+            <label index="label_telephone">Phone</label>
             <label index="label_fax">Fax</label>
             <label index="label_www">Homepage</label>
             <label index="label_image">Profile image</label>
@@ -82,6 +82,9 @@
             <label index="confirmation_success_subject">Registration Confirmation</label>
             <label index="confirmation_success_text">Your user has been activated. You can log in with your e-Mail and password now.</label>
             <label index="backlink_text">Back to last visited page</label>
+            <label index="day">Day</label>
+            <label index="month">Month</label>
+            <label index="year">Year</label>
         </languageKey>
         <languageKey index="de" type="array">
             <label index="ff.main">Allgemein</label>
@@ -160,7 +163,9 @@
             <label index="confirmation_success_subject">Bestätigung Ihrer Registrierung</label>
             <label index="confirmation_success_text">Ihr Benutzer wurde freigeschaltet. Sie können Sich ab sofort mit Ihrer E-Mail-Adresse und Ihrem Passwort einloggen.</label>
             <label index="backlink_text">Zurück zur zuletzt aufgerufenen Seite</label>
-
+            <label index="day">Tag</label>
+            <label index="month">Monat</label>
+            <label index="year">Jahr</label>
         </languageKey>
         <languageKey index="fr" type="array">
             <label index="ff.main">Général</label>
@@ -224,6 +229,9 @@
             <label index="mail_decline_error_message">La mise à jour n’ pas été annulée. Essayez de nouveau SVP en copiant le lien que nous vous avons envoyé et en le collant directement dans la barre d’adresses de votre navigateur.</label>
             <label index="confirmation_success_subject">Registration Confirmation</label>
             <label index="confirmation_success_text">Your user has been activated. You can log in with your e-Mail and password now.</label>
+            <label index="day">Day</label>
+            <label index="month">Month</label>
+            <label index="year">Year</label>
         </languageKey>
         <languageKey index="es" type="array">
             <label index="ff.main">General</label>
@@ -287,6 +295,9 @@
             <label index="mail_decline_error_message">El proceso de actualización no se ha cancelado. Inténtelo de nuevo copiando el enlace de confirmación que le hemos enviado y pegándolo directamente en la barra de dirección de la parte superior de su navegador.</label>
             <label index="confirmation_success_subject">Registration Confirmation</label>
             <label index="confirmation_success_text">Your user has been activated. You can log in with your e-Mail and password now.</label>
+            <label index="day">Day</label>
+            <label index="month">Month</label>
+            <label index="year">Year</label>
         </languageKey>
         <languageKey index="it" type="array">
             <label index="ff.main">Generale</label>
@@ -350,6 +361,9 @@
             <label index="mail_decline_error_message">La modifica non è stata cancellata. Per cortesia prova nuovamente copiando il link di conferma che ti abbiamo inviato e incollandolo nella casella dell'indirizzo che si trova in cima al tuo browser.</label>
             <label index="confirmation_success_subject">Registration Confirmation</label>
             <label index="confirmation_success_text">Your user has been activated. You can log in with your e-Mail and password now.</label>
+            <label index="day">Day</label>
+            <label index="month">Month</label>
+            <label index="year">Year</label>
         </languageKey>
     </data>
 </T3locallang>

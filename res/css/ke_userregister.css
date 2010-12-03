@@ -32,6 +32,12 @@
     width: 230px;
 }
 
+.tx-keuserregister-pi1 .userregister-dateofbirth .field select {
+    width: auto;
+    margin-right: 3px;
+    float: left;
+}
+
 .tx-keuserregister-pi1 textarea {
     width: 230px;
     height: 60px;
@@ -63,8 +69,10 @@
 }
 
 
-.tx-keuserregister-pi1 input.checkbox{
+.tx-keuserregister-pi1 input.checkbox,
+.tx-keuserregister-pi1 input[type=checkbox] {
     width: auto;
+    vertical-align: middle;
 }
 
 .tx-keuserregister-pi1 .input_zip input,
