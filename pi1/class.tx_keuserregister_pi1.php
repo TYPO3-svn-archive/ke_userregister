@@ -1299,10 +1299,27 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 						if ($value == 1) $dmailInsertValues[] = $catUid;
 					}
 				}
+			} else if ($fieldConf['type'] == checkbox) {
+				// special handling for multiple checkboxes
+				$fieldValues = explode(',',$fieldConf['values']);
+				if (count($fieldValues)>1) {
+					// multiple
+					$valueSum = 0;
+					if (is_array($this->piVars[$fieldName])) {
+						foreach ($this->piVars[$fieldName] as $key => $val) {
+							$valueSum += pow(2,$val-1);
+						}
+					}
+					$checkboxDBVal = intval($valueSum);
+				} else {
+					// single
+					$checkboxDBVal = intval($this->piVars[$fieldName]);
+				}
+				$fields_values[$fieldName] = $this->lib->removeXSS($checkboxDBVal);
+			} else if (!$fieldConf['doNotSaveInDB']) {
+				// save all fields that are not marked as "doNotSaveInDB"
+				$fields_values[$fieldName] = $this->lib->removeXSS($this->piVars[$fieldName]);
 			}
-			// save all fields that are not marked as "doNotSaveInDB"
-			else if (!$fieldConf['doNotSaveInDB']) $fields_values[$fieldName] = $this->lib->removeXSS($this->piVars[$fieldName]);
-
 		}
 
 		// set name
