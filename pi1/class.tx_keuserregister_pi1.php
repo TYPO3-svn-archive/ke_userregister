@@ -602,19 +602,21 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		}
 		
 		
+		// get subpart
+		if ($this->mode == 'edit') $content = $this->cObj->getSubpart($this->templateCode,'###EDIT_FORM###');
+		else $content = $this->cObj->getSubpart($this->templateCode,'###REGISTRATION_FORM###');
+		
 		// generate salutation for edit form
 		// use salutation based on users gender
-		if ($this->mode == 'edit' && isset($this->piVars['first_name']) && isset($this->piVars['last_name']) && isset($this->piVars['gender'])) {
+		if ($this->mode == 'edit' && $this->piVars['first_name'] != "" && $this->piVars['last_name'] != "" && $this->piVars['gender'] != "") {
 			$salutationCode = $this->piVars['gender'] == 1 ? 'female' : 'male';
 			$this->markerArray['salutation'] = $this->pi_getLL('salutation_'.$salutationCode);
 			$this->markerArray['edit_welcome_text'] = $this->pi_getLL('edit_welcome_text');
 			$this->markerArray['first_name'] = $this->piVars['first_name'];
 			$this->markerArray['last_name'] = $this->piVars['last_name'];
+		} else {
+			$content = $this->cObj->substituteSubpart ($content, '###SUB_SALUTATION###', '', $recursive=1);
 		}
-		
-		// get subpart
-		if ($this->mode == 'edit') $content = $this->cObj->getSubpart($this->templateCode,'###EDIT_FORM###');
-		else $content = $this->cObj->getSubpart($this->templateCode,'###REGISTRATION_FORM###');
 		
 		// substitute marker array
 		$content = $this->cObj->substituteMarkerArray($content,$this->markerArray,$wrap='###|###',$uppercase=1);
