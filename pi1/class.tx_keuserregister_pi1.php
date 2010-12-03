@@ -1299,7 +1299,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 						if ($value == 1) $dmailInsertValues[] = $catUid;
 					}
 				}
-			} else if ($fieldConf['type'] == checkbox) {
+			} else if ($fieldConf['type'] == 'checkbox') {
 				// special handling for multiple checkboxes
 				$fieldValues = explode(',',$fieldConf['values']);
 				if (count($fieldValues)>1) {
@@ -1307,7 +1307,6 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					$valueSum = 0;
 					if (is_array($this->piVars[$fieldName])) {
 						foreach ($this->piVars[$fieldName] as $key => $val) {
-							//t3lib_div::debug($val,1);
 							$valueSum += pow(2,$val-1);
 						}
 					}
@@ -1465,7 +1464,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 						if ($value == 1) $dmailInsertValues[] = $catUid;
 					}
 				}
-			} else if ($fieldConf['type'] == checkbox) {
+			} else if ($fieldConf['type'] == 'checkbox') {
 				// special handling for multiple checkboxes
 				$fieldValues = explode(',',$fieldConf['values']);
 				if (count($fieldValues)>1) {
