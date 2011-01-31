@@ -22,10 +22,10 @@
  * @author	Jigal van Hemert <jigal@xs4all.nl>
  * @package	RemoveXSS
  */
-final class RemoveXSS {
+final class RemoveXSSLib {
 	/**
 	 * Removes potential XSS code from an input string.
-	 * Wrapper for RemoveXSS::process().
+	 * Wrapper for RemoveXSSLib::process().
 	 *
 	 * Using an external class by Travis Puderbaugh <kallahar@quickwired.com>
 	 *
