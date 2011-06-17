@@ -7,7 +7,7 @@
 *
 *	Fields to select day, month and year of birth:
 *  (c) 2010 Ingvar Harjaks <ingvar@somecodehere.com>
-*      
+*
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
 *  free software; you can redistribute it and/or modify
@@ -67,7 +67,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 
 		// init lib
 		$this->lib = t3lib_div::makeInstance('tx_keuserregister_lib');
-		
+
 		// get general extension setup
 		$this->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_keuserregister.'];
 
@@ -98,7 +98,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 
 		// get fields from configuration
 		$this->fields = $this->conf[$this->mode.'.']['fields.'];
-		
+
 		// get fields that are evaluated as email and trim its value
 		foreach ($this->fields as $name => $conf) {
 			$fieldName = substr($name, 0, -1);
@@ -106,21 +106,21 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				$this->piVars[$fieldName] = trim($this->piVars[$fieldName]);
 			}
 		}
-		
+
 		// overwrite username config if email is used as username
 		if ($this->conf['emailIsUsername']) unset($this->fields['username.']);
-		
+
 		// overwrite password field if edit mode is set
 		if ($this->mode == 'edit') unset($this->fields['password.']);
-		
+
 		// get html template
 		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
-		
+
 		// include css
 		if ($this->conf['cssFile']) {
 			$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId] .= '<link rel="stylesheet" type="text/css" href="'.$this->conf['cssFile'].'" />';
 		}
-		
+
 		// process incoming registration confirmation
 		if (t3lib_div::_GET('confirm')) $content = $this->processConfirm();
 		// process incoming registration decline
@@ -131,7 +131,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		else if (t3lib_div::_GET('maildecline')) $content = $this->processEmailChangeDecline();
 		// show registration / edit form
 		else $content = $this->piVars['step'] == 'evaluate' ? $this->evaluateFormData() : $this->renderForm();
-		
+
 		return $this->pi_wrapInBaseClass($content);
 	}
 
@@ -189,7 +189,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			if ($this->conf['successMailAfterConfirmation']) {
 				$this->sendConfirmationSuccessMail($hashRow['feuser_uid']);
 			}
-			
+
 			// auto-login new user?
 			if ($this->conf['autoLoginAfterConfirmation']) {
 				// get userdata and process auto-login
@@ -199,15 +199,15 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					$markerArray['message'] = $this->pi_getLL('confirmation_success_message_autologin');
 				}
 			}
-			
+
 			$content = $this->cObj->substituteMarkerArray($content,$markerArray,$wrap='###|###',$uppercase=1);
-			
+
 			// show backlink?
 			if ($this->conf['backlink.']['generate']) {
-				
+
 				// get backlink params from hash table
 				$backlinkParamsArray = t3lib_div::xml2array($hashRow['backlinkparams']);
-				
+
 				// process backlink params
 				$backlinkParamsString = '';
 				if (is_array($backlinkParamsArray)) {
@@ -219,20 +219,20 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 						}
 					}
 				}
-				
+
 				// generate backlink
 				unset($linkconf);
 				$linkconf['parameter'] = intval($hashRow['backlinkpid']);
 				$linkconf['additionalParams'] = $backlinkParamsString;
 				$backlink = $this->cObj->typoLink($this->pi_getLL('backlink_text'),$linkconf);
-				
+
 				// add backlink to content
 				$content .= $this->cObj->getSubpart($this->templateCode,'###SUB_CONFIRMATION_SUCCESS_BACKLINK###');
 				$content = $this->cObj->substituteMarker($content,'###BACKLINK###', $backlink);
-				
+
 			}
-			
-			
+
+
 			return $content;
 		}
 	}
@@ -455,7 +455,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			$content = $this->cObj->substituteMarker($content,'###HEADLINE###',$this->pi_getLL('no_login_headline'));
 			$content = $this->cObj->substituteMarker($content,'###MESSAGE###',sprintf($this->pi_getLL('no_login_message'),$GLOBALS['TSFE']->fe_user->user['username']));
 			return $content;
-		} 
+		}
 
 		// user already logged in
 		else if ($this->mode != 'edit' && $GLOBALS['TSFE']->loginUser) {
@@ -464,19 +464,19 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			$content = $this->cObj->substituteMarker($content,'###MESSAGE###',sprintf($this->pi_getLL('already_logged_in_message'),$GLOBALS['TSFE']->fe_user->user['username']));
 			return $content;
 		}
-		
+
 		// get general markers
 		$this->markerArray = $this->getGeneralMarkers();
-		
+
 		// generate backlink?
 		if ($this->conf['backlink.']['generate']) {
 			$backlinkHiddenContent = '';
 			// set backlink pid as hidden field
 			if ($this->piVars['backlinkPid']) $backlinkHiddenContent = '<input type="hidden" name="'.$this->prefixId.'[backlinkPid]" value="'.intval($this->piVars['backlinkPid']).'" />';
-			
-			// get backlink params values 
+
+			// get backlink params values
 			$backlinkParams = $this->getBacklinkParamsArray();
-			
+
 			// generate params as hidden fields
 			if (sizeof($backlinkParams)) {
 				foreach($backlinkParams as $param => $value) {
@@ -495,7 +495,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			// fill marker with empty content if backlink generation deactivated
 			$this->markerArray['backlink_hidden'] = '';
 		}
-		
+
 		// get data from db when editing profile
 		if ($this->mode == 'edit') {
 			$fields = '*';
@@ -589,8 +589,22 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			}
 
 			// mark field when errors occured
-			if ($errors[$fieldName]) $this->markerArray['error_'.$fieldName] = $errors[$fieldName];
-			else $this->markerArray['error_'.$fieldName] = '';
+			if ($errors[$fieldName]) {
+
+				// fill summarized error message for "date of birth"  fields
+				if ($fieldName == 'dayofbirth' || $fieldName == 'monthofbirth' || $fieldName == 'yearofbirth') {
+					$this->markerArray['error_dateofbirth'] = $errors[$fieldName];
+				}
+
+				// fill other error markers
+				$this->markerArray['error_'.$fieldName] = $errors[$fieldName];
+				
+			} else $this->markerArray['error_'.$fieldName] = '';
+		}
+
+		// clear "date of birth" error marker if no error occured
+		if (!$errors['dayofbirth'] && !$errors['monthofbirth'] && !$errors['yearofbirth']) {
+			$this->markerArray['error_dateofbirth'] = '';
 		}
 
 		// Hook for additional form markers
@@ -600,12 +614,12 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				$_procObj->additionalMarkers($this->markerArray,$this,$errors);
 			}
 		}
-		
-		
+
+
 		// get subpart
 		if ($this->mode == 'edit') $content = $this->cObj->getSubpart($this->templateCode,'###EDIT_FORM###');
 		else $content = $this->cObj->getSubpart($this->templateCode,'###REGISTRATION_FORM###');
-		
+
 		// generate salutation for edit form
 		// use salutation based on users gender
 		if ($this->mode == 'edit' && $this->piVars['first_name'] != "" && $this->piVars['last_name'] != "" && $this->piVars['gender'] != "") {
@@ -617,7 +631,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		} else {
 			$content = $this->cObj->substituteSubpart ($content, '###SUB_SALUTATION###', '', $recursive=1);
 		}
-		
+
 		// substitute marker array
 		$content = $this->cObj->substituteMarkerArray($content,$this->markerArray,$wrap='###|###',$uppercase=1);
 
@@ -629,8 +643,8 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 
 		return $content;
 	}
-	
-	
+
+
 	/*
 	 * function getBacklinkParamsArray
 	 *
@@ -657,11 +671,11 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			return $backlinkHiddenArray;
 		}
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	* Renders a tooltip for one form field
 	*
@@ -716,11 +730,11 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				break;
 
 			case 'checkbox':
-				
+
 				$fieldValues = explode(',',$fieldConf['values']);
 				$numberOfValues = count($fieldValues);
 				foreach ($fieldValues as $key => $value) {
-					
+
 					$checked = false;
 					// set default value if create mode and form not sent
 					if ($this->mode == 'create' && empty($this->piVars['step'])) {
@@ -736,7 +750,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 							$checked = $this->piVars[$fieldName] == $value ? true : false;
 						}
 					}
-					
+
 					$tempMarkerArray = array(
 						'name' => count($fieldValues) > 1 ? $this->prefixId.'['.$fieldName.'][]' : $this->prefixId.'['.$fieldName.']',
 						'value' => $value,
@@ -933,8 +947,8 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					$content = 'static_info_tables not loaded';
 				}
 				break;
-			
-			
+
+
 			// Day of birth dropdown field
 			case 'dayofbirth':
 				// set default option
@@ -947,7 +961,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				);
 				$tempContent = $this->cObj->substituteMarkerArray($tempContent,$tempMarkerArray,$wrap='###|###',$uppercase=1);
 				$optionsContent .= $tempContent;
-				
+
 				// loop options
 				$low = (isset($fieldConf['low']) ? (int)$fieldConf['low'] : 1);
 				$high = (isset($fieldConf['high']) ? (int)$fieldConf['high'] : 31);
@@ -966,11 +980,11 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				$content = $this->cObj->substituteMarker($content,'###NAME###',$this->prefixId.'['.$fieldName.']');
 				$content = $this->cObj->substituteSubpart ($content, '###SUB_SELECT_OPTION###', $optionsContent);
 				break;
-			
-			
+
+
 			// month of birth dropdown field
 			case 'monthofbirth':
-				
+
 				// set default option
 				$tempContent = $this->cObj->getSubpart($this->templateCode,'###SUB_SELECT_OPTION###');
 				$tempMarkerArray = array(
@@ -981,7 +995,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				);
 				$tempContent = $this->cObj->substituteMarkerArray($tempContent,$tempMarkerArray,$wrap='###|###',$uppercase=1);
 				$optionsContent .= $tempContent;
-				
+
 				// loop options
 				foreach (range(1, 12) as $key => $value) {
 					$label = strftime("%B", mktime(0, 0, 0, $value+1, 0, 0, 0));
@@ -999,11 +1013,11 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				$content = $this->cObj->substituteMarker($content,'###NAME###',$this->prefixId.'['.$fieldName.']');
 				$content = $this->cObj->substituteSubpart ($content, '###SUB_SELECT_OPTION###', $optionsContent);
 				break;
-			
-			
+
+
 			// Year of birth dropdown field
 			case 'yearofbirth':
-				
+
 				// set default option
 				$tempContent = $this->cObj->getSubpart($this->templateCode,'###SUB_SELECT_OPTION###');
 				$tempMarkerArray = array(
@@ -1014,7 +1028,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				);
 				$tempContent = $this->cObj->substituteMarkerArray($tempContent,$tempMarkerArray,$wrap='###|###',$uppercase=1);
 				$optionsContent .= $tempContent;
-				
+
 				$low = (isset($fieldConf['low']) ? (int)$fieldConf['low'] : 1970);
 				$high = (isset($fieldConf['high']) ? (int)$fieldConf['high'] : strftime('%Y'));
 				foreach (range($low, $high) as $key => $value) {
@@ -1047,13 +1061,13 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		unset($linkconf);
 		$linkconf['parameter'] = $GLOBALS['TSFE']->id;
 		$formAction = $this->cObj->typoLink_URL($linkconf).'#formstart';
-		
+
 		$generalMarkers = array(
 			'clearer' => $this->cObj->getSubpart($this->templateCode,'###SUB_CLEARER###'),
 			'form_name' => 'ke_userregister_registration_form',
 			'form_action' => $formAction,
 		);
-		
+
 		return $generalMarkers;
 	}
 
@@ -1174,12 +1188,12 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				if (empty($this->piVars['password']) || empty($this->piVars['password_again']) || ($this->piVars['password'] != $this->piVars['password_again'])) {
 					$errors[$fieldName] = $this->pi_getLL('error_password');
 				}
-				
+
 				// check password min length
 				else if (strlen($this->piVars['password']) < $this->conf['password.']['minLength']) {
 					$errors[$fieldName] = sprintf($this->pi_getLL('error_password_length'),$this->conf['password.']['minLength']);
 				}
-				
+
 				// check if password contains enough numeric chars
                 else if ($this->conf['password.']['minNumeric'] > 0){
                     $temp_check = str_split($this->piVars['password']);
@@ -1194,7 +1208,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
                     }
                 }
 			}
-			
+
 			// special processing of image field
 			// process uploaded file?
 			if ($fieldConf['type'] == 'image' && !empty($GLOBALS['_FILES'][$this->prefixId]['name'][$fieldName])) {
@@ -1334,8 +1348,8 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				$fields_values[$fieldName] = $this->lib->removeXSS($this->piVars[$fieldName]);
 			}
 		}
-		
-		
+
+
 		// set name
 		$fields_values['name'] = $this->lib->removeXSS($this->piVars['first_name'].' '.$this->piVars['last_name']);
 
@@ -1345,7 +1359,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 
 		// encrypt password if defined in ts in $this->conf['password.']['encryption']
 		$fields_values['password'] = $this->lib->encryptPassword($this->lib->removeXSS($this->piVars['password']), $this->conf['password.']['encryption']);
-		
+
 		// Hook for further data processing before saving to db
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['specialDataProcessing'])) {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['specialDataProcessing'] as $_classRef) {
@@ -1388,13 +1402,13 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				'feuser_uid' => $feuser_uid,
 				'tstamp' => time(),
 			);
-			
+
 			// process backlink params if activated
 			if ($this->conf['backlink.']['generate']) {
 				$fields_values['backlinkpid'] = intval($this->piVars['backlinkPid']);
 				$fields_values['backlinkparams'] = t3lib_div::array2xml($this->getBacklinkParamsArray());
 			}
-			
+
 			if ($GLOBALS['TYPO3_DB']->exec_INSERTquery($table,$fields_values,$no_quote_fields=FALSE)) {
 
 				// generate html mail content
@@ -1498,9 +1512,9 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				// save all fields that are not marked as "doNotSaveInDB"
 				$fields_values[$fieldName] = $this->lib->removeXSS($this->piVars[$fieldName]);
 			}
-			
-			
-			
+
+
+
 
 		}
 
@@ -1514,7 +1528,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 
 		// do not process email change here
 		if ($this->mode == 'edit') unset($fields_values['email']);
-		
+
 		// save data in db
 		if ($GLOBALS['TYPO3_DB']->exec_UPDATEquery($table,$where,$fields_values,$no_quote_fields=FALSE)) {
 
@@ -1529,12 +1543,12 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					$GLOBALS['TYPO3_DB']->exec_INSERTquery($table,$fields_values,$no_quote_fields=FALSE);
 				}
 			}
-			
-			
+
+
 			$content = $this->cObj->getSubpart($this->templateCode,'###SUB_MESSAGE###');
 			$content = $this->cObj->substituteMarker($content,'###HEADLINE###',$this->pi_getLL('edit_success_headline'));
 			#$content = $this->cObj->substituteMarker($content,'###MESSAGE###',$this->pi_getLL('edit_success_text'));
-			
+
 			// email has changed
 			// check if valid and not already used in db
 			// do not process until user confirms the change
@@ -1551,20 +1565,20 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					'new_email' => $this->lib->removeXSS($this->piVars['email']),
 				);
 				$GLOBALS['TYPO3_DB']->exec_INSERTquery($hashTable,$hashFieldsValues);
-				
+
 				// send email confirmation request to user's new email address
 				$this->sendEmailChangeConfirmationRequestMail();
-				
+
 				// print success message
 				$content = $this->cObj->substituteMarker($content,'###MESSAGE###',$this->pi_getLL('edit_sucess_text_email_change'));
 			}
 			else $content = $this->cObj->substituteMarker($content,'###MESSAGE###',$this->pi_getLL('edit_success_text'));
-			
+
 			return $content;
-			
+
 		}
 		else die($this->prefixId.': ERROR: DB error when saving data');
-		
+
 	}
 
 
@@ -1772,8 +1786,8 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		if ($power === false) $power = $bytes > 0 ? floor(log($bytes, 1024)) : 0;
 		return sprintf($format, $bytes / pow(1024, $power), $units[$power]);
 	}
-	
-	
+
+
 	/*
 	 * function getUserRecord
 	 * @param int $userId
@@ -1795,21 +1809,21 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	 * @param string $username
 	 * @param string $password
 	 * @return bool	 true if login successful, false if login failed
-	 */	
+	 */
 	function autoLogin($username, $password) {
-		
+
 		$loginData=array(
 			'uname' => $username, //username
 			'uident' => $password, //password
 			'status' => 'login',
 		);
-		
+
 		$GLOBALS['TSFE']->fe_user->checkPid=0; //do not use a particular pid
 		$GLOBALS['TSFE']->fe_user->user = $GLOBALS['TSFE']->fe_user->fetchUserSession();
-		$GLOBALS['TSFE']->fe_user->fetchGroupData(); 
+		$GLOBALS['TSFE']->fe_user->fetchGroupData();
 		$info= $GLOBALS['TSFE']->fe_user->getAuthInfoArray();
 		$user=$GLOBALS['TSFE']->fe_user->fetchUserRecord($info['db_user'],$loginData['uname']);
-		
+
 		$ok=$GLOBALS['TSFE']->fe_user->compareUident($user,$loginData);
 		if($ok) {
 			//login successfull
@@ -1820,7 +1834,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			return false;
 		}
 	}
-	
+
 
 }
 
