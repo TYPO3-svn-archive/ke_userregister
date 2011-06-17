@@ -43,43 +43,9 @@ $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi1'] = '
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi2'] = 'layout,select_key,pages,recursive';
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi3'] = 'layout,select_key,pages,recursive';
 
-// setup first_name, last_name and gender
 t3lib_div::loadTCA('fe_users');
 
 t3lib_extMgm::addTCAcolumns('fe_users', Array(
-	'first_name' => Array (
-		'exclude' => 1,
-		'label' => 'LLL:EXT:ke_userregister/locallang_db.xml:fe_users.first_name',
-		'config' => Array (
-			'type' => 'input',
-			'size' => '20',
-			'max' => '50',
-			'eval' => 'trim',
-			'default' => ''
-		)
-	),
-	'last_name' => Array (
-		'exclude' => 1,
-		'label' => 'LLL:EXT:ke_userregister/locallang_db.xml:fe_users.last_name',
-		'config' => Array (
-			'type' => 'input',
-			'size' => '20',
-			'max' => '50',
-			'eval' => 'trim',
-			'default' => ''
-		)
-	),
-	'gender' => Array (
-		'exclude' => 1,
-		'label' => 'LLL:EXT:ke_userregister/locallang_db.xml:fe_users.gender',
-		'config' => Array (
-			'type' => 'radio',
-			'items' => Array (
-				Array('LLL:EXT:ke_userregister/locallang_db.xml:fe_users.gender.I.0', '0'),
-				Array('LLL:EXT:ke_userregister/locallang_db.xml:fe_users.gender.I.1', '1')
-			),
-		)
-	),
 	'registerdate' => array (
 		'exclude' => 1,
 		'label' => 'LLL:EXT:ke_userregister/locallang_db.xml:fe_users.registerdate',
@@ -137,9 +103,7 @@ for ($i=0; $i<10; $i++)	{
 	}
 }
 
-$TCA['fe_users']['palettes'][$lastPalette+1]['showitem'] = 'gender,first_name';
-$TCA['fe_users']['types']['0']['showitem'] = str_replace(', name', ',last_name;;'.($lastPalette+1).';;1-1-1, name', $TCA['fe_users']['types']['0']['showitem']);
-$TCA['fe_users']['ctrl']['thumbnail'] = 'image';
+
 
 // add register date
 t3lib_extMgm::addToAllTCAtypes('fe_users','registerdate','','after:usergroup');
@@ -160,8 +124,8 @@ function make_selector($to_number) {
 function apply_strftime($data) {
   $newdata = array();
   foreach ($data as $item) {
-    if ($item[1]==0) { 
-      $newdata[] = array(''=>0); continue; 
+    if ($item[1]==0) {
+      $newdata[] = array(''=>0); continue;
     }
     $newdata[]= array(strftime("%B", mktime(0, 0, 0, $item[0]+1, 0, 0, 0)), $item[1]);
   }
