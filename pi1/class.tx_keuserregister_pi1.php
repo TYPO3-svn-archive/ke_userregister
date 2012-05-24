@@ -1446,6 +1446,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					'decline_link' => $declineLink,
 					'farewell_text' => $this->pi_getLL('farewell_text'),
 					'site_url' => t3lib_div::getIndpEnv('TYPO3_SITE_URL'),
+					'hash' => $hash,
 				);
 				$htmlBody = $this->cObj->substituteMarkerArray($htmlBody,$markerArray,$wrap='###|###',$uppercase=1);
 
