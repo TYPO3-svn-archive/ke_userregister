@@ -14,30 +14,29 @@ plugin.tx_keuserregister {
   # password settings
   password {
     minLength = 6
-    
+
     # check if password contains at least this amount of numeric characters
     minNumeric = 0
-    
+
     # possible values: none, md5, salted
-    # use "salted" if you use the extension "saltedpasswords" with TYPO3 4.3
+    # use "salted" if you use the extension "saltedpasswords"
     encryption = salted
   }
-  
+
   # send mail to user after successful double-opt-in?
   successMailAfterConfirmation = 1
-  
+
   # auto-login user after confirmation of registration?
   autoLoginAfterConfirmation = 1
-  
-  
+
+
   backlink {
     # activate backlink generation after successful confirmation?
     generate = 0
     # comma seperated values of get params that will be used for backlink generation
-    parameters = 
+    parameters =
   }
-  
-  
+
   # email notification settings
   notification {
     from_email =
@@ -136,6 +135,6 @@ plugin.tx_keuserregister {
       eval = required
     }
 
-    
+
   }
 }

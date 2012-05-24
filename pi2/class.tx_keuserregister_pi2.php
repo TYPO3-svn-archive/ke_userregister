@@ -165,7 +165,7 @@ class tx_keuserregister_pi2 extends tslib_pibase {
 			} else {
 				die($this->prefixId.': ERROR: Extension saltedpasswords is not available.');
 			}
-			
+
 			if (!$success) {
 				$errors['old_password'] = $this->pi_getLL('error_old_password');
 			}
@@ -182,7 +182,7 @@ class tx_keuserregister_pi2 extends tslib_pibase {
 				$errors['old_password'] = $this->pi_getLL('error_old_password');
 			}
 		}
-		
+
 		// check new password
 		// encrypt password if defined in ts in $this->conf['password.']['encryption']
 		// obsolete: $newPasswordInput = $this->conf['password.']['useMd5'] ? md5($this->lib->removeXSS($this->piVars['new_password'])) : $this->lib->removeXSS($this->piVars['new_password']);

@@ -6,9 +6,9 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
-			<label index="tt_content.list_type_pi1">Register Form</label>
-			<label index="tt_content.list_type_pi2">Change Password</label>
-			<label index="tt_content.list_type_pi3">Delete Profile</label>
+			<label index="tt_content.list_type_pi1">User Registration: Register Form</label>
+			<label index="tt_content.list_type_pi2">User Registration: Change Password</label>
+			<label index="tt_content.list_type_pi3">User Registration: Delete Profile</label>
 			<label index="fe_users.first_name">First Name</label>
 			<label index="fe_users.last_name">Last Name</label>
 			<label index="fe_users.registerdate">Register date (frontend registration)</label>
@@ -20,9 +20,9 @@
 			<label index="fe_users.yearofbirth">Year of birth</label>
 		</languageKey>
 		<languageKey index="de" type="array">
-			<label index="tt_content.list_type_pi1">Registrierungsformular</label>
-			<label index="tt_content.list_type_pi2">Passwort ändern</label>
-			<label index="tt_content.list_type_pi3">Profil löschen</label>
+			<label index="tt_content.list_type_pi1">Benutzerregistrierung: Registrierungsformular</label>
+			<label index="tt_content.list_type_pi2">Benutzerregistrierung: Passwort ändern</label>
+			<label index="tt_content.list_type_pi3">Benutzerregistrierung: Profil löschen</label>
 			<label index="fe_users.first_name">Vorname</label>
 			<label index="fe_users.last_name">Nachname</label>
 			<label index="fe_users.registerdate">Registrierungsdatum (Frontend-Registrierung)</label>

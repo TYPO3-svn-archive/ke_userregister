@@ -55,13 +55,13 @@ class tx_keuserregister_pi3 extends tslib_pibase {
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
 		$this->pi_USER_INT_obj = 1;	// Configuring so caching is not expected. This value means that no cHash params are ever set. We do this, because it's a USER_INT object!
-		
+
 		// get general extension setup
 		$this->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_keuserregister.'];
-		
+
 		// init lib
 		$this->lib = t3lib_div::makeInstance('tx_keuserregister_lib');
-		
+
 		// get html template
 		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
 

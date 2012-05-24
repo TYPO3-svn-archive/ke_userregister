@@ -27,9 +27,12 @@
 ***************************************************************/
 
 require_once(PATH_tslib.'class.tslib_pibase.php');
-require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
 require_once(PATH_t3lib.'class.t3lib_basicfilefunc.php');
 require_once(t3lib_extMgm::extPath('ke_userregister', 'lib/class.tx_keuserregister_lib.php'));
+
+// require new mail api if t3 v > 4.5
+if (t3lib_div::int_from_ver(TYPO3_version) >= 4005000) require_once(PATH_t3lib.'mail/class.t3lib_mail_message.php');
+else require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
 
 
 /**
@@ -598,7 +601,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 
 				// fill other error markers
 				$this->markerArray['error_'.$fieldName] = $errors[$fieldName];
-				
+
 			} else $this->markerArray['error_'.$fieldName] = '';
 		}
 
@@ -1705,39 +1708,45 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		// create the plain message body
 		$message = html_entity_decode(strip_tags($html_body), ENT_QUOTES, $GLOBALS['TSFE']->renderCharset);
 
-		// inspired by code from tt_products, thanks
-		$Typo3_htmlmail = t3lib_div::makeInstance('t3lib_htmlmail');
-		$Typo3_htmlmail->start();
-
-		$Typo3_htmlmail->subject = $subject;
-		$Typo3_htmlmail->from_email = $this->conf['notification.']['from_email'];
-		$Typo3_htmlmail->from_name = $this->conf['notification.']['from_name'];
-		$Typo3_htmlmail->replyto_email = $Typo3_htmlmail->from_email;
-		$Typo3_htmlmail->replyto_name = $Typo3_htmlmail->from_name;
-		$Typo3_htmlmail->organisation = '';
-
-		if ($sendAsHTML)  {
-			$Typo3_htmlmail->theParts['html']['content'] = $html_body;
-			$Typo3_htmlmail->theParts['html']['path'] = t3lib_div::getIndpEnv('TYPO3_REQUEST_HOST') . '/';
-
-			$Typo3_htmlmail->extractMediaLinks();
-			$Typo3_htmlmail->extractHyperLinks();
-			$Typo3_htmlmail->fetchHTMLMedia();
-			$Typo3_htmlmail->substMediaNamesInHTML(0);	// 0 = relative
-			$Typo3_htmlmail->substHREFsInHTML();
-			$Typo3_htmlmail->setHTML($Typo3_htmlmail->encodeMsg($Typo3_htmlmail->theParts['html']['content']));
-			if ($message)	{
-				$Typo3_htmlmail->addPlain($message);
-			}
+		// use new mail api if T3 v >= 4.5
+		if (t3lib_div::int_from_ver(TYPO3_version) >= 4005000) {
+			$Typo3_htmlmail = t3lib_div::makeInstance('t3lib_mail_Message');
+			$Typo3_htmlmail->setFrom(
+				array($this->conf['notification.']['from_email'] => $this->conf['notification.']['from_name'])
+			);
+			$Typo3_htmlmail->setTo(explode(',', $toEMail));
+			$Typo3_htmlmail->setSubject($subject);
+			if ($sendAsHTML) $Typo3_htmlmail->setBody($html_body, 'text/html');
+			if ($message)	$Typo3_htmlmail->addPart($message, 'text/plain');
+			$Typo3_htmlmail->send();
 		} else {
-			$Typo3_htmlmail->addPlain($message);
+			// use old mail api if T3 v < 4.5
+			// inspired by code from tt_products, thanks
+			$Typo3_htmlmail = t3lib_div::makeInstance('t3lib_htmlmail');
+			$Typo3_htmlmail->start();
+			$Typo3_htmlmail->subject = $subject;
+			$Typo3_htmlmail->from_email = $this->conf['notification.']['from_email'];
+			$Typo3_htmlmail->from_name = $this->conf['notification.']['from_name'];
+			$Typo3_htmlmail->replyto_email = $Typo3_htmlmail->from_email;
+			$Typo3_htmlmail->replyto_name = $Typo3_htmlmail->from_name;
+			$Typo3_htmlmail->organisation = '';
+			if ($sendAsHTML)  {
+				$Typo3_htmlmail->theParts['html']['content'] = $html_body;
+				$Typo3_htmlmail->theParts['html']['path'] = t3lib_div::getIndpEnv('TYPO3_REQUEST_HOST') . '/';
+				$Typo3_htmlmail->extractMediaLinks();
+				$Typo3_htmlmail->extractHyperLinks();
+				$Typo3_htmlmail->fetchHTMLMedia();
+				$Typo3_htmlmail->substMediaNamesInHTML(0);	// 0 = relative
+				$Typo3_htmlmail->substHREFsInHTML();
+				$Typo3_htmlmail->setHTML($Typo3_htmlmail->encodeMsg($Typo3_htmlmail->theParts['html']['content']));
+				if ($message)	$Typo3_htmlmail->addPlain($message);
+			} else $Typo3_htmlmail->addPlain($message);
+			$Typo3_htmlmail->setHeaders();
+			$Typo3_htmlmail->setContent();
+			$Typo3_htmlmail->setRecipient(explode(',', $toEMail));
+			$Typo3_htmlmail->sendTheMail();
 		}
-		$Typo3_htmlmail->setHeaders();
-		$Typo3_htmlmail->setContent();
-		$Typo3_htmlmail->setRecipient(explode(',', $toEMail));
-		$Typo3_htmlmail->sendTheMail();
 	}
-
 
 	/**
 	 * Uploads the file given in the form-field $attachmentName to the server
