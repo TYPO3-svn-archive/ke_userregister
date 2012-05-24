@@ -1424,14 +1424,16 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				unset($linkconf);
 				$linkconf['parameter'] = $GLOBALS['TSFE']->id;
 				$linkconf['additionalParams'] = '&confirm='.$hash;
-				$confirmLinkUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL').$this->cObj->typoLink_URL($linkconf);
+				if (!empty($GLOBALS['TSFE']->tmpl->setup['config.']['absRefPrefix'])) $confirmLinkUrl = $this->cObj->typoLink_URL($linkconf);
+				else $confirmLinkUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL').$this->cObj->typoLink_URL($linkconf);
 				$confirmationLink = '<a href="'.$confirmLinkUrl.'">'.$confirmLinkUrl.'</a>';
 
 				// generate decline link
 				unset($linkconf);
 				$linkconf['parameter'] = $GLOBALS['TSFE']->id;
 				$linkconf['additionalParams'] = '&decline='.$hash;
-				$declineLinkUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL').$this->cObj->typoLink_URL($linkconf);
+				if (!empty($GLOBALS['TSFE']->tmpl->setup['config.']['absRefPrefix'])) $declineLinkUrl = $this->cObj->typoLink_URL($linkconf);
+				else $declineLinkUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL').$this->cObj->typoLink_URL($linkconf);
 				$declineLink = '<a href="'.$declineLinkUrl.'">'.$declineLinkUrl.'</a>';
 
 				$markerArray = array(
@@ -1604,14 +1606,16 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		unset($linkconf);
 		$linkconf['parameter'] = $GLOBALS['TSFE']->id;
 		$linkconf['additionalParams'] = '&mailconfirm='.$this->emailChangeHash;
-		$confirmLinkUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL').$this->cObj->typoLink_URL($linkconf);
+		if (!empty($GLOBALS['TSFE']->tmpl->setup['config.']['absRefPrefix'])) $confirmLinkUrl = $this->cObj->typoLink_URL($linkconf);
+		else $confirmLinkUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL').$this->cObj->typoLink_URL($linkconf);
 		$confirmationLink = '<a href="'.$confirmLinkUrl.'">'.$confirmLinkUrl.'</a>';
 
 		// generate decline link
 		unset($linkconf);
 		$linkconf['parameter'] = $GLOBALS['TSFE']->id;
 		$linkconf['additionalParams'] = '&maildecline='.$this->emailChangeHash;
-		$declineLinkUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL').$this->cObj->typoLink_URL($linkconf);
+		if (!empty($GLOBALS['TSFE']->tmpl->setup['config.']['absRefPrefix'])) $declineLinkUrl = $this->cObj->typoLink_URL($linkconf);
+		else $declineLinkUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL').$this->cObj->typoLink_URL($linkconf);
 		$declineLink = '<a href="'.$declineLinkUrl.'">'.$declineLinkUrl.'</a>';
 
 		$markerArray = array(
