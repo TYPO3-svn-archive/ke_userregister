@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2010 Andreas Kiefer <kiefer@kennziffer.com>
+*  (c) 2009-2012 Andreas Kiefer <kiefer@kennziffer.com>
 *  All rights reserved
 *
 *	Fields to select day, month and year of birth:
@@ -31,7 +31,7 @@ require_once(PATH_t3lib.'class.t3lib_basicfilefunc.php');
 require_once(t3lib_extMgm::extPath('ke_userregister', 'lib/class.tx_keuserregister_lib.php'));
 
 // require new mail api if t3 v > 4.5
-if (t3lib_div::int_from_ver(TYPO3_version) >= 4005000) require_once(PATH_t3lib.'mail/class.t3lib_mail_message.php');
+if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) >= 4005000) require_once(PATH_t3lib.'mail/class.t3lib_mail_message.php');
 else require_once(PATH_t3lib.'class.t3lib_htmlmail.php');
 
 
@@ -1714,7 +1714,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		$message = html_entity_decode(strip_tags($html_body), ENT_QUOTES, $GLOBALS['TSFE']->renderCharset);
 
 		// use new mail api if T3 v >= 4.5
-		if (t3lib_div::int_from_ver(TYPO3_version) >= 4005000) {
+		if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) >= 4005000) {
 			$Typo3_htmlmail = t3lib_div::makeInstance('t3lib_mail_Message');
 			$Typo3_htmlmail->setFrom(
 				array($this->conf['notification.']['from_email'] => $this->conf['notification.']['from_name'])
