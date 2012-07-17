@@ -143,8 +143,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	/**
 	* Description
 	*
-	* @param	type		desc
-	* @return	The content that is displayed on the website
+	* @return	string
 	*/
 	function processConfirm() {
 		// check if hash duration is set
