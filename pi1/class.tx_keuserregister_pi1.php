@@ -1489,8 +1489,6 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 
 			// special handling for directmail fields
 			if ($fieldConf['type'] == 'directmail') {
-				// delete all mm entries in db
-				$GLOBALS['TYPO3_DB']->exec_DELETEquery('sys_dmail_feuser_category_mm','uid_local="'.$GLOBALS['TSFE']->fe_user->user['uid'].'"');
 				if (sizeof($this->piVars[$fieldName])) {
 					foreach ($this->piVars[$fieldName] as $catUid => $value) {
 						if ($value == 1) $dmailInsertValues[] = $catUid;
@@ -1518,9 +1516,6 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				$fields_values[$fieldName] = $this->lib->removeXSS($this->piVars[$fieldName]);
 			}
 
-
-
-
 		}
 
 		// Hook for further data processing before saving to db
@@ -1536,7 +1531,10 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 
 		// save data in db
 		if ($GLOBALS['TYPO3_DB']->exec_UPDATEquery($table,$where,$fields_values,$no_quote_fields=FALSE)) {
-
+			
+			// delete all mm entries in db
+			$GLOBALS['TYPO3_DB']->exec_DELETEquery('sys_dmail_feuser_category_mm','uid_local="'.$GLOBALS['TSFE']->fe_user->user['uid'].'"');
+			
 			// process directmail values
 			if (is_array($dmailInsertValues)) {
 				foreach ($dmailInsertValues as $key => $catUid) {
