@@ -3,6 +3,9 @@ if (!defined ('TYPO3_MODE')) {
 	die ('Access denied.');
 }
 
+// add birthday field functions
+require_once(t3lib_extMgm::extPath($_EXTKEY) . 'birthdayFields.php.inc');
+
 t3lib_div::loadTCA('tt_content');
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi1']='layout,select_key';
 
@@ -103,33 +106,10 @@ for ($i=0; $i<10; $i++)	{
 	}
 }
 
-
-
 // add register date
 t3lib_extMgm::addToAllTCAtypes('fe_users','registerdate','','after:usergroup');
 
-
 // add birthday fields
-function make_selector($to_number) {
-  $options = array();
-  $options[] = array(''=>0);
-  for($i=1; $i<=$to_number; $i++) {
-    $options[] = array($i, $i);
-  }
-  return $options;
-}
-
-function apply_strftime($data) {
-  $newdata = array();
-  foreach ($data as $item) {
-    if ($item[1]==0) {
-      $newdata[] = array(''=>0); continue;
-    }
-    $newdata[]= array(strftime("%B", mktime(0, 0, 0, $item[0]+1, 0, 0)), $item[1]);
-  }
-  return $newdata;
-}
-
 t3lib_extMgm::addToAllTCAtypes("fe_users","dayofbirth, monthofbirth, yearofbirth", "", "after:name");
 
 
