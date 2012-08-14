@@ -1525,7 +1525,10 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				$_procObj->processSpecialDataProcessing($fields_values,$this);
 			}
 		}
-
+		
+		// modify tstamp value to current time
+		$fields_values['tstamp'] = time();
+		
 		// do not process email change here
 		if ($this->mode == 'edit') unset($fields_values['email']);
 

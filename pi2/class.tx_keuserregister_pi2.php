@@ -224,8 +224,8 @@ class tx_keuserregister_pi2 extends tslib_pibase {
 			$table = 'fe_users';
 			$where = 'uid='.intval($GLOBALS['TSFE']->fe_user->user['uid']);
 			$fields_values = array(
-				// 'password' => $this->conf['password.']['useMd5'] ? md5($this->lib->removeXSS($this->piVars['new_password'])) : $this->lib->removeXSS($this->piVars['new_password']),
-				'password' => $this->lib->encryptPassword($this->lib->removeXSS($this->piVars['new_password']), $this->conf['password.']['encryption'])
+				'password' => $this->lib->encryptPassword($this->lib->removeXSS($this->piVars['new_password']), $this->conf['password.']['encryption']),
+				'tstamp' => time(),
 			);
 
 			if ($GLOBALS['TYPO3_DB']->exec_UPDATEquery($table,$where,$fields_values,$no_quote_fields=FALSE)) {

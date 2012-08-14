@@ -39,7 +39,7 @@ plugin.tx_keuserregister {
 
   # email notification settings
   notification {
-    from_email =
+    from_email = your@domain.com
     from_name = TYPO3 User Registration
   }
 
