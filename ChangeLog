@@ -1,6 +1,6 @@
 ChangeLog
 
-Current SVN trunk
+TER version 0.1.2 (2012/08)
 * bugfix: tstamp is not updated when updating fe_user record. Thanks to Marcus Schwemer (http://forge.typo3.org/issues/39620)
 * bugfix: delete directmail mm entries after hook	
 * moved birthday field funcs from ext_tables.php to external file. Thanks to Marcus Schwemer (http://forge.typo3.org/issues/34391)
