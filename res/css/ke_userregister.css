@@ -35,7 +35,6 @@
 .tx-keuserregister-pi1 .userregister-dateofbirth .field select {
     width: auto;
     margin-right: 3px;
-    float: left;
 }
 
 .tx-keuserregister-pi1 textarea {
