@@ -1,5 +1,10 @@
 ChangeLog
 
+Current SVN trunk
+* documentation maintenance
+* css inclusion changed for compatybility to TYPO3 6.0
+* minor tempate and css improvements
+
 TER version 0.1.2 (2012/08)
 * bugfix: tstamp is not updated when updating fe_user record. Thanks to Marcus Schwemer (http://forge.typo3.org/issues/39620)
 * bugfix: delete directmail mm entries after hook	
