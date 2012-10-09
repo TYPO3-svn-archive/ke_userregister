@@ -59,7 +59,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
 		$this->pi_USER_INT_obj = 1;	// Configuring so caching is not expected. This value means that no cHash params are ever set. We do this, because it's a USER_INT object!
-
+		
 		// get tooltip class if extension is installed
 		if (t3lib_extMgm::isLoaded('fe_tooltip')) {
 			require_once(t3lib_extMgm::extPath('fe_tooltip').'class.tx_fetooltip.php');
@@ -119,9 +119,11 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		// get html template
 		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
 
-		// include css
-		if ($this->conf['cssFile']) {
-			$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId] .= '<link rel="stylesheet" type="text/css" href="'.$this->conf['cssFile'].'" />';
+		// include css	
+		$cssFile = $GLOBALS['TSFE']->tmpl->getFileName($this->conf['cssFile']);
+		if(!empty($cssFile)) {
+			if (t3lib_div::compat_version(`4.6`)) $GLOBALS['TSFE']->getPageRenderer()->addCssFile($cssFile);
+			else $GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_css'] = `<link rel="stylesheet" type="text/css" href="'.$cssfile.'" />`;
 		}
 
 		// process incoming registration confirmation
@@ -1423,16 +1425,14 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				unset($linkconf);
 				$linkconf['parameter'] = $GLOBALS['TSFE']->id;
 				$linkconf['additionalParams'] = '&confirm='.$hash;
-				if (!empty($GLOBALS['TSFE']->tmpl->setup['config.']['absRefPrefix'])) $confirmLinkUrl = $this->cObj->typoLink_URL($linkconf);
-				else $confirmLinkUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL').$this->cObj->typoLink_URL($linkconf);
+				$confirmLinkUrl = t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL($linkconf));
 				$confirmationLink = '<a href="'.$confirmLinkUrl.'">'.$confirmLinkUrl.'</a>';
 
 				// generate decline link
 				unset($linkconf);
 				$linkconf['parameter'] = $GLOBALS['TSFE']->id;
 				$linkconf['additionalParams'] = '&decline='.$hash;
-				if (!empty($GLOBALS['TSFE']->tmpl->setup['config.']['absRefPrefix'])) $declineLinkUrl = $this->cObj->typoLink_URL($linkconf);
-				else $declineLinkUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL').$this->cObj->typoLink_URL($linkconf);
+				$declineLinkUrl = t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL($linkconf));
 				$declineLink = '<a href="'.$declineLinkUrl.'">'.$declineLinkUrl.'</a>';
 
 				$markerArray = array(
@@ -1607,16 +1607,14 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		unset($linkconf);
 		$linkconf['parameter'] = $GLOBALS['TSFE']->id;
 		$linkconf['additionalParams'] = '&mailconfirm='.$this->emailChangeHash;
-		if (!empty($GLOBALS['TSFE']->tmpl->setup['config.']['absRefPrefix'])) $confirmLinkUrl = $this->cObj->typoLink_URL($linkconf);
-		else $confirmLinkUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL').$this->cObj->typoLink_URL($linkconf);
+		$confirmLinkUrl = t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL($linkconf));
 		$confirmationLink = '<a href="'.$confirmLinkUrl.'">'.$confirmLinkUrl.'</a>';
 
 		// generate decline link
 		unset($linkconf);
 		$linkconf['parameter'] = $GLOBALS['TSFE']->id;
 		$linkconf['additionalParams'] = '&maildecline='.$this->emailChangeHash;
-		if (!empty($GLOBALS['TSFE']->tmpl->setup['config.']['absRefPrefix'])) $declineLinkUrl = $this->cObj->typoLink_URL($linkconf);
-		else $declineLinkUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL').$this->cObj->typoLink_URL($linkconf);
+		$declineLinkUrl = t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL($linkconf));
 		$declineLink = '<a href="'.$declineLinkUrl.'">'.$declineLinkUrl.'</a>';
 
 		$markerArray = array(
