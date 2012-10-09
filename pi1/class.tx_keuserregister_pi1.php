@@ -122,7 +122,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		// include css	
 		$cssFile = $GLOBALS['TSFE']->tmpl->getFileName($this->conf['cssFile']);
 		if(!empty($cssFile)) {
-			if (t3lib_div::compat_version(`4.6`)) $GLOBALS['TSFE']->getPageRenderer()->addCssFile($cssFile);
+			if (t3lib_div::compat_version('4.6')) $GLOBALS['TSFE']->getPageRenderer()->addCssFile($cssFile);
 			else $GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_css'] = `<link rel="stylesheet" type="text/css" href="'.$cssfile.'" />`;
 		}
 
@@ -635,7 +635,10 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		} else {
 			$content = $this->cObj->substituteSubpart ($content, '###SUB_SALUTATION###', '', $recursive=1);
 		}
-
+		
+		// add birthday field label
+		$this->markerArray['label_birthday'] = $this->pi_getLL('label_birthday');
+		
 		// substitute marker array
 		$content = $this->cObj->substituteMarkerArray($content,$this->markerArray,$wrap='###|###',$uppercase=1);
 

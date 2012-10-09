@@ -54,15 +54,19 @@
 
 .tx-keuserregister-pi3 .confirmation-link {
     padding: 5px 10px;
-    background: #005DA8;
+    background: red;
     margin: 10px;
 }
 
 .tx-keuserregister-pi3 .confirmation-link a {
     color: white;
     font-weight: bold;
+    
 }
 
+.tx-keuserregister-pi3 .confirmation-link a:hover {
+	color: black;
+}
 
 .tx-keuserregister-pi1 input {
     width: 230px;
