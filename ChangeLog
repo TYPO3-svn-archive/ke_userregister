@@ -1,5 +1,8 @@
 ChangeLog
 
+TER version 0.1.4 (2012/10)
+* fixed broken documentation after rendering at typo3.org
+
 TER version 0.1.3 (2012/10)
 * documentation maintenance
 * css inclusion changed for compatybility to TYPO3 6.0
