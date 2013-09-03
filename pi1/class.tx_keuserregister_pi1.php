@@ -59,7 +59,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
 		$this->pi_USER_INT_obj = 1;	// Configuring so caching is not expected. This value means that no cHash params are ever set. We do this, because it's a USER_INT object!
-		
+
 		// get tooltip class if extension is installed
 		if (t3lib_extMgm::isLoaded('fe_tooltip')) {
 			require_once(t3lib_extMgm::extPath('fe_tooltip').'class.tx_fetooltip.php');
@@ -119,7 +119,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		// get html template
 		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
 
-		// include css	
+		// include css
 		$cssFile = $GLOBALS['TSFE']->tmpl->getFileName($this->conf['cssFile']);
 		if(!empty($cssFile)) {
 			if (t3lib_div::compat_version('6.0')) $GLOBALS['TSFE']->getPageRenderer()->addCssFile($cssFile);
@@ -192,6 +192,13 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			// send success e-mail
 			if ($this->conf['successMailAfterConfirmation']) {
 				$this->sendConfirmationSuccessMail($hashRow['feuser_uid']);
+			}
+
+			// send email to admin after successful registration
+			if ($this->conf['adminMailAfterConfirmation']) {
+				$subject = $this->pi_getLL('admin_mail_subject_confirmation_success');
+				$text = $this->pi_getLL('admin_mail_text_confirmation_success');
+				$this->sendAdminMail($hashRow['feuser_uid'], $subject, $text);
 			}
 
 			// auto-login new user?
@@ -635,10 +642,10 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		} else {
 			$content = $this->cObj->substituteSubpart ($content, '###SUB_SALUTATION###', '', $recursive=1);
 		}
-		
+
 		// add birthday field label
 		$this->markerArray['label_birthday'] = $this->pi_getLL('label_birthday');
-		
+
 		// substitute marker array
 		$content = $this->cObj->substituteMarkerArray($content,$this->markerArray,$wrap='###|###',$uppercase=1);
 
@@ -1528,19 +1535,19 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				$_procObj->processSpecialDataProcessing($fields_values,$this);
 			}
 		}
-		
+
 		// modify tstamp value to current time
 		$fields_values['tstamp'] = time();
-		
+
 		// do not process email change here
 		if ($this->mode == 'edit') unset($fields_values['email']);
 
 		// save data in db
 		if ($GLOBALS['TYPO3_DB']->exec_UPDATEquery($table,$where,$fields_values,$no_quote_fields=FALSE)) {
-			
+
 			// delete all mm entries in db
 			$GLOBALS['TYPO3_DB']->exec_DELETEquery('sys_dmail_feuser_category_mm','uid_local="'.$GLOBALS['TSFE']->fe_user->user['uid'].'"');
-			
+
 			// process directmail values
 			if (is_array($dmailInsertValues)) {
 				foreach ($dmailInsertValues as $key => $catUid) {
@@ -1557,6 +1564,12 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			$content = $this->cObj->getSubpart($this->templateCode,'###SUB_MESSAGE###');
 			$content = $this->cObj->substituteMarker($content,'###HEADLINE###',$this->pi_getLL('edit_success_headline'));
 			#$content = $this->cObj->substituteMarker($content,'###MESSAGE###',$this->pi_getLL('edit_success_text'));
+
+			if ($this->conf['adminMailAfterEdit'] == 1) {
+				$text = $this->pi_getLL('admin_mail_text_userdata_change');
+				$subject = $this->pi_getLL('admin_mail_subject_userdata_change');
+				$this->sendAdminMail($GLOBALS['TSFE']->fe_user->user['uid'], $subject, $text);
+			}
 
 			// email has changed
 			// check if valid and not already used in db
@@ -1850,7 +1863,98 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		}
 	}
 
+	/**
+	 * function sendAdminMail
+	 *
+	 * @param $userUid
+	 * @param $adminMailSubject
+	 * @param $adminMailText
+	 */
 
+	function sendAdminMail($userUid, $adminMailSubject, $adminMailText) {
+
+		$userData = $this->getUserRecord($userUid);
+
+		$htmlBody = $this->cObj->getSubpart($this->templateCode, '###ADMIN_MAIL_BODY###');
+		$htmlField = $this->cObj->getSubpart($this->templateCode, '###ADMIN_MAIL_SUB###');
+
+		$mailMarkerArray = array();
+		$mailMarkerArray['admin_mail_field_values'] = '';
+		if ($this->conf['adminMailFields']) {
+			$fields = t3lib_div::trimExplode(',', $this->conf['adminMailFields'], true);
+			foreach ($fields as $singleField) {
+				$markerArrayField = array();
+				$markerArrayField['###LABEL###'] = $this->pi_getLL('label_' . $singleField);
+				$markerArrayField['###VALUE###'] = $this->renderFieldAsText($singleField, $userData[$singleField]);
+				$mailMarkerArray['admin_mail_field_values'] .= $this->cObj->substituteMarkerArray($htmlField, $markerArrayField);
+			}
+		}
+
+		$mailMarkerArray['admin_mail_text'] = $adminMailText;
+
+		$subject = $adminMailSubject;
+		foreach ($this->conf['adminMail.'] as $admins) {
+			$htmlBody = $this->cObj->substituteMarkerArray($htmlBody, $mailMarkerArray, $wrap = '###|###', $uppercase = 1);
+			$this->sendNotificationEmail($admins['address'], $subject, $htmlBody);
+		}
+	}
+
+	/**
+	 * @param string $fieldName name of the database field
+	 * @param string $fieldContent content of the database field
+	 * @return string value to show in the email
+	 */
+
+	function renderFieldAsText($fieldName, $fieldContent) {
+
+		$value = '';
+		switch ($this->fields[$fieldName . '.']['type']) {
+			case 'textarea':
+			case 'text':
+			case 'yearofbirth':
+			case 'monthofbirth':
+			case 'dayofbirth':
+			case 'country':
+				$value = $fieldContent;
+				break;
+			case 'radio':
+			case 'select':
+				$value = $this->pi_getLL('label_' . $fieldName . '_' . trim($fieldContent));
+				if ($value == '') {
+					$value = $fieldContent;
+				}
+				break;
+			case 'checkbox':
+				$value = '';
+				$fieldValues = explode(',', $this->fields[$fieldName . '.']['values']);
+				foreach ($fieldValues as $key => $singleValue) {
+					if (($fieldContent >> $singleValue - 1) & 1) {
+						if ($value != '') {
+							$value .= ', ';
+						}
+						$value .= $this->pi_getLL('label_' . $fieldName . '_' . $singleValue);
+					}
+				}
+				break;
+			case 'hidden':
+				// do not send anything; should we?
+				break;
+			case 'image':
+				// TODO
+				break;
+			case 'select_db_relation':
+				// TODO
+				break;
+			case 'directmail':
+				// TODO
+				break;
+			default:
+				// What makes sense?
+				break;
+		}
+
+		return $value;
+	}
 }
 
 

@@ -267,6 +267,7 @@ class tx_keuserregister_pi2 extends tslib_pibase {
 				$content = $this->cObj->getSubpart($this->templateCode,'###SUB_NEW_PASSWORD###');
 				$content = $this->cObj->substituteMarker($content,'###VALUE_NEW_PASSWORD###',$value);
 				$content = $this->cObj->substituteMarker($content,'###VALUE_NEW_PASSWORD_AGAIN###',$valueAgain);
+				$content = $this->cObj->substituteMarker($content, '###LABEL_PASSWORD_AGAIN###', $this->pi_getLL('label_password_again'));
 				break;
 
 		}

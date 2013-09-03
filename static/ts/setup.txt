@@ -30,6 +30,27 @@ plugin.tx_keuserregister {
   autoLoginAfterConfirmation = 1
 
 
+  # send email to admin after sucessful double-opt-in? 
+  # (set to "1" to activate this feature)
+  adminMailAfterConfirmation = 0
+
+  # send email to admin after changed userdata
+  adminMailAfterEdit = 0
+
+  # admin email addresses and names as TypoScript Array
+  # to add another admin, just add another TypoScript Array with the "email address" 
+  adminMail {
+  	10 {
+  		address = admin@my-doma.in
+  	}
+  }
+
+  # list of fe_user fields that will be sent to the admin
+  adminMailFields (
+	username, gender, first_name, last_name, email
+  )
+
+
   backlink {
     # activate backlink generation after successful confirmation?
     generate = 0
