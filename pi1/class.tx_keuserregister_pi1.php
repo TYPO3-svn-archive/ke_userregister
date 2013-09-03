@@ -160,9 +160,9 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	}
 
 	/**
-	 * Description
+	 * Process the double opt-in confirmation
 	 *
-	 * @return	string
+	 * @return string
 	 */
 	function processConfirm() {
 		// check if hash duration is set
@@ -265,10 +265,10 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	}
 
 	/*
-	 * function sendConfirmationSuccessMail
+	 * Sends the success mail to the user
+	 * 
 	 * @param $userUid int
 	 */
-
 	function sendConfirmationSuccessMail($userUid) {
 		$fields = '*';
 		$table = 'fe_users';
@@ -295,10 +295,9 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	}
 
 	/**
-	 * Description
+	 * Process the decline of a registration
 	 *
-	 * @param	type		desc
-	 * @return	The content that is displayed on the website
+	 * @return void
 	 */
 	function processDecline() {
 
@@ -349,10 +348,9 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	}
 
 	/**
-	 * Description
+	 * Process the email change request
 	 *
-	 * @param	type		desc
-	 * @return	The content that is displayed on the website
+	 * @return string
 	 */
 	function processEmailChangeConfirm() {
 		// check if hash duration is set
@@ -411,10 +409,9 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	}
 
 	/**
-	 * Description
+	 * Process the email change decline
 	 *
-	 * @param	type		desc
-	 * @return	The content that is displayed on the website
+	 * @return string
 	 */
 	function processEmailChangeDecline() {
 
@@ -460,10 +457,10 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	}
 
 	/**
-	 * Description
+	 * Delete a hasch entry from the database
 	 *
-	 * @param	type		desc
-	 * @return	The content that is displayed on the website
+	 * @param string
+	 * @return void
 	 */
 	function deleteHashEntry($hash) {
 		$table = 'tx_keuserregister_hash';
@@ -475,8 +472,8 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	/**
 	 * Renders the registration form
 	 *
-	 * @param	type		desc
-	 * @return	The content that is displayed on the website
+	 * @param array
+	 * @return string
 	 */
 	function renderForm($errors = array()) {
 
@@ -718,8 +715,8 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	/**
 	 * Renders a tooltip for one form field
 	 *
-	 * @param	text		Text to display in the tooltip
-	 * @return	html code for tooltip
+	 * @param string Text to display in the tooltip
+	 * @return string html code for tooltip
 	 */
 	function renderTooltip($tooltipText) {
 		if ($tooltipText && $this->tooltipAvailable) {
@@ -730,10 +727,11 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	}
 
 	/**
-	 * Description
+	 * renders an input field
 	 *
-	 * @param	type		desc
-	 * @return	The content that is displayed on the website
+	 * @param array field configuration
+	 * @param string field name
+	 * @return string
 	 */
 	function renderInputField($fieldConf, $fieldName) {
 		switch ($fieldConf['type']) {
@@ -1156,7 +1154,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	/**
 	 * process form field evaluations
 	 *
-	 * @return		
+	 * @return string
 	 */
 	function evaluateFormData() {
 
