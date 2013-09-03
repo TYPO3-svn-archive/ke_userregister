@@ -1,5 +1,8 @@
 ChangeLog
 
+Current Trunk
+* bugfix: Fix Usage of deprecated php parameter is_dst in mktime(), see http://forge.typo3.org/issues/43669, thanks to Tilo Baller
+
 TER version 0.1.4 (2012/10)
 * fixed broken documentation after rendering at typo3.org
 

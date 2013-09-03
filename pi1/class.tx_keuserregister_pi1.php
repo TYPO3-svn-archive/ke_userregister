@@ -1005,7 +1005,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 
 				// loop options
 				foreach (range(1, 12) as $key => $value) {
-					$label = strftime("%B", mktime(0, 0, 0, $value+1, 0, 0, 0));
+					$label = strftime("%B", mktime(0, 0, 0, $value+1, 0, 0));
 					$tempMarkerArray = array(
 						'value' => $value,
 						'label' => $label,
