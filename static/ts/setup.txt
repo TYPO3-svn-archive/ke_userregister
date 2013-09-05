@@ -37,13 +37,8 @@ plugin.tx_keuserregister {
   # send email to admin after changed userdata
   adminMailAfterEdit = 0
 
-  # admin email addresses and names as TypoScript Array
-  # to add another admin, just add another TypoScript Array with the "email address" 
-  adminMail {
-  	10 {
-  		address = admin@my-doma.in
-  	}
-  }
+  # admin email addresses (comma-separated)
+  adminMailAddress = admin@my-doma.in
 
   # list of fe_user fields that will be sent to the admin
   adminMailFields (

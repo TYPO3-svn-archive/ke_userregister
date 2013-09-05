@@ -206,7 +206,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 
 			// update feuser record
 			$table = 'fe_users';
-			$where = 'uid="' . intval($hashRow['feuser_uid']) . '" ';
+			$where = 'uid=' . intval($hashRow['feuser_uid']);
 			$fields_values = array('tstamp' => time());
 
 			// activate the user now, if it is an confirmation from the admin
@@ -2072,8 +2072,8 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 
 		$userData = $this->getUserRecord($userUid, true);
 
-		$htmlBody = $this->cObj->getSubpart($this->templateCode, '###ADMIN_MAIL_BODY###');
-		$htmlField = $this->cObj->getSubpart($this->templateCode, '###ADMIN_MAIL_SUB###');
+		$htmlBodyTemplate = $this->cObj->getSubpart($this->templateCode, '###ADMIN_MAIL_BODY###');
+		$htmlFieldTemplate = $this->cObj->getSubpart($this->templateCode, '###ADMIN_MAIL_SUB###');
 
 		$mailMarkerArray = array();
 		$mailMarkerArray['admin_mail_field_values'] = '';
@@ -2083,18 +2083,27 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				$markerArrayField = array();
 				$markerArrayField['###LABEL###'] = $this->pi_getLL('label_' . $singleField);
 				$markerArrayField['###VALUE###'] = $this->renderFieldAsText($singleField, $userData[$singleField]);
-				$mailMarkerArray['admin_mail_field_values'] .= $this->cObj->substituteMarkerArray($htmlField, $markerArrayField);
+				$mailMarkerArray['admin_mail_field_values'] .= $this->cObj->substituteMarkerArray($htmlFieldTemplate, $markerArrayField);
 			}
 		}
 
 		$mailMarkerArray['admin_mail_text'] = $adminMailText;
 		$mailMarkerArray['admin_mail_text_below'] = $adminMailTextBelow;
 
+		$email = $this->conf['adminMailAddress'];
 		$subject = $adminMailSubject;
-		foreach ($this->conf['adminMail.'] as $admins) {
-			$htmlBody = $this->cObj->substituteMarkerArray($htmlBody, $mailMarkerArray, $wrap = '###|###', $uppercase = 1);
-			$this->sendNotificationEmail($admins['address'], $subject, $htmlBody);
-		}
+		$htmlBody = $this->cObj->substituteMarkerArray($htmlBodyTemplate, $mailMarkerArray, '###|###', 1);
+
+		// Hook for modification of admin email (subject, body and receivers). 
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['customAdminMail'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['customAdminMail'] as $_classRef) {
+				$_procObj = & t3lib_div::getUserObj($_classRef);
+				$_procObj->customAdminMail($email, $subject, $htmlBody, $userData, $this);
+			}
+		} 
+
+		// sent the mail
+		$this->sendNotificationEmail($email, $subject, $htmlBody);
 	}
 
 	/**
