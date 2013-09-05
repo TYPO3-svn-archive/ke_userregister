@@ -98,6 +98,7 @@
 			<label index="admin_mail_text_declineuser">If you want to decline the registration, please use the following link:</label>
 			<label index="admin_mail_subject_userdata_change">A User Changed His Data</label>
 			<label index="admin_mail_text_userdata_change">A user changed his data. These are the current values:</label>
+			<label index="mailfooter_name">User Registration System</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="ff.main">Allgemein</label>

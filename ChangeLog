@@ -4,6 +4,7 @@ Current Trunk
 * bugfix: Fix Usage of deprecated php parameter is_dst in mktime(), see http://forge.typo3.org/issues/43669, thanks to Tilo Baller
 * feature: send email to admin after registration, see http://forge.typo3.org/issues/41705, thanks to Marcus Schwemer
 * feature: confirmation by administrator, every new registration has to be confirmed by an administrator (has to be enabled in typoscript)
+* feature: added footer for mails, can be activated with plugin.tx_keuserregister.notification.addFooter = 1, adds a template subpart to emails
 
 TER version 0.1.4 (2012/10)
 * fixed broken documentation after rendering at typo3.org

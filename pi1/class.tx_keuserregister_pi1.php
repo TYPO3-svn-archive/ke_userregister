@@ -1888,6 +1888,11 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		$subject = html_entity_decode(t3lib_div::deHSCentities($subject), ENT_QUOTES, $GLOBALS['TSFE']->renderCharset);
 		$subject = t3lib_div::encodeHeader($subject, 'base64', $GLOBALS['TSFE']->renderCharset);
 
+		// add the footer
+		if ($this->conf['notification.']['addFooter']) {
+			$html_body .= $this->getMailFooter();
+		}
+
 		// create the plain message body
 		$message = html_entity_decode(strip_tags($html_body), ENT_QUOTES, $GLOBALS['TSFE']->renderCharset);
 
@@ -1934,6 +1939,19 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			$Typo3_htmlmail->setRecipient(explode(',', $toEMail));
 			$Typo3_htmlmail->sendTheMail();
 		}
+	}
+
+	/**
+	 * renders the mail footer
+	 * 
+	 * @return string
+	 */
+	public function getMailFooter() {
+		$template = $this->cObj->getSubpart($this->templateCode, '###MAIL_FOOTER###');
+		$markerArray = array(
+		    'mailfooter_name' => $this->pi_getLL('mailfooter_name')
+		);
+		return $this->cObj->substituteMarkerArray($template, $markerArray, '###|###', 1);
 	}
 
 	/**

@@ -67,9 +67,12 @@ plugin.tx_keuserregister {
   }
 
   # email notification settings
+  # you can activate the mail footer with addFooter = 1, this adds a template
+  # subpart to each mail sent
   notification {
     from_email = your@domain.com
     from_name = TYPO3 User Registration
+    addFooter = 0
   }
 
   # how long are registration hash values accepted?
