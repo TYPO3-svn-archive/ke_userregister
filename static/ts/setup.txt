@@ -50,7 +50,15 @@ plugin.tx_keuserregister {
 	username, gender, first_name, last_name, email
   )
 
+  # admin confirmation:
+  # Should every registration be confirmed by an administrator? In this case
+  # the admin needs to click on a link in the mail sent to him. After that
+  # the user is activated (enabled).
+  # IMPORTANT: You'll have to activate the "adminMailAfterConfirmation" (see above)!
+  adminConfirmationEnabled = 0
 
+
+  # backlink settings
   backlink {
     # activate backlink generation after successful confirmation?
     generate = 0

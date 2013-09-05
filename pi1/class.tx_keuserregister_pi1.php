@@ -30,6 +30,7 @@
 require_once(PATH_tslib . 'class.tslib_pibase.php');
 require_once(PATH_t3lib . 'class.t3lib_basicfilefunc.php');
 require_once(t3lib_extMgm::extPath('ke_userregister', 'lib/class.tx_keuserregister_lib.php'));
+define('ADMIN_HASH_PREFIX', 'admin');
 
 // require new mail api if t3 v > 4.5
 if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) >= 4005000)
@@ -49,6 +50,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	var $prefixId = 'tx_keuserregister_pi1';  // Same as class name
 	var $scriptRelPath = 'pi1/class.tx_keuserregister_pi1.php'; // Path to this script relative to the extension dir.
 	var $extKey = 'ke_userregister'; // The extension key.
+	var $confirmationType = '';
 
 	/**
 	 * The main method of the PlugIn
@@ -57,7 +59,6 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	 * @param	array		$conf: The PlugIn configuration
 	 * @return	The content that is displayed on the website
 	 */
-
 	function main($content, $conf) {
 		$this->conf = $conf;
 		$this->pi_setPiVarDefaults();
@@ -140,6 +141,13 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId . '_css'] = '<link rel="stylesheet" type="text/css" href="' . $cssFile . '" />';
 		}
 
+		// check if it is a user confirmation (double opt-in confirmation),
+		// or an admin confirmation
+		if (t3lib_div::_GET('confirm') || t3lib_div::_GET('decline')) {
+			$hashUserInput = t3lib_div::_GET('confirm') ? t3lib_div::_GET('confirm') : t3lib_div::_GET('decline');
+			$this->confirmationType = (substr($hashUserInput, 0, strlen(ADMIN_HASH_PREFIX)) == ADMIN_HASH_PREFIX) ? 'admin' : 'user';
+		}
+
 		// process incoming registration confirmation
 		if (t3lib_div::_GET('confirm'))
 			$content = $this->processConfirm();
@@ -193,34 +201,68 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		}
 		// if number of found records is eq 1: activate user record
 		else {
+			// get hash row
 			$hashRow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($hashRes);
+
+			// update feuser record
 			$table = 'fe_users';
 			$where = 'uid="' . intval($hashRow['feuser_uid']) . '" ';
-			$fields_values = array('disable' => 0, 'tstamp' => time());
-			// delete hash after processing
-			if ($GLOBALS['TYPO3_DB']->exec_UPDATEquery($table, $where, $fields_values, $no_quote_fields = FALSE)) {
-				$this->deleteHashEntry($hashRow['hash']);
+			$fields_values = array('tstamp' => time());
+
+			// activate the user now, if it is an confirmation from the admin
+			// or if the admin confirmation function is disabled
+			if ($this->confirmationType == 'admin' || !$this->conf['adminConfirmationEnabled']) {
+				$fields_values['disable'] = 0;
 			}
+
+			if (!$GLOBALS['TYPO3_DB']->exec_UPDATEquery($table, $where, $fields_values)) {
+				die ($this->prefixId . ': ERROR: DATABASE ERROR');
+			}
+
+			// delete hash in database
+			$this->deleteHashEntry($hashRow['hash']);
+
 			// print success message
 			$content = $this->cObj->getSubpart($this->templateCode, '###SUB_MESSAGE###');
 			$markerArray = array(
-			    'headline' => $this->pi_getLL('confirmation_success_headline'),
-			    'message' => sprintf($this->pi_getLL('confirmation_success_message'), t3lib_div::getIndpEnv('TYPO3_SITE_URL')),
+			    'headline' => $this->pi_getLL('confirmation_success_headline')
 			);
-			// send success e-mail
-			if ($this->conf['successMailAfterConfirmation']) {
-				$this->sendConfirmationSuccessMail($hashRow['feuser_uid']);
+
+			// the success message depends on wether the admin confirmation function
+			// is enabled or not
+			if ($this->conf['adminConfirmationEnabled']) {
+				if ($this->confirmationType == 'admin') {
+					$markerArray['message'] = sprintf($this->pi_getLL('confirmation_success_message_adminconfirmation_laststep'), t3lib_div::getIndpEnv('TYPO3_SITE_URL'));
+				} else {
+					$markerArray['message'] = sprintf($this->pi_getLL('confirmation_success_message_adminconfirmation'), t3lib_div::getIndpEnv('TYPO3_SITE_URL'));
+				}
+			} else {
+			    $markerArray['message'] = sprintf($this->pi_getLL('confirmation_success_message'), t3lib_div::getIndpEnv('TYPO3_SITE_URL'));
+			}
+
+			// send success email to the user
+			if ($this->conf['successMailAfterConfirmation'] && (!$this->conf['adminConfirmationEnabled'] || $this->confirmationType == 'admin')) {
+				$this->sendUserMail($hashRow['feuser_uid'], 'confirm');
 			}
 
 			// send email to admin after successful registration
-			if ($this->conf['adminMailAfterConfirmation']) {
+			if ($this->conf['adminMailAfterConfirmation'] && ($this->confirmationType == 'user')) {
 				$subject = $this->pi_getLL('admin_mail_subject_confirmation_success');
-				$text = $this->pi_getLL('admin_mail_text_confirmation_success');
-				$this->sendAdminMail($hashRow['feuser_uid'], $subject, $text);
+				$textAbove = $this->pi_getLL('admin_mail_text_confirmation_success');
+
+				// add links for confirmation or denial
+				if ($this->conf['adminConfirmationEnabled']) {
+					$hash = $this->generateHash($hashRow['feuser_uid'], ADMIN_HASH_PREFIX);
+					$textBelow = $this->renderAdminMailLinks($hashRow['feuser_uid'], $hash);
+				} else {
+					$textBelow = '';
+				}
+
+				$this->sendAdminMail($hashRow['feuser_uid'], $subject, $textAbove, $textBelow);
 			}
 
 			// auto-login new user?
-			if ($this->conf['autoLoginAfterConfirmation']) {
+			if ($this->conf['autoLoginAfterConfirmation'] && !$this->conf['adminConfirmationEnabled']) {
 				// get userdata and process auto-login
 				$userRecord = $this->getUserRecord($hashRow['feuser_uid']);
 				if ($this->autoLogin($userRecord['username'], $userRecord['password'])) {
@@ -264,33 +306,108 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		}
 	}
 
+
+	/**
+	 * generate hash and save in database
+	 * 
+	 * @param integer $feuser_uid 
+	 * @param string $prefix
+	 * @param string $fields_values Additional fields to store in the hash table (for backlink generation)
+	 * @return string
+	 */
+	function generateHash($feuser_uid, $prefix = '', $fields_values = array()) {
+		$hash = $prefix . $this->getUniqueCode();
+		$table = 'tx_keuserregister_hash';
+
+		$fields_values['hash'] = $hash;
+		$fields_values['feuser_uid'] = intval($feuser_uid);
+		$fields_values['tstamp'] = time();
+
+		if ($GLOBALS['TYPO3_DB']->exec_INSERTquery($table, $fields_values)) {
+			return $hash;
+		} else {
+			die ($this->prefixId . ': ERROR: DATABASE ERROR');
+		}
+	}
+
+
+	/**
+	 * renders the links used in the admin mail for confirmation or denial
+	 * of a registration
+	 * 
+	 * @param integer fe_user uid
+	 * @param string hash 
+	 * @return string
+	 */
+	function renderAdminMailLinks($feuser_uid, $hash) {
+		$content = $this->cObj->getSubpart($this->templateCode, '###ADMIN_MAIL_SUB_CONFIRMATION_NEEDED###');
+
+		// generate confirmation link
+		$linkconf['parameter'] = $GLOBALS['TSFE']->id;
+		$linkconf['additionalParams'] = '&confirm=' . $hash;
+		$confirmLinkUrl = t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL($linkconf));
+		$confirmationLink = '<a href="' . $confirmLinkUrl . '">' . $confirmLinkUrl . '</a>';
+
+		// generate decline link
+		unset($linkconf);
+		$linkconf['parameter'] = $GLOBALS['TSFE']->id;
+		$linkconf['additionalParams'] = '&decline=' . $hash;
+		$declineLinkUrl = t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL($linkconf));
+		$declineLink = '<a href="' . $declineLinkUrl . '">' . $declineLinkUrl . '</a>';
+
+		$markerArray = array(
+		    'admin_mail_text_confirmuser' => $this->pi_getLL('admin_mail_text_confirmuser'),
+		    'admin_mail_text_declineuser' => $this->pi_getLL('admin_mail_text_declineuser'),
+		    'admin_confirm_link' => $confirmationLink,
+		    'admin_decline_link' => $declineLink
+		);
+
+		return $this->cObj->substituteMarkerArray($content, $markerArray, '###|###', 1);
+
+	}
+
 	/*
-	 * Sends the success mail to the user
+	 * Sends the mail to the user when a registration has been
+	 * confirmed or declined.
+	 * possible values for $action: "confirm" or "decline"
 	 * 
 	 * @param $userUid int
+	 * @param $action text
+	 * @return void
 	 */
-	function sendConfirmationSuccessMail($userUid) {
-		$fields = '*';
-		$table = 'fe_users';
-		$where = 'uid="' . intval($userUid) . '" ';
-		$where .= $this->cObj->enableFields($table);
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fields, $table, $where, '', '', '1');
-		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-			// use salutation based on users gender
-			$salutationCode = $row['gender'] == 1 ? 'female' : 'male';
+	function sendUserMail($userUid, $action = 'confirm') {
+		// send mail to user, ignore enable fields in "decline" mode, since
+		// the user is not enabled yet
+		$userData = $this->getUserRecord($userUid, ($action == 'decline'));
 
-			$htmlBody = $this->cObj->getSubpart($this->templateCode, '###CONFIRMATION_SUCCESS_MAIL###');
+		if (is_array($userData)) {
+			// use salutation based on users gender
+			$salutationCode = $userData['gender'] == 1 ? 'female' : 'male';
+
+			$htmlBody = $this->cObj->getSubpart($this->templateCode, '###CONFIRMATION_MAIL###');
 			$mailMarkerArray = array(
 			    'salutation' => $this->pi_getLL('salutation_' . $salutationCode),
-			    'first_name' => $row['first_name'],
-			    'last_name' => $row['last_name'],
-			    'confirmation_success_text' => $this->pi_getLL('confirmation_success_text'),
+			    'first_name' => $userData['first_name'],
+			    'last_name' => $userData['last_name'],
 			    'farewell_text' => $this->pi_getLL('farewell_text'),
 			    'site_url' => t3lib_div::getIndpEnv('TYPO3_SITE_URL'),
 			);
-			$htmlBody = $this->cObj->substituteMarkerArray($htmlBody, $mailMarkerArray, $wrap = '###|###', $uppercase = 1);
-			$subject = $this->pi_getLL('confirmation_success_subject');
-			$this->sendNotificationEmail($row['email'], $subject, $htmlBody);
+
+			switch ($action) {
+				case 'decline':
+					$mailMarkerArray['text'] = $this->pi_getLL('confirmation_decline_text');
+					$subject = $this->pi_getLL('confirmation_success_subject');
+					break;
+
+				case 'confirm':
+				default:
+					$mailMarkerArray['text'] = $this->pi_getLL('confirmation_success_text');
+					$subject = $this->pi_getLL('confirmation_success_subject');
+					break;
+			}
+
+			$htmlBody = $this->cObj->substituteMarkerArray($htmlBody, $mailMarkerArray, '###|###', 1);
+			$this->sendNotificationEmail($userData['email'], $subject, $htmlBody);
 		}
 	}
 
@@ -329,20 +446,41 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		}
 		// if number of found records is eq 1: completely delete user record
 		else {
+			// get hash row
 			$hashRow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($hashRes);
+
+			// send mail to user if an admin declined the confirmation
+			
+			if ($this->confirmationType == 'admin') {
+				$this->sendUserMail($hashRow['feuser_uid'], 'decline');
+			}
+
+			// delete frontend user
 			$table = 'fe_users';
-			$where = 'uid="' . intval($hashRow['feuser_uid']) . '" ';
-			$fields_values = array('disable' => 0, 'tstamp' => time());
+			$where = 'uid=' . intval($hashRow['feuser_uid']);
+			if (!$GLOBALS['TYPO3_DB']->exec_DELETEquery($table, $where)) {
+				die($this->prefixId . ': ERROR: DATABASE ERROR');
+			}
+
 			// delete hash after processing
-			if ($GLOBALS['TYPO3_DB']->exec_DELETEquery($table, $where))
-				$this->deleteHashEntry($hashRow['hash']);
+			$this->deleteHashEntry($hashRow['hash']);
+
 			// print success message
-			$content = $this->cObj->getSubpart($this->templateCode, '###SUB_MESSAGE###');
+			$contentTemplate = $this->cObj->getSubpart($this->templateCode, '###SUB_MESSAGE###');
+
+			if ($this->confirmationType == 'admin') {
+				$message = $this->pi_getLL('decline_success_message_admin');
+			} else {
+				$message = $this->pi_getLL('decline_success_message');
+			}
+
 			$markerArray = array(
 			    'headline' => $this->pi_getLL('decline_success_headline'),
-			    'message' => $this->pi_getLL('decline_success_message'),
+			    'message' => $message
 			);
-			$content = $this->cObj->substituteMarkerArray($content, $markerArray, $wrap = '###|###', $uppercase = 1);
+
+			$content = $this->cObj->substituteMarkerArray($contentTemplate, $markerArray, '###|###', 1);
+
 			return $content;
 		}
 	}
@@ -1428,7 +1566,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		}
 
 		// save data to db an go on to further steps
-		if ($GLOBALS['TYPO3_DB']->exec_INSERTquery($table, $fields_values, $no_quote_fields = FALSE)) {
+		if ($GLOBALS['TYPO3_DB']->exec_INSERTquery($table, $fields_values)) {
 
 			// new user's id
 			$feuser_uid = $GLOBALS['TYPO3_DB']->sql_insert_id();
@@ -1441,7 +1579,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					    'uid_local' => $feuser_uid,
 					    'uid_foreign' => $catUid,
 					);
-					$GLOBALS['TYPO3_DB']->exec_INSERTquery($table, $fields_values, $no_quote_fields = FALSE);
+					$GLOBALS['TYPO3_DB']->exec_INSERTquery($table, $fields_values);
 				}
 			}
 
@@ -1453,74 +1591,62 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				}
 			}
 
-			// generate hash and save in database
-			$hash = $this->getUniqueCode();
-			$table = 'tx_keuserregister_hash';
-			$fields_values = array(
-			    'hash' => $hash,
-			    'feuser_uid' => $feuser_uid,
-			    'tstamp' => time(),
-			);
-
 			// process backlink params if activated
+			$fields_values = array();
 			if ($this->conf['backlink.']['generate']) {
 				$fields_values['backlinkpid'] = intval($this->piVars['backlinkPid']);
 				$fields_values['backlinkparams'] = t3lib_div::array2xml($this->getBacklinkParamsArray());
 			}
+			$hash = $this->generateHash($feuser_uid, '', $fields_values);
 
-			if ($GLOBALS['TYPO3_DB']->exec_INSERTquery($table, $fields_values, $no_quote_fields = FALSE)) {
+			// generate html mail content
+			$htmlBody = $this->cObj->getSubpart($this->templateCode, '###CONFIRMATION_REQUEST###');
 
-				// generate html mail content
-				$htmlBody = $this->cObj->getSubpart($this->templateCode, '###CONFIRMATION_REQUEST###');
+			// use salutation based on users gender
+			$salutationCode = $this->piVars['gender'] == 1 ? 'female' : 'male';
 
-				// use salutation based on users gender
-				$salutationCode = $this->piVars['gender'] == 1 ? 'female' : 'male';
+			// generate confirmation link
+			$linkconf['parameter'] = $GLOBALS['TSFE']->id;
+			$linkconf['additionalParams'] = '&confirm=' . $hash;
+			$confirmLinkUrl = t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL($linkconf));
+			$confirmationLink = '<a href="' . $confirmLinkUrl . '">' . $confirmLinkUrl . '</a>';
 
-				// generate confirmation link
-				$linkconf['parameter'] = $GLOBALS['TSFE']->id;
-				$linkconf['additionalParams'] = '&confirm=' . $hash;
-				$confirmLinkUrl = t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL($linkconf));
-				$confirmationLink = '<a href="' . $confirmLinkUrl . '">' . $confirmLinkUrl . '</a>';
+			// generate decline link
+			unset($linkconf);
+			$linkconf['parameter'] = $GLOBALS['TSFE']->id;
+			$linkconf['additionalParams'] = '&decline=' . $hash;
+			$declineLinkUrl = t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL($linkconf));
+			$declineLink = '<a href="' . $declineLinkUrl . '">' . $declineLinkUrl . '</a>';
 
-				// generate decline link
-				unset($linkconf);
-				$linkconf['parameter'] = $GLOBALS['TSFE']->id;
-				$linkconf['additionalParams'] = '&decline=' . $hash;
-				$declineLinkUrl = t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL($linkconf));
-				$declineLink = '<a href="' . $declineLinkUrl . '">' . $declineLinkUrl . '</a>';
+			$markerArray = array(
+			    'salutation' => $this->pi_getLL('salutation_' . $salutationCode),
+			    'first_name' => $this->piVars['first_name'],
+			    'last_name' => $this->piVars['last_name'],
+			    'confirmation_request_text' => sprintf($this->pi_getLL('confirmation_request_text'), t3lib_div::getIndpEnv('TYPO3_SITE_URL')),
+			    'confirmation_link' => $confirmationLink,
+			    'decline_text' => $this->pi_getLL('decline_text'),
+			    'decline_link' => $declineLink,
+			    'farewell_text' => $this->pi_getLL('farewell_text'),
+			    'site_url' => t3lib_div::getIndpEnv('TYPO3_SITE_URL'),
+			    'hash' => $hash,
+			);
+			$htmlBody = $this->cObj->substituteMarkerArray($htmlBody, $markerArray, $wrap = '###|###', $uppercase = 1);
 
-				$markerArray = array(
-				    'salutation' => $this->pi_getLL('salutation_' . $salutationCode),
-				    'first_name' => $this->piVars['first_name'],
-				    'last_name' => $this->piVars['last_name'],
-				    'confirmation_request_text' => sprintf($this->pi_getLL('confirmation_request_text'), t3lib_div::getIndpEnv('TYPO3_SITE_URL')),
-				    'confirmation_link' => $confirmationLink,
-				    'decline_text' => $this->pi_getLL('decline_text'),
-				    'decline_link' => $declineLink,
-				    'farewell_text' => $this->pi_getLL('farewell_text'),
-				    'site_url' => t3lib_div::getIndpEnv('TYPO3_SITE_URL'),
-				    'hash' => $hash,
-				);
-				$htmlBody = $this->cObj->substituteMarkerArray($htmlBody, $markerArray, $wrap = '###|###', $uppercase = 1);
+			// send double-opt-in-mail
+			$subject = $this->pi_getLL('confirmation_request_subject');
+			$this->sendNotificationEmail($this->piVars['email'], $subject, $htmlBody);
 
-				// send double-opt-in-mail
-				$subject = $this->pi_getLL('confirmation_request_subject');
-				$this->sendNotificationEmail($this->piVars['email'], $subject, $htmlBody);
-
-				// print message
-				$content = $this->cObj->getSubpart($this->templateCode, '###FORM_SUCCESS_MESSAGE###');
-				$markerArray = array(
-				    'headline' => $this->pi_getLL('form_success_headline'),
-				    'salutation' => $this->pi_getLL('salutation_' . $salutationCode),
-				    'first_name' => $this->piVars['first_name'],
-				    'last_name' => $this->piVars['last_name'],
-				    'form_success_text' => $this->pi_getLL('form_success_text'),
-				);
-				$content = $this->cObj->substituteMarkerArray($content, $markerArray, $wrap = '###|###', $uppercase = 1);
-				return $content;
-			}
-			else
-				die($this->prefixId . ': ERROR: DATABASE ERROR WHEN SAVING RECORD');
+			// print message
+			$content = $this->cObj->getSubpart($this->templateCode, '###FORM_SUCCESS_MESSAGE###');
+			$markerArray = array(
+			    'headline' => $this->pi_getLL('form_success_headline'),
+			    'salutation' => $this->pi_getLL('salutation_' . $salutationCode),
+			    'first_name' => $this->piVars['first_name'],
+			    'last_name' => $this->piVars['last_name'],
+			    'form_success_text' => $this->pi_getLL('form_success_text'),
+			);
+			$content = $this->cObj->substituteMarkerArray($content, $markerArray, $wrap = '###|###', $uppercase = 1);
+			return $content;
 		}
 		else
 			die($this->prefixId . ': ERROR: DATABASE ERROR WHEN SAVING RECORD');
@@ -1865,15 +1991,22 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	/*
 	 * function getUserRecord
 	 * @param int $userId
+	 * @param bool $ignoreEnableFields (used for fetching users which are not confirmed yet)
 	 */
-
-	function getUserRecord($userId) {
+	function getUserRecord($userId, $ignoreEnableFields=false) {
 		$fields = '*';
 		$table = 'fe_users';
 		$where = 'uid="' . intval($userId) . '" ';
-		$where .= $this->cObj->enableFields($table);
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fields, $table, $where, $groupBy = '', $orderBy = '', $limit = '1');
-		return $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+		if (!$ignoreEnableFields) {
+			$where .= $this->cObj->enableFields($table);
+		}
+
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fields, $table, $where, '', '', '1');
+		if (!$GLOBALS['TYPO3_DB']->sql_num_rows($res)) {
+			return false;
+		} else {
+			return $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+		}
 	}
 
 	/*
@@ -1917,9 +2050,9 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	 * @param $adminMailText
 	 * @return void
 	 */
-	function sendAdminMail($userUid, $adminMailSubject, $adminMailText) {
+	function sendAdminMail($userUid, $adminMailSubject, $adminMailText, $adminMailTextBelow = '') {
 
-		$userData = $this->getUserRecord($userUid);
+		$userData = $this->getUserRecord($userUid, true);
 
 		$htmlBody = $this->cObj->getSubpart($this->templateCode, '###ADMIN_MAIL_BODY###');
 		$htmlField = $this->cObj->getSubpart($this->templateCode, '###ADMIN_MAIL_SUB###');
@@ -1937,6 +2070,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		}
 
 		$mailMarkerArray['admin_mail_text'] = $adminMailText;
+		$mailMarkerArray['admin_mail_text_below'] = $adminMailTextBelow;
 
 		$subject = $adminMailSubject;
 		foreach ($this->conf['adminMail.'] as $admins) {

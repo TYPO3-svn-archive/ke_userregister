@@ -323,19 +323,19 @@
 
 
 <!-- ----------------------------------------
-        CONFIRMATION SUCCESS MAIL
+        USER MAIL (CONFIRMATION / DECLINE)
 ---------------------------------------- -->
-<!-- ###CONFIRMATION_SUCCESS_MAIL### start -->
+<!-- ###CONFIRMATION_MAIL### start -->
         <html>
                 <head></head>
                 <body>
                         ###SALUTATION### ###FIRST_NAME### ###LAST_NAME###,<br /><br />
-                        ###CONFIRMATION_SUCCESS_TEXT###<br /><br />
+                        ###TEXT###<br /><br />
                         ###FAREWELL_TEXT###<br />
                         ###SITE_URL###
                 </body>
         </html>
-<!-- ###CONFIRMATION_SUCCESS_MAIL### end -->
+<!-- ###CONFIRMATION_MAIL### end -->
 
 
 <!-- -----------------------------------------
@@ -346,10 +346,12 @@
 	<head></head>
 	<body>
 		###ADMIN_MAIL_TEXT###
-		<br /><br />
+		<br />
 		<table>
 		###ADMIN_MAIL_FIELD_VALUES###
+		<br />
 		</table>
+		###ADMIN_MAIL_TEXT_BELOW###
 	</body>
 </html>
 <!-- ###ADMIN_MAIL_BODY### end -->
@@ -357,3 +359,14 @@
 <!-- ###ADMIN_MAIL_SUB### start -->
 	<tr><td>###LABEL###</td><td>###VALUE###</td></tr>
 <!-- ###ADMIN_MAIL_SUB### start -->
+
+<!-- ###ADMIN_MAIL_SUB_CONFIRMATION_NEEDED### start -->
+<br /><br />
+###ADMIN_MAIL_TEXT_CONFIRMUSER###
+<br /><br />
+###ADMIN_CONFIRM_LINK###
+<br /><br />
+###ADMIN_MAIL_TEXT_DECLINEUSER###
+<br /><br />
+###ADMIN_DECLINE_LINK###
+<!-- ###ADMIN_MAIL_SUB_CONFIRMATION_NEEDED### end -->
