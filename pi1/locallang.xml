@@ -189,8 +189,11 @@
 			<label index="edit_welcome_text">Bitte bearbeiten Sie hier Ihre Daten:</label>
 			<label index="admin_mail_subject_confirmation_success">Benutzerregistrierung: Bestätigung der Registrierung</label>
 			<label index="admin_mail_text_confirmation_success">Ein neuer Benutzer hat sich registriert:</label>
+			<label index="admin_mail_text_confirmuser">Der Benutzer muss noch freigeschaltet werden. Um dies zu tun, klicken Sie bitte auf den folgenden Link:</label>
+			<label index="admin_mail_text_declineuser">Wenn Sie die Registrierung ablehnen möchten, klicken Sie bitte auf diesen Link:</label>
 			<label index="admin_mail_subject_userdata_change">Benutzerregistrierung: Daten wurde geändert</label>
 			<label index="admin_mail_text_userdata_change">Ein Benutzer hat seine Daten geändert. Dies sind die neuen Daten:</label>
+			<label index="mailfooter_name">Benutzervewaltung</label>
 		</languageKey>
 		<languageKey index="fr" type="array">
 			<label index="ff.main">Général</label>
