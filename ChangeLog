@@ -1,6 +1,6 @@
 ChangeLog
 
-Current Trunk
+TER Version 0.1.5 (2013/09)
 * bugfix: Fix Usage of deprecated php parameter is_dst in mktime(), see http://forge.typo3.org/issues/43669, thanks to Tilo Baller
 * feature: send email to admin after registration, see http://forge.typo3.org/issues/41705, thanks to Marcus Schwemer
 * feature: confirmation by administrator, every new registration has to be confirmed by an administrator (has to be enabled in typoscript)
