@@ -184,7 +184,8 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		$fields = '*';
 		$table = 'tx_keuserregister_hash';
 		$hashCompare = $this->lib->removeXSS(t3lib_div::_GET('confirm'));
-		$where = 'hash="' . $hashCompare . '" ';
+		$hashCompare = $GLOBALS['TYPO3_DB']->fullQuoteStr($hashCompare, $table);
+		$where = 'hash=' . $hashCompare . ' ';
 		$where .= 'and tstamp>' . $tstampCalculated . '  ';
 		$hashRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fields, $table, $where);
 		$anz = $GLOBALS['TYPO3_DB']->sql_num_rows($hashRes);
@@ -429,7 +430,8 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		$fields = '*';
 		$table = 'tx_keuserregister_hash';
 		$hashCompare = $this->lib->removeXSS(t3lib_div::_GET('decline'));
-		$where = 'hash="' . $hashCompare . '" ';
+		$hashCompare = $GLOBALS['TYPO3_DB']->fullQuoteStr($hashCompare, $table);
+		$where = 'hash=' . $hashCompare . ' ';
 		$where .= 'and tstamp>' . $tstampCalculated . '  ';
 		$hashRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fields, $table, $where);
 		$anz = $GLOBALS['TYPO3_DB']->sql_num_rows($hashRes);
@@ -502,7 +504,8 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		$fields = '*';
 		$table = 'tx_keuserregister_hash';
 		$hashCompare = $this->lib->removeXSS(t3lib_div::_GET('mailconfirm'));
-		$where = 'hash="' . $hashCompare . '" ';
+		$hashCompare = $GLOBALS['TYPO3_DB']->fullQuoteStr($hashCompare, $table);
+		$where = 'hash=' . $hashCompare . ' ';
 		$where .= 'and tstamp>' . $tstampCalculated . '  ';
 		$hashRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fields, $table, $where);
 		$anz = $GLOBALS['TYPO3_DB']->sql_num_rows($hashRes);
@@ -564,7 +567,8 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		$fields = '*';
 		$table = 'tx_keuserregister_hash';
 		$hashCompare = $this->lib->removeXSS(t3lib_div::_GET('maildecline'));
-		$where = 'hash="' . $hashCompare . '" ';
+		$hashCompare = $GLOBALS['TYPO3_DB']->fullQuoteStr($hashCompare, $table);
+		$where = 'hash=' . $hashCompare . ' ';
 		$where .= 'and tstamp>' . $tstampCalculated . '  ';
 		$hashRes = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fields, $table, $where);
 		$anz = $GLOBALS['TYPO3_DB']->sql_num_rows($hashRes);
@@ -603,7 +607,8 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	function deleteHashEntry($hash) {
 		$table = 'tx_keuserregister_hash';
 		$hashCompare = $this->lib->removeXSS($hash);
-		$where = 'hash="' . $hashCompare . '" ';
+		$hashCompare = $GLOBALS['TYPO3_DB']->fullQuoteStr($hashCompare, $table);
+		$where = 'hash=' . $hashCompare . ' ';
 		$GLOBALS['TYPO3_DB']->exec_DELETEquery($table, $where);
 	}
 
