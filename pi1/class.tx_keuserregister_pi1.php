@@ -286,8 +286,10 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					foreach ($backlinkParamsArray as $param => $value) {
 						if (is_array($value)) {
 							foreach ($value as $index => $val) {
-								$backlinkParamsString .= '&' . $param . '[' . $index . ']=' . $val;
+								$backlinkParamsString .= '&' . $param . '[' . $index . ']=' . urlencode($val);
 							}
+						} else {
+							$backlinkParamsString .= '&' . $param . '=' . urlencode($value);
 						}
 					}
 				}
@@ -656,11 +658,11 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					if (is_array($value)) {
 						foreach ($value as $index => $val) {
 							$name = $param . '[' . $index . ']';
-							$backlinkHiddenContent .= '<input type="hidden" name="' . $name . '" value="' . $this->lib->removeXSS($val) . '" />';
+							$backlinkHiddenContent .= '<input type="hidden" name="' . $name . '" value="' . htmlspecialchars($this->lib->removeXSS($val)) . '" />';
 						}
 					}
 					else
-						$backlinkHiddenContent .= '<input type="hidden" name="' . $param . '" value="' . $this->lib->removeXSS($value) . '" />';
+						$backlinkHiddenContent .= '<input type="hidden" name="' . $param . '" value="' . htmlspecialchars($this->lib->removeXSS($value)) . '" />';
 				}
 			}
 			// fill marker
@@ -832,9 +834,9 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	 *
 	 * @return array
 	 */
-
 	function getBacklinkParamsArray() {
 		$backlinkParams = t3lib_div::trimExplode(',', $this->conf['backlink.']['parameters'], true);
+		$backlinkHiddenArray = array();
 		if (sizeof($backlinkParams)) {
 			foreach ($backlinkParams as $param) {
 				// check if param is an array element
@@ -848,11 +850,20 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					$backlinkHiddenArray[$extPart][$paramPart] = $extGet[$paramPart];
 				} else {
 					// "normal" get value
-					$backlinkHiddenArray[$extPart][$paramPart] = t3lib_div::_GP($param);
+					$backlinkHiddenArray[$param] = t3lib_div::_GP($param);
 				}
 			}
-			return $backlinkHiddenArray;
 		}
+
+		// Hook for generate backlinkParams
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['backlinkParams'])) {
+			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['backlinkParams'] as $_classRef) {
+				$_procObj = & t3lib_div::getUserObj($_classRef);
+				$backlinkHiddenArray = $_procObj->processBacklinkParams($backlinkHiddenArray, $this);
+		}
+	}
+
+		return $backlinkHiddenArray;
 	}
 
 	/**
@@ -883,7 +894,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				$content = $this->cObj->getSubpart($this->templateCode, '###SUB_INPUT_TEXT###');
 				$tempMarkerArray = array(
 				    'name' => $this->prefixId . '[' . $fieldName . ']',
-				    'value' => $this->piVars[$fieldName],
+				    'value' => htmlspecialchars($this->piVars[$fieldName]),
 				    'tooltip' => $this->renderTooltip($fieldConf['tooltip'])
 				);
 				$content = $this->cObj->substituteMarkerArray($content, $tempMarkerArray, $wrap = '###|###', $uppercase = 1);
@@ -893,15 +904,15 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				$content = $this->cObj->getSubpart($this->templateCode, '###SUB_INPUT_TEXTAREA###');
 				$tempMarkerArray = array(
 				    'name' => $this->prefixId . '[' . $fieldName . ']',
-				    'value' => $this->piVars[$fieldName],
+				    'value' => htmlspecialchars($this->piVars[$fieldName]),
 				    'tooltip' => $this->renderTooltip($fieldConf['tooltip'])
 				);
 				$content = $this->cObj->substituteMarkerArray($content, $tempMarkerArray, $wrap = '###|###', $uppercase = 1);
 				break;
 
 			case 'password':
-				$value = $this->piVars['password'] ? $this->piVars['password'] : '';
-				$valueAgain = $this->piVars['password_again'] ? $this->piVars['password_again'] : '';
+				$value = $this->piVars['password'] ? htmlspecialchars($this->piVars['password']) : '';
+				$valueAgain = $this->piVars['password_again'] ? htmlspecialchars($this->piVars['password_again']) : '';
 				$content = $this->cObj->getSubpart($this->templateCode, '###SUB_PASSWORD###');
 				$content = $this->cObj->substituteMarker($content, '###VALUE###', $value);
 				$content = $this->cObj->substituteMarker($content, '###VALUE_AGAIN###', $valueAgain);
