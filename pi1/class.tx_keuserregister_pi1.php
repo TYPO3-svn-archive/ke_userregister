@@ -3,7 +3,7 @@
 /* * *************************************************************
  *  Copyright notice
  *
- *  (c) 2009-2012 Andreas Kiefer <kiefer@kennziffer.com>
+ *  (c) 2009-2014 Andreas Kiefer <kiefer@kennziffer.com>
  *  All rights reserved
  *
  * 	Fields to select day, month and year of birth:
@@ -27,16 +27,12 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  * ************************************************************* */
 
-require_once(PATH_tslib . 'class.tslib_pibase.php');
-require_once(PATH_t3lib . 'class.t3lib_basicfilefunc.php');
 require_once(t3lib_extMgm::extPath('ke_userregister', 'lib/class.tx_keuserregister_lib.php'));
 define('ADMIN_HASH_PREFIX', 'admin');
 
-// require new mail api if t3 v > 4.5
-if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) >= 4005000)
-	require_once(PATH_t3lib . 'mail/class.t3lib_mail_message.php');
-else
-	require_once(PATH_t3lib . 'class.t3lib_htmlmail.php');
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\File\BasicFileUtility;
+
 
 /**
  * Plugin 'Register Form' for the 'ke_userregister' extension.
@@ -67,17 +63,18 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		// Configuring so caching is not expected. This value means that 
 		// no cHash params are ever set. We do this, because it's a USER_INT object!
 		$this->pi_USER_INT_obj = 1; 
-
+		
+		$this->piBase = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Plugin\\AbstractPlugin');
+		
 		// get tooltip class if extension is installed
-		if (t3lib_extMgm::isLoaded('fe_tooltip')) {
-			require_once(t3lib_extMgm::extPath('fe_tooltip') . 'class.tx_fetooltip.php');
+		if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('fe_tooltip')) {
 			$this->tooltipAvailable = true;
 		} else {
 			$this->tooltipAvailable = false;
 		}
 
 		// init lib
-		$this->lib = t3lib_div::makeInstance('tx_keuserregister_lib');
+		$this->lib = GeneralUtility::makeInstance('tx_keuserregister_lib');
 
 		// get general extension setup
 		$this->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_keuserregister.'];
@@ -86,13 +83,12 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		$this->fileUploadDir = $this->conf['upload.']['path'] ? $this->conf['upload.']['path'] : 'uploads/tx_keuserregister/';
 
 		// GET FLEXFORM DATA
-		$this->pi_initPIflexForm();
-		$piFlexForm = $this->cObj->data['pi_flexform'];
+		$piFlexForm = TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($this->cObj->data['pi_flexform']);
 		if (is_array($piFlexForm['data'])) {
 			foreach ($piFlexForm['data'] as $sheet => $data) {
 				foreach ($data as $lang => $value) {
 					foreach ($value as $key => $val) {
-						$this->ffdata[$key] = $this->pi_getFFvalue($piFlexForm, $key, $sheet);
+						$this->ffdata[$key] = $this->piBase->pi_getFFvalue($piFlexForm, $key, $sheet);
 					}
 				}
 			}
@@ -122,43 +118,37 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		}
 
 		// overwrite username config if email is used as username
-		if ($this->conf['emailIsUsername'])
-			unset($this->fields['username.']);
+		if ($this->conf['emailIsUsername']) unset($this->fields['username.']);
 
 		// overwrite password field if edit mode is set
-		if ($this->mode == 'edit')
-			unset($this->fields['password.']);
+		if ($this->mode == 'edit') unset($this->fields['password.']);
 
 		// get html template
 		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
 
 		// include css
 		$cssFile = $GLOBALS['TSFE']->tmpl->getFileName($this->conf['cssFile']);
-		if (!empty($cssFile)) {
-			if (t3lib_div::compat_version('6.0'))
-				$GLOBALS['TSFE']->getPageRenderer()->addCssFile($cssFile);
-			else
-				$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId . '_css'] = '<link rel="stylesheet" type="text/css" href="' . $cssFile . '" />';
-		}
+		$GLOBALS['TSFE']->getPageRenderer()->addCssFile($cssFile);
+		
 
 		// check if it is a user confirmation (double opt-in confirmation),
 		// or an admin confirmation
-		if (t3lib_div::_GET('confirm') || t3lib_div::_GET('decline')) {
-			$hashUserInput = t3lib_div::_GET('confirm') ? t3lib_div::_GET('confirm') : t3lib_div::_GET('decline');
+		if (GeneralUtility::_GET('confirm') || GeneralUtility::_GET('decline')) {
+			$hashUserInput = GeneralUtility::_GET('confirm') ? GeneralUtility::_GET('confirm') : GeneralUtility::_GET('decline');
 			$this->confirmationType = (substr($hashUserInput, 0, strlen(ADMIN_HASH_PREFIX)) == ADMIN_HASH_PREFIX) ? 'admin' : 'user';
 		}
 
 		// process incoming registration confirmation
-		if (t3lib_div::_GET('confirm'))
+		if (GeneralUtility::_GET('confirm'))
 			$content = $this->processConfirm();
 		// process incoming registration decline
-		else if (t3lib_div::_GET('decline'))
+		else if (GeneralUtility::_GET('decline'))
 			$content = $this->processDecline();
 		// process incoming email change confirmation
-		else if (t3lib_div::_GET('mailconfirm'))
+		else if (GeneralUtility::_GET('mailconfirm'))
 			$content = $this->processEmailChangeConfirm();
 		// process incoming email change decline
-		else if (t3lib_div::_GET('maildecline'))
+		else if (GeneralUtility::_GET('maildecline'))
 			$content = $this->processEmailChangeDecline();
 		// show registration / edit form
 		else
@@ -183,7 +173,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		// select from hash table
 		$fields = '*';
 		$table = 'tx_keuserregister_hash';
-		$hashCompare = $this->lib->removeXSS(t3lib_div::_GET('confirm'));
+		$hashCompare = $this->lib->removeXSS(GeneralUtility::_GET('confirm'));
 		$hashCompare = $GLOBALS['TYPO3_DB']->fullQuoteStr($hashCompare, $table);
 		$where = 'hash=' . $hashCompare . ' ';
 		$where .= 'and tstamp>' . $tstampCalculated . '  ';
@@ -195,7 +185,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			$content = $this->cObj->getSubpart($this->templateCode, '###SUB_MESSAGE###');
 			$markerArray = array(
 			    'headline' => $this->pi_getLL('confirmation_error_headline'),
-			    'message' => sprintf($this->pi_getLL('confirmation_error_message'), t3lib_div::getIndpEnv('TYPO3_SITE_URL')),
+			    'message' => sprintf($this->pi_getLL('confirmation_error_message'), GeneralUtility::getIndpEnv('TYPO3_SITE_URL')),
 			);
 			$content = $this->cObj->substituteMarkerArray($content, $markerArray, $wrap = '###|###', $uppercase = 1);
 			return $content;
@@ -233,12 +223,12 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			// is enabled or not
 			if ($this->conf['adminConfirmationEnabled']) {
 				if ($this->confirmationType == 'admin') {
-					$markerArray['message'] = sprintf($this->pi_getLL('confirmation_success_message_adminconfirmation_laststep'), t3lib_div::getIndpEnv('TYPO3_SITE_URL'));
+					$markerArray['message'] = sprintf($this->pi_getLL('confirmation_success_message_adminconfirmation_laststep'), GeneralUtility::getIndpEnv('TYPO3_SITE_URL'));
 				} else {
-					$markerArray['message'] = sprintf($this->pi_getLL('confirmation_success_message_adminconfirmation'), t3lib_div::getIndpEnv('TYPO3_SITE_URL'));
+					$markerArray['message'] = sprintf($this->pi_getLL('confirmation_success_message_adminconfirmation'), GeneralUtility::getIndpEnv('TYPO3_SITE_URL'));
 				}
 			} else {
-			    $markerArray['message'] = sprintf($this->pi_getLL('confirmation_success_message'), t3lib_div::getIndpEnv('TYPO3_SITE_URL'));
+			    $markerArray['message'] = sprintf($this->pi_getLL('confirmation_success_message'), GeneralUtility::getIndpEnv('TYPO3_SITE_URL'));
 			}
 
 			// send success email to the user
@@ -267,6 +257,9 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				// get userdata and process auto-login
 				$userRecord = $this->getUserRecord($hashRow['feuser_uid']);
 				if ($this->autoLogin($userRecord['username'], $userRecord['password'])) {
+					
+					TYPO3\CMS\Core\Utility\DebugUtility::debug('autologin');
+
 					// login succesful?
 					$markerArray['message'] = $this->pi_getLL('confirmation_success_message_autologin');
 				}
@@ -278,7 +271,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			if ($this->conf['backlink.']['generate']) {
 
 				// get backlink params from hash table
-				$backlinkParamsArray = t3lib_div::xml2array($hashRow['backlinkparams']);
+				$backlinkParamsArray = GeneralUtility::xml2array($hashRow['backlinkparams']);
 
 				// process backlink params
 				$backlinkParamsString = '';
@@ -348,14 +341,14 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		// generate confirmation link
 		$linkconf['parameter'] = $GLOBALS['TSFE']->id;
 		$linkconf['additionalParams'] = '&confirm=' . $hash;
-		$confirmLinkUrl = t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL($linkconf));
+		$confirmLinkUrl = GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL($linkconf));
 		$confirmationLink = '<a href="' . $confirmLinkUrl . '">' . $confirmLinkUrl . '</a>';
 
 		// generate decline link
 		unset($linkconf);
 		$linkconf['parameter'] = $GLOBALS['TSFE']->id;
 		$linkconf['additionalParams'] = '&decline=' . $hash;
-		$declineLinkUrl = t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL($linkconf));
+		$declineLinkUrl = GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL($linkconf));
 		$declineLink = '<a href="' . $declineLinkUrl . '">' . $declineLinkUrl . '</a>';
 
 		$markerArray = array(
@@ -393,7 +386,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			    'first_name' => $userData['first_name'],
 			    'last_name' => $userData['last_name'],
 			    'farewell_text' => $this->pi_getLL('farewell_text'),
-			    'site_url' => t3lib_div::getIndpEnv('TYPO3_SITE_URL'),
+			    'site_url' => GeneralUtility::getIndpEnv('TYPO3_SITE_URL'),
 			);
 
 			switch ($action) {
@@ -431,7 +424,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		// select from hash table
 		$fields = '*';
 		$table = 'tx_keuserregister_hash';
-		$hashCompare = $this->lib->removeXSS(t3lib_div::_GET('decline'));
+		$hashCompare = $this->lib->removeXSS(GeneralUtility::_GET('decline'));
 		$hashCompare = $GLOBALS['TYPO3_DB']->fullQuoteStr($hashCompare, $table);
 		$where = 'hash=' . $hashCompare . ' ';
 		$where .= 'and tstamp>' . $tstampCalculated . '  ';
@@ -505,7 +498,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		// select from hash table
 		$fields = '*';
 		$table = 'tx_keuserregister_hash';
-		$hashCompare = $this->lib->removeXSS(t3lib_div::_GET('mailconfirm'));
+		$hashCompare = $this->lib->removeXSS(GeneralUtility::_GET('mailconfirm'));
 		$hashCompare = $GLOBALS['TYPO3_DB']->fullQuoteStr($hashCompare, $table);
 		$where = 'hash=' . $hashCompare . ' ';
 		$where .= 'and tstamp>' . $tstampCalculated . '  ';
@@ -517,7 +510,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			$content = $this->cObj->getSubpart($this->templateCode, '###SUB_MESSAGE###');
 			$markerArray = array(
 			    'headline' => $this->pi_getLL('mail_confirmation_error_headline'),
-			    'message' => sprintf($this->pi_getLL('mail_confirmation_error_message'), t3lib_div::getIndpEnv('TYPO3_SITE_URL')),
+			    'message' => sprintf($this->pi_getLL('mail_confirmation_error_message'), GeneralUtility::getIndpEnv('TYPO3_SITE_URL')),
 			);
 			$content = $this->cObj->substituteMarkerArray($content, $markerArray, $wrap = '###|###', $uppercase = 1);
 			return $content;
@@ -544,7 +537,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			$content = $this->cObj->getSubpart($this->templateCode, '###SUB_MESSAGE###');
 			$markerArray = array(
 			    'headline' => $this->pi_getLL('mail_confirmation_success_headline'),
-			    'message' => sprintf($this->pi_getLL('mail_confirmation_success_message'), t3lib_div::getIndpEnv('TYPO3_SITE_URL')),
+			    'message' => sprintf($this->pi_getLL('mail_confirmation_success_message'), GeneralUtility::getIndpEnv('TYPO3_SITE_URL')),
 			);
 			$content = $this->cObj->substituteMarkerArray($content, $markerArray, $wrap = '###|###', $uppercase = 1);
 			return $content;
@@ -568,7 +561,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		// select from hash table
 		$fields = '*';
 		$table = 'tx_keuserregister_hash';
-		$hashCompare = $this->lib->removeXSS(t3lib_div::_GET('maildecline'));
+		$hashCompare = $this->lib->removeXSS(GeneralUtility::_GET('maildecline'));
 		$hashCompare = $GLOBALS['TYPO3_DB']->fullQuoteStr($hashCompare, $table);
 		$where = 'hash=' . $hashCompare . ' ';
 		$where .= 'and tstamp>' . $tstampCalculated . '  ';
@@ -588,7 +581,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		// if number of found records is eq 1: completely delete user record
 		else {
 			// delete hash after processing
-			$this->deleteHashEntry(t3lib_div::_GET('maildecline'));
+			$this->deleteHashEntry(GeneralUtility::_GET('maildecline'));
 			// print success message
 			$content = $this->cObj->getSubpart($this->templateCode, '###SUB_MESSAGE###');
 			$markerArray = array(
@@ -736,7 +729,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					// $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['prefillValue_gender'][] = 'EXT:ke_userregisterhooks/class.user_keuserregisterhooks.php:&user_keuserregisterhooks_prefillValueGender';
 					if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['prefillValue_' . $fieldName])) {
 						foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['prefillValue_' . $fieldName] as $_classRef) {
-							$_procObj = & t3lib_div::getUserObj($_classRef);
+							$_procObj = & GeneralUtility::getUserObj($_classRef);
 							$this->piVars[$fieldName] = $_procObj->generatePrefillValue($this->piVars[$fieldName], $this);
 						}
 					}
@@ -788,7 +781,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		// Hook for additional form markers
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['additionalMarkers'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['additionalMarkers'] as $_classRef) {
-				$_procObj = & t3lib_div::getUserObj($_classRef);
+				$_procObj = & GeneralUtility::getUserObj($_classRef);
 				$_procObj->additionalMarkers($this->markerArray, $this, $errors);
 			}
 		}
@@ -835,7 +828,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	 * @return array
 	 */
 	function getBacklinkParamsArray() {
-		$backlinkParams = t3lib_div::trimExplode(',', $this->conf['backlink.']['parameters'], true);
+		$backlinkParams = GeneralUtility::trimExplode(',', $this->conf['backlink.']['parameters'], true);
 		$backlinkHiddenArray = array();
 		if (sizeof($backlinkParams)) {
 			foreach ($backlinkParams as $param) {
@@ -845,12 +838,12 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					$posBrace = strpos($param, '[');
 					$extPart = substr($param, 0, $posBrace);
 					$paramPart = substr($param, $posBrace + 1, -1);
-					$extGet = t3lib_div::_GP($extPart);
+					$extGet = GeneralUtility::_GP($extPart);
 					$value = $extGet[$paramPart];
 					$backlinkHiddenArray[$extPart][$paramPart] = $extGet[$paramPart];
 				} else {
 					// "normal" get value
-					$backlinkHiddenArray[$param] = t3lib_div::_GP($param);
+					$backlinkHiddenArray[$param] = GeneralUtility::_GP($param);
 				}
 			}
 		}
@@ -858,7 +851,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		// Hook for generate backlinkParams
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['backlinkParams'])) {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['backlinkParams'] as $_classRef) {
-				$_procObj = & t3lib_div::getUserObj($_classRef);
+				$_procObj = & GeneralUtility::getUserObj($_classRef);
 				$backlinkHiddenArray = $_procObj->processBacklinkParams($backlinkHiddenArray, $this);
 		}
 	}
@@ -1278,7 +1271,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	function is_german_date($date_string = '') {
 		$result = true;
 		if ($date_string) {
-			$date_array = t3lib_div::trimExplode('.', $date_string);
+			$date_array = GeneralUtility::trimExplode('.', $date_string);
 			$day = intval($date_array[0]);
 			$month = intval($date_array[1]);
 			$year = intval($date_array[2]);
@@ -1296,7 +1289,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	function is_us_date($date_string = '') {
 		$result = true;
 		if ($date_string) {
-			$date_array = t3lib_div::trimExplode('/', $date_string);
+			$date_array = GeneralUtility::trimExplode('/', $date_string);
 			$day = intval($date_array[1]);
 			$month = intval($date_array[0]);
 			$year = intval($date_array[2]);
@@ -1329,7 +1322,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			}
 
 			// check if field value is email
-			if (strstr($fieldConf['eval'], 'email') && !t3lib_div::validEmail($this->piVars[$fieldName])) {
+			if (strstr($fieldConf['eval'], 'email') && !GeneralUtility::validEmail($this->piVars[$fieldName])) {
 				$errors[$fieldName] = $this->pi_getLL('error_valid_email');
 			}
 
@@ -1425,7 +1418,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					}
 
 					// file type not allowed
-					$allowedFileTypes = t3lib_div::trimExplode(',', strtolower($this->conf['upload.']['allowedFileTypes']));
+					$allowedFileTypes = GeneralUtility::trimExplode(',', strtolower($this->conf['upload.']['allowedFileTypes']));
 					$dotPos = strpos($uploadData['name'][$fieldName], '.');
 					$fileEnding = strtolower(substr($uploadData['name'][$fieldName], $dotPos + 1));
 					if (!in_array($fileEnding, $allowedFileTypes)) {
@@ -1457,7 +1450,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 					}
 
 					// file type not allowed
-					$allowedFileTypes = t3lib_div::trimExplode(',', strtolower($this->conf['upload.']['allowedFileTypes']));
+					$allowedFileTypes = GeneralUtility::trimExplode(',', strtolower($this->conf['upload.']['allowedFileTypes']));
 					$dotPos = strpos($uploadData['name'][$fieldName . '_new'], '.');
 					$fileEnding = strtolower(substr($uploadData['name'][$fieldName . '_new'], $dotPos + 1));
 					if (!in_array($fileEnding, $allowedFileTypes)) {
@@ -1480,7 +1473,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		// Hook for further evaluations
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['specialEvaluations'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['specialEvaluations'] as $_classRef) {
-				$_procObj = & t3lib_div::getUserObj($_classRef);
+				$_procObj = & GeneralUtility::getUserObj($_classRef);
 				$_procObj->processSpecialEvaluations($errors, $this);
 			}
 		}
@@ -1576,7 +1569,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		// Hook for further data processing before saving to db
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['specialDataProcessing'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['specialDataProcessing'] as $_classRef) {
-				$_procObj = & t3lib_div::getUserObj($_classRef);
+				$_procObj = & GeneralUtility::getUserObj($_classRef);
 				$_procObj->processSpecialDataProcessing($fields_values, $this);
 			}
 		}
@@ -1602,7 +1595,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			// Hook for further data processing after saving to db
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['specialDataProcessingAfterSaveToDB'])) {
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['specialDataProcessingAfterSaveToDB'] as $_classRef) {
-					$_procObj = & t3lib_div::getUserObj($_classRef);
+					$_procObj = & GeneralUtility::getUserObj($_classRef);
 					$_procObj->processSpecialDataProcessingAfterSaveToDB($fields_values, $this, $feuser_uid);
 				}
 			}
@@ -1611,7 +1604,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			$fields_values = array();
 			if ($this->conf['backlink.']['generate']) {
 				$fields_values['backlinkpid'] = intval($this->piVars['backlinkPid']);
-				$fields_values['backlinkparams'] = t3lib_div::array2xml($this->getBacklinkParamsArray());
+				$fields_values['backlinkparams'] = GeneralUtility::array2xml($this->getBacklinkParamsArray());
 			}
 			$hash = $this->generateHash($feuser_uid, '', $fields_values);
 
@@ -1624,26 +1617,26 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			// generate confirmation link
 			$linkconf['parameter'] = $GLOBALS['TSFE']->id;
 			$linkconf['additionalParams'] = '&confirm=' . $hash;
-			$confirmLinkUrl = t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL($linkconf));
+			$confirmLinkUrl = GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL($linkconf));
 			$confirmationLink = '<a href="' . $confirmLinkUrl . '">' . $confirmLinkUrl . '</a>';
 
 			// generate decline link
 			unset($linkconf);
 			$linkconf['parameter'] = $GLOBALS['TSFE']->id;
 			$linkconf['additionalParams'] = '&decline=' . $hash;
-			$declineLinkUrl = t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL($linkconf));
+			$declineLinkUrl = GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL($linkconf));
 			$declineLink = '<a href="' . $declineLinkUrl . '">' . $declineLinkUrl . '</a>';
 
 			$markerArray = array(
 			    'salutation' => $this->pi_getLL('salutation_' . $salutationCode),
 			    'first_name' => $this->piVars['first_name'],
 			    'last_name' => $this->piVars['last_name'],
-			    'confirmation_request_text' => sprintf($this->pi_getLL('confirmation_request_text'), t3lib_div::getIndpEnv('TYPO3_SITE_URL')),
+			    'confirmation_request_text' => sprintf($this->pi_getLL('confirmation_request_text'), GeneralUtility::getIndpEnv('TYPO3_SITE_URL')),
 			    'confirmation_link' => $confirmationLink,
 			    'decline_text' => $this->pi_getLL('decline_text'),
 			    'decline_link' => $declineLink,
 			    'farewell_text' => $this->pi_getLL('farewell_text'),
-			    'site_url' => t3lib_div::getIndpEnv('TYPO3_SITE_URL'),
+			    'site_url' => GeneralUtility::getIndpEnv('TYPO3_SITE_URL'),
 			    'hash' => $hash,
 			);
 			$htmlBody = $this->cObj->substituteMarkerArray($htmlBody, $markerArray, $wrap = '###|###', $uppercase = 1);
@@ -1717,7 +1710,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		// Hook for further data processing before saving to db
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['specialDataProcessing'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['specialDataProcessing'] as $_classRef) {
-				$_procObj = &t3lib_div::getUserObj($_classRef);
+				$_procObj = &GeneralUtility::getUserObj($_classRef);
 				$_procObj->processSpecialDataProcessing($fields_values, $this);
 			}
 		}
@@ -1806,26 +1799,26 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		// generate confirmation link
 		$linkconf['parameter'] = $GLOBALS['TSFE']->id;
 		$linkconf['additionalParams'] = '&mailconfirm=' . $this->emailChangeHash;
-		$confirmLinkUrl = t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL($linkconf));
+		$confirmLinkUrl = GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL($linkconf));
 		$confirmationLink = '<a href="' . $confirmLinkUrl . '">' . $confirmLinkUrl . '</a>';
 
 		// generate decline link
 		unset($linkconf);
 		$linkconf['parameter'] = $GLOBALS['TSFE']->id;
 		$linkconf['additionalParams'] = '&maildecline=' . $this->emailChangeHash;
-		$declineLinkUrl = t3lib_div::locationHeaderUrl($this->cObj->typoLink_URL($linkconf));
+		$declineLinkUrl = GeneralUtility::locationHeaderUrl($this->cObj->typoLink_URL($linkconf));
 		$declineLink = '<a href="' . $declineLinkUrl . '">' . $declineLinkUrl . '</a>';
 
 		$markerArray = array(
 		    'salutation' => $this->pi_getLL('salutation_' . $salutationCode),
 		    'first_name' => $this->piVars['first_name'],
 		    'last_name' => $this->piVars['last_name'],
-		    'confirmation_request_text' => sprintf($this->pi_getLL('mail_confirmation_request_text'), t3lib_div::getIndpEnv('TYPO3_SITE_URL')),
+		    'confirmation_request_text' => sprintf($this->pi_getLL('mail_confirmation_request_text'), GeneralUtility::getIndpEnv('TYPO3_SITE_URL')),
 		    'confirmation_link' => $confirmationLink,
 		    'decline_text' => $this->pi_getLL('mail_decline_text'),
 		    'decline_link' => $declineLink,
 		    'farewell_text' => $this->pi_getLL('farewell_text'),
-		    'site_url' => t3lib_div::getIndpEnv('TYPO3_SITE_URL'),
+		    'site_url' => GeneralUtility::getIndpEnv('TYPO3_SITE_URL'),
 		);
 		$htmlBody = $this->cObj->substituteMarkerArray($htmlBody, $markerArray, $wrap = '###|###', $uppercase = 1);
 
@@ -1901,8 +1894,8 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	public function sendNotificationEmail($toEMail, $subject, $html_body, $sendAsHTML = 1) {
 
 		// Only ASCII is allowed in the header
-		$subject = html_entity_decode(t3lib_div::deHSCentities($subject), ENT_QUOTES, $GLOBALS['TSFE']->renderCharset);
-		$subject = t3lib_div::encodeHeader($subject, 'base64', $GLOBALS['TSFE']->renderCharset);
+		$subject = html_entity_decode(GeneralUtility::deHSCentities($subject), ENT_QUOTES, $GLOBALS['TSFE']->renderCharset);
+		$subject = GeneralUtility::encodeHeader($subject, 'base64', $GLOBALS['TSFE']->renderCharset);
 
 		// add the footer
 		if ($this->conf['notification.']['addFooter']) {
@@ -1913,48 +1906,16 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		$message = html_entity_decode(strip_tags($html_body), ENT_QUOTES, $GLOBALS['TSFE']->renderCharset);
 
 		// use new mail api if T3 v >= 4.5
-		if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) >= 4005000) {
-			$Typo3_htmlmail = t3lib_div::makeInstance('t3lib_mail_Message');
-			$Typo3_htmlmail->setFrom(
-				array($this->conf['notification.']['from_email'] => $this->conf['notification.']['from_name'])
-			);
-			$Typo3_htmlmail->setTo(explode(',', $toEMail));
-			$Typo3_htmlmail->setSubject($subject);
-			if ($sendAsHTML)
-				$Typo3_htmlmail->setBody($html_body, 'text/html');
-			if ($message)
-				$Typo3_htmlmail->addPart($message, 'text/plain');
-			$Typo3_htmlmail->send();
-		} else {
-			// use old mail api if T3 v < 4.5
-			// inspired by code from tt_products, thanks
-			$Typo3_htmlmail = t3lib_div::makeInstance('t3lib_htmlmail');
-			$Typo3_htmlmail->start();
-			$Typo3_htmlmail->subject = $subject;
-			$Typo3_htmlmail->from_email = $this->conf['notification.']['from_email'];
-			$Typo3_htmlmail->from_name = $this->conf['notification.']['from_name'];
-			$Typo3_htmlmail->replyto_email = $Typo3_htmlmail->from_email;
-			$Typo3_htmlmail->replyto_name = $Typo3_htmlmail->from_name;
-			$Typo3_htmlmail->organisation = '';
-			if ($sendAsHTML) {
-				$Typo3_htmlmail->theParts['html']['content'] = $html_body;
-				$Typo3_htmlmail->theParts['html']['path'] = t3lib_div::getIndpEnv('TYPO3_REQUEST_HOST') . '/';
-				$Typo3_htmlmail->extractMediaLinks();
-				$Typo3_htmlmail->extractHyperLinks();
-				$Typo3_htmlmail->fetchHTMLMedia();
-				$Typo3_htmlmail->substMediaNamesInHTML(0); // 0 = relative
-				$Typo3_htmlmail->substHREFsInHTML();
-				$Typo3_htmlmail->setHTML($Typo3_htmlmail->encodeMsg($Typo3_htmlmail->theParts['html']['content']));
-				if ($message)
-					$Typo3_htmlmail->addPlain($message);
-			}
-			else
-				$Typo3_htmlmail->addPlain($message);
-			$Typo3_htmlmail->setHeaders();
-			$Typo3_htmlmail->setContent();
-			$Typo3_htmlmail->setRecipient(explode(',', $toEMail));
-			$Typo3_htmlmail->sendTheMail();
-		}
+		$Typo3_htmlmail = GeneralUtility::makeInstance('t3lib_mail_Message');
+		$Typo3_htmlmail->setFrom(
+			array($this->conf['notification.']['from_email'] => $this->conf['notification.']['from_name'])
+		);
+		$Typo3_htmlmail->setTo(explode(',', $toEMail));
+		$Typo3_htmlmail->setSubject($subject);
+		if ($sendAsHTML) $Typo3_htmlmail->setBody($html_body, 'text/html');
+		if ($message) $Typo3_htmlmail->addPart($message, 'text/plain');
+		$Typo3_htmlmail->send();
+		
 	}
 
 	/**
@@ -1983,8 +1944,8 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		$success = true;
 
 		// get the destination filename
-		$filefuncs = new t3lib_basicFilefunctions();
-		$uploadfile = $filefuncs->getUniqueName($filefuncs->cleanFileName($GLOBALS['_FILES'][$this->prefixId]['name'][$fieldName]), $this->fileUploadDir);
+		$cleanFileName = BasicFileUtility::cleanFileName($GLOBALS['_FILES'][$this->prefixId]['name'][$fieldName]);
+		$uploadfile = BasicFileUtility::getUniqueName($cleanFileName, $this->fileUploadDir);
 
 		if ($success && move_uploaded_file($GLOBALS['_FILES'][$this->prefixId]['tmp_name'][$fieldName], $uploadfile)) {
 			// change rights so that everyone can read the file
@@ -2064,11 +2025,16 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		$GLOBALS['TSFE']->fe_user->fetchGroupData();
 		$info = $GLOBALS['TSFE']->fe_user->getAuthInfoArray();
 		$user = $GLOBALS['TSFE']->fe_user->fetchUserRecord($info['db_user'], $loginData['uname']);
-
-		$ok = $GLOBALS['TSFE']->fe_user->compareUident($user, $loginData);
+		$ok = TYPO3\CMS\Core\Authentication\AbstractUserAuthentication::compareUident($user, $loginData);
+		
 		if ($ok) {
-			//login successfull
+			// auth successfull - process login
+			$GLOBALS['TSFE']->fe_user->user = $GLOBALS['TSFE']->fe_user->fetchUserSession();
+			$GLOBALS['TSFE']->loginUser = 1;
+			$GLOBALS['TSFE']->fe_user->fetchGroupData(); 
+			$GLOBALS['TSFE']->fe_user->start();
 			$GLOBALS['TSFE']->fe_user->createUserSession($user);
+			$GLOBALS['TSFE']->fe_user->loginSessionStarted = TRUE;
 			return true;
 		} else {
 			//login failed
@@ -2094,7 +2060,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		$mailMarkerArray = array();
 		$mailMarkerArray['admin_mail_field_values'] = '';
 		if ($this->conf['adminMailFields']) {
-			$fields = t3lib_div::trimExplode(',', $this->conf['adminMailFields'], true);
+			$fields = GeneralUtility::trimExplode(',', $this->conf['adminMailFields'], true);
 			foreach ($fields as $singleField) {
 				$markerArrayField = array();
 				$markerArrayField['###LABEL###'] = $this->pi_getLL('label_' . $singleField);
@@ -2113,7 +2079,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		// Hook for modification of admin email (subject, body and receivers). 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['customAdminMail'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['tx_keuserregister']['customAdminMail'] as $_classRef) {
-				$_procObj = & t3lib_div::getUserObj($_classRef);
+				$_procObj = & GeneralUtility::getUserObj($_classRef);
 				$_procObj->customAdminMail($email, $subject, $htmlBody, $userData, $this);
 			}
 		} 

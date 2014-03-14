@@ -27,9 +27,9 @@
  * Hint: use extdeveval to insert/update function index above.
  */
 
-
-require_once(PATH_tslib.'class.tslib_pibase.php');
 require_once(t3lib_extMgm::extPath('ke_userregister', 'lib/class.tx_keuserregister_lib.php'));
+
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Plugin 'Delete Profile' for the 'ke_userregister' extension.
@@ -56,11 +56,13 @@ class tx_keuserregister_pi3 extends tslib_pibase {
 		$this->pi_loadLL();
 		$this->pi_USER_INT_obj = 1;	// Configuring so caching is not expected. This value means that no cHash params are ever set. We do this, because it's a USER_INT object!
 
+		$this->piBase = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Plugin\\AbstractPlugin');
+		
 		// get general extension setup
 		$this->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_keuserregister.'];
 
 		// init lib
-		$this->lib = t3lib_div::makeInstance('tx_keuserregister_lib');
+		$this->lib = GeneralUtility::makeInstance('tx_keuserregister_lib');
 
 		// get html template
 		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
@@ -68,7 +70,7 @@ class tx_keuserregister_pi3 extends tslib_pibase {
 		// include css	
 		$cssFile = $GLOBALS['TSFE']->tmpl->getFileName($this->conf['cssFile']);
 		if(!empty($cssFile)) {
-			if (t3lib_div::compat_version('6.0')) $GLOBALS['TSFE']->getPageRenderer()->addCssFile($cssFile);
+			if (GeneralUtility::compat_version('6.0')) $GLOBALS['TSFE']->getPageRenderer()->addCssFile($cssFile);
 			else $GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_css'] = '<link rel="stylesheet" type="text/css" href="'.$cssFile.'" />';
 		}
 
@@ -85,7 +87,7 @@ class tx_keuserregister_pi3 extends tslib_pibase {
 			$disallowed = false;
 			if (sizeof($disallowedGroups)) {
 				foreach ($disallowedGroups as $key => $groupId) {
-					if (t3lib_div::inList($GLOBALS['TSFE']->fe_user->user['usergroup'], $groupId)) $disallowed = true;
+					if (GeneralUtility::inList($GLOBALS['TSFE']->fe_user->user['usergroup'], $groupId)) $disallowed = true;
 				}
 			}
 

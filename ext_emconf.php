@@ -15,7 +15,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'description' => 'Frontend User Registration; create and edit user profiles, change passwords and delete profiles; supports md5 and salted passwords',
 	'category' => 'plugin',
 	'shy' => 0,
-	'version' => '0.1.6',
+	'version' => '0.2.0-dev',
 	'dependencies' => '',
 	'conflicts' => '',
 	'priority' => '',
@@ -34,7 +34,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'CGLcompliance_note' => '',
 	'constraints' => array(
 		'depends' => array(
-			'typo3' => '4.5.0-6.1.99',
+			'typo3' => '6.0.0-6.2.99',
 		),
 		'conflicts' => array(
 		),

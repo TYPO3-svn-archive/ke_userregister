@@ -27,9 +27,10 @@
  * Hint: use extdeveval to insert/update function index above.
  */
 
-
-require_once(PATH_tslib.'class.tslib_pibase.php');
 require_once(t3lib_extMgm::extPath('ke_userregister', 'lib/class.tx_keuserregister_lib.php'));
+
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\DebugUtility;
 
 /**
  * Plugin 'Change Password' for the 'ke_userregister' extension.
@@ -55,12 +56,14 @@ class tx_keuserregister_pi2 extends tslib_pibase {
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
 		$this->pi_USER_INT_obj = 1;	// Configuring so caching is not expected. This value means that no cHash params are ever set. We do this, because it's a USER_INT object!
-
+		
+		$this->piBase = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Plugin\\AbstractPlugin');
+		
 		// get general extension setup
 		$this->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_keuserregister.'];
 
 		// init lib
-		$this->lib = t3lib_div::makeInstance('tx_keuserregister_lib');
+		$this->lib = GeneralUtility::makeInstance('tx_keuserregister_lib');
 
 		// get html template
 		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
@@ -68,10 +71,10 @@ class tx_keuserregister_pi2 extends tslib_pibase {
 		// include css	
 		$cssFile = $GLOBALS['TSFE']->tmpl->getFileName($this->conf['cssFile']);
 		if(!empty($cssFile)) {
-			if (t3lib_div::compat_version('6.0')) $GLOBALS['TSFE']->getPageRenderer()->addCssFile($cssFile);
+			if (GeneralUtility::compat_version('6.0')) $GLOBALS['TSFE']->getPageRenderer()->addCssFile($cssFile);
 			else $GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_css'] = '<link rel="stylesheet" type="text/css" href="'.$cssFile.'" />';
 		}
-
+		
 		// check login
 		if (!$GLOBALS['TSFE']->loginUser) {
 			$content = $this->cObj->getSubpart($this->templateCode,'###SUB_MESSAGE###');
@@ -138,18 +141,6 @@ class tx_keuserregister_pi2 extends tslib_pibase {
 		$where .= $this->cObj->enableFields($table);
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($fields,$table,$where,$groupBy='',$orderBy='',$limit='1');
 		$row=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
-
-		// check if old password is correct
-		// encrypt password if defined in ts in $this->conf['password.']['encryption']
-		/*
-		// obsolete:
-		$oldPasswordInput = $this->conf['password.']['useMd5'] ? md5($this->lib->removeXSS($this->piVars['old_password'])) : $this->lib->removeXSS($this->piVars['old_password']);
-		if ($oldPasswordInput !== $row['password']) {
-			$errors['old_password'] = $this->pi_getLL('error_old_password');
-		}
-		*/
-
-		// t3lib_div::debug($this->conf['password.']['encryption'],'conf');
 
 		// check salted
 		if ($this->conf['password.']['encryption'] == 'salted') {
