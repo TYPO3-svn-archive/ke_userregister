@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009 Andreas Kiefer <kiefer@kennziffer.com>
+*  (c) 2009-2014 Andreas Kiefer <kiefer@kennziffer.com>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -73,6 +73,20 @@ class tx_keuserregister_pi2 extends tslib_pibase {
 		if(!empty($cssFile)) {
 			if (GeneralUtility::compat_version('6.0')) $GLOBALS['TSFE']->getPageRenderer()->addCssFile($cssFile);
 			else $GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_css'] = '<link rel="stylesheet" type="text/css" href="'.$cssFile.'" />';
+		}
+		
+		// include js for password meter
+		if ($this->conf['usePasswordStrengthMeter']) {
+			
+			// add password settings to JS
+			$jsPwdSettings = 'var minLength='.$this->conf['password.']['minLength'].';';
+			$jsPwdSettings .= 'var minNumeric='.$this->conf['password.']['minNumeric'].';';
+			$GLOBALS['TSFE']->getPageRenderer()->addJsInlineCode('keuserregister_pwdsettings', $jsPwdSettings, TRUE, TRUE);
+			
+			// add complexify script
+			$complexifyJSFile = $GLOBALS['TSFE']->tmpl->getFileName($this->conf['complexifyJsFile']);
+			$GLOBALS['TSFE']->getPageRenderer()->addJsFile($complexifyJSFile);
+			
 		}
 		
 		// check login
@@ -259,6 +273,17 @@ class tx_keuserregister_pi2 extends tslib_pibase {
 				$content = $this->cObj->substituteMarker($content,'###VALUE_NEW_PASSWORD###',$value);
 				$content = $this->cObj->substituteMarker($content,'###VALUE_NEW_PASSWORD_AGAIN###',$valueAgain);
 				$content = $this->cObj->substituteMarker($content, '###LABEL_PASSWORD_AGAIN###', $this->pi_getLL('label_password_again'));
+				
+				// include password strength meter
+				if ($this->conf['usePasswordStrengthMeter']) {
+					$passwordMeterContent = $this->cObj->getSubpart($this->templateCode, '###SUB_PASSWORD_STRENGTH_METER###');
+					$passwordMeterContentText = sprintf($this->pi_getLL('password_meter_info'), $this->conf['password.']['minLength'], $this->conf['password.']['minNumeric']);
+					$passwordMeterContent = $this->cObj->substituteMarker($passwordMeterContent, '###PASSWORD_METER_INFO###', $passwordMeterContentText);
+				} else {
+					$passwordMeterContent = '';
+				}
+				$content = $this->cObj->substituteMarker($content, '###PASSWORD_STRENGTH_METER###', $passwordMeterContent);
+				
 				break;
 
 		}

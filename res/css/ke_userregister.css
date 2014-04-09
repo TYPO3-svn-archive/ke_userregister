@@ -60,7 +60,7 @@
 .tx-keuserregister-pi3 .confirmation-link a {
     color: white;
     font-weight: bold;
-    
+
 }
 
 .tx-keuserregister-pi3 .confirmation-link a:hover {
@@ -94,4 +94,68 @@
 .tx-keuserregister-pi1 .error_input input,
 .tx-keuserregister-pi1 .error_input textearea {
 	border:2px solid red;
+}
+
+
+/* password strength meter */
+#progressbar {
+	margin-top: -15px;
+	width:230px;
+	height:7px;
+	display:block;
+	border:1px solid #ccc;
+	overflow:hidden;
+	background-color: white;
+	font-size: 10px;
+	font-weight: bold;
+}
+
+#progress {
+	display:block;
+	height:100px;
+	width:0%;
+}
+
+.progressbarValid {
+	background-color:green;
+	background-image: -o-linear-gradient(-90deg, #8AD702 0%, #389100 100%);
+	background-image: -moz-linear-gradient(-90deg, #8AD702 0%, #389100 100%);
+	background-image: -webkit-linear-gradient(-90deg, #8AD702 0%, #389100 100%);
+	background-image: -ms-linear-gradient(-90deg, #8AD702 0%, #389100 100%);
+	background-image: linear-gradient(-90deg, #8AD702 0%, #389100 100%);
+}
+
+.progressbarInvalid {
+	background-color:red;
+	background-image: -o-linear-gradient(-90deg, #F94046 0%, #92080B 100%);
+	background-image: -moz-linear-gradient(-90deg, #F94046 0%, #92080B 100%);
+	background-image: -webkit-linear-gradient(-90deg, #F94046 0%, #92080B 100%);
+	background-image: -ms-linear-gradient(-90deg, #F94046 0%, #92080B 100%);
+	background-image: linear-gradient(-90deg, #F94046 0%, #92080B 100%);
+}
+
+#passwordstrength_info {
+	position: relative;
+	top: -35px;
+	right: -240px;
+}
+
+#passwordstrength_info img {
+	width: 22px;
+	height: 22px;
+	cursor: pointer;
+}
+
+#passwordstrength_infotext {
+	min-width: 100px;
+	min-height: 40px;
+	width: 400px;
+	border: 1px solid #CCC;
+	display: none;
+	position: absolute;
+	left: 35px;
+	top: -25px;
+	padding: 5px;
+	background: white;
+	border-radius: 3px;
 }

@@ -241,10 +241,20 @@
 <!-- ###SUB_SELECT### end -->
 
 <!-- ###SUB_PASSWORD### start -->
-        <div class="field"><input type="password" name="tx_keuserregister_pi1[password]" value="###VALUE###" /> ###TOOLTIP###</div>
-        <label style="clear:left;">###LABEL_PASSWORD_AGAIN###</label>
-		<div class="field"><input type="password" name="tx_keuserregister_pi1[password_again]" value="###VALUE_AGAIN###" /></div>
+<div class="field"><input type="password" id="keuserregister_password" name="tx_keuserregister_pi1[password]" value="###VALUE###" />###PASSWORD_STRENGTH_METER### ###TOOLTIP###</div>
+	<label style="clear:left;">###LABEL_PASSWORD_AGAIN###</label>
+<div class="field"><input type="password" name="tx_keuserregister_pi1[password_again]" value="###VALUE_AGAIN###" /></div>
 <!-- ###SUB_PASSWORD### end -->
+
+<!-- ###SUB_PASSWORD_STRENGTH_METER### start -->
+<div id="progressbar">
+	<div id="progress"></div>
+</div>
+<div id="passwordstrength_info">
+	<img src="typo3conf/ext/ke_userregister/res/images/info.png"  />
+	<div id="passwordstrength_infotext">###PASSWORD_METER_INFO###</div>
+</div>
+<!-- ###SUB_PASSWORD_STRENGTH_METER### end -->
 
 <!-- ###SUB_INPUT_IMAGE### start -->
         <input type="file" name="###NAME###" value="###VALUE###" /> ###TOOLTIP###
@@ -261,7 +271,8 @@
 <!-- ###SUB_OLD_PASSWORD### end -->
 
 <!-- ###SUB_NEW_PASSWORD### start -->
-        <input type="password" name="tx_keuserregister_pi2[new_password]" value="###VALUE_NEW_PASSWORD###" /><br />
+        <input type="password" name="tx_keuserregister_pi2[new_password]" id="keuserregister_password" value="###VALUE_NEW_PASSWORD###" />
+		###PASSWORD_STRENGTH_METER###
         <input type="password" name="tx_keuserregister_pi2[new_password_again]" value="###VALUE_NEW_PASSWORD_AGAIN###" />
 <!-- ###SUB_NEW_PASSWORD### end -->
 

@@ -99,6 +99,7 @@
 			<label index="admin_mail_subject_userdata_change">A User Changed His Data</label>
 			<label index="admin_mail_text_userdata_change">A user changed his data. These are the current values:</label>
 			<label index="mailfooter_name">User Registration System</label>
+			<label index="password_meter_info">The bar under the password field shows the strength of the password. The more the bar is filled the more secure is the password. A red bar means that the password does not fit the minimum requirements. A green bar shows that the password is valid. A valid password must contain at least %s characters and %s numerals. Using special characters makes the password even more secure.</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="ff.main">Allgemein</label>
@@ -194,6 +195,7 @@
 			<label index="admin_mail_subject_userdata_change">Benutzerregistrierung: Daten wurde geändert</label>
 			<label index="admin_mail_text_userdata_change">Ein Benutzer hat seine Daten geändert. Dies sind die neuen Daten:</label>
 			<label index="mailfooter_name">Benutzervewaltung</label>
+			<label index="password_meter_info">Die Statusleiste unterhalb des Eingabefeldes zeigt die Stärḱe des eingegebenen Passworts an. Je voller der Balken, umso stärker und damit sicherer ist das Passwort. Ist der Balken rot eingefärbt entspricht das Passwort nicht den Mindestanforderungen. Ein gültiges Passwort muss aus mindestens %s Zeichen und %s Zahlen bestehen. Die Verwendung von Sonderzeichen macht das Passwort noch sicherer.</label>
 		</languageKey>
 		<languageKey index="fr" type="array">
 			<label index="ff.main">Général</label>
@@ -337,7 +339,6 @@
 			<label index="admin_mail_subject_confirmation_success">Registration Confirmation of a new User</label>
 			<label index="admin_mail_text_confirmation_success">A new user registered on your website:</label>
 			<label index="admin_mail_subject_userdata_change">A User Changed His Data</label>
-			<label index="admin_mail_text_userdata_change">A user changed his data. Here are the current values:</label>
 		</languageKey>
 		<languageKey index="it" type="array">
 			<label index="ff.main">Generale</label>

@@ -13,10 +13,10 @@ plugin.tx_keuserregister {
 
   # password settings
   password {
-    minLength = 6
+    minLength = 8
 
     # check if password contains at least this amount of numeric characters
-    minNumeric = 0
+    minNumeric = 2
 
     # possible values: none, md5, salted
     # use "salted" if you use the extension "saltedpasswords"
@@ -78,6 +78,14 @@ plugin.tx_keuserregister {
     allowedFileTypes = jpg,gif,png
     path = uploads/tx_keuserregister/
   }
+  
+  # password strength meter settings
+  usePasswordStrengthMeter = 1
+  complexifyJsFile = typo3conf/ext/ke_userregister/res/js/jquery.complexify.js
+
+  # include jQuery?
+  includeJQuery = 0
+  jQuerySource = https://code.jquery.com/jquery-1.11.0.min.js
 
   # define the fields used in creation of new users
   create.fields {

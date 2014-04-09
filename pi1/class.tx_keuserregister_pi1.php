@@ -130,6 +130,24 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		$cssFile = $GLOBALS['TSFE']->tmpl->getFileName($this->conf['cssFile']);
 		$GLOBALS['TSFE']->getPageRenderer()->addCssFile($cssFile);
 		
+		// include jQuery
+		if ($this->conf['includeJQuery']) {
+			$GLOBALS['TSFE']->getPageRenderer()->addJsLibrary('jQuery', $this->conf['jQuerySource']);
+		}
+		
+		// include js for password meter
+		if ($this->conf['usePasswordStrengthMeter']) {
+			
+			// add password settings to JS
+			$jsPwdSettings = 'var minLength='.$this->conf['password.']['minLength'].';';
+			$jsPwdSettings .= 'var minNumeric='.$this->conf['password.']['minNumeric'].';';
+			$GLOBALS['TSFE']->getPageRenderer()->addJsInlineCode('keuserregister_pwdsettings', $jsPwdSettings, TRUE, TRUE);
+			
+			// add complexify script
+			$complexifyJSFile = $GLOBALS['TSFE']->tmpl->getFileName($this->conf['complexifyJsFile']);
+			$GLOBALS['TSFE']->getPageRenderer()->addJsFile($complexifyJSFile);
+			
+		}
 
 		// check if it is a user confirmation (double opt-in confirmation),
 		// or an admin confirmation
@@ -257,8 +275,6 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				// get userdata and process auto-login
 				$userRecord = $this->getUserRecord($hashRow['feuser_uid']);
 				if ($this->autoLogin($userRecord['username'], $userRecord['password'])) {
-					
-					TYPO3\CMS\Core\Utility\DebugUtility::debug('autologin');
 
 					// login succesful?
 					$markerArray['message'] = $this->pi_getLL('confirmation_success_message_autologin');
@@ -825,7 +841,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 	/*
 	 * function getBacklinkParamsArray
 	 *
-	 * @return array
+	 * @return arra
 	 */
 	function getBacklinkParamsArray() {
 		$backlinkParams = GeneralUtility::trimExplode(',', $this->conf['backlink.']['parameters'], true);
@@ -911,6 +927,17 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				$content = $this->cObj->substituteMarker($content, '###VALUE_AGAIN###', $valueAgain);
 				$content = $this->cObj->substituteMarker($content, '###LABEL_PASSWORD_AGAIN###', $this->pi_getLL('label_password_again'));
 				$content = $this->cObj->substituteMarker($content, '###TOOLTIP###', $this->renderTooltip($fieldConf['tooltip']));
+				
+				// include password strength meter
+				if ($this->conf['usePasswordStrengthMeter']) {
+					$passwordMeterContent = $this->cObj->getSubpart($this->templateCode, '###SUB_PASSWORD_STRENGTH_METER###');
+					$passwordMeterContentText = sprintf($this->pi_getLL('password_meter_info'), $this->conf['password.']['minLength'], $this->conf['password.']['minNumeric']);
+					$passwordMeterContent = $this->cObj->substituteMarker($passwordMeterContent, '###PASSWORD_METER_INFO###', $passwordMeterContentText);
+				} else {
+					$passwordMeterContent = '';
+				}
+				$content = $this->cObj->substituteMarker($content, '###PASSWORD_STRENGTH_METER###', $passwordMeterContent);
+				
 				break;
 
 			case 'checkbox':

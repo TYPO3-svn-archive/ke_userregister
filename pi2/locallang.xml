@@ -25,6 +25,8 @@
 			<!-- SUCCESS -->
 			<label index="success_password_change_headline">Update succescul</label>
 			<label index="success_password_change_text">Your password has been updated. The new password is valid from now on.</label>
+			
+			<label index="password_meter_info">The bar under the password field shows the strength of the password. The more the bar is filled the more secure is the password. A red bar means that the password does not fit the minimum requirements. A green bar shows that the password is valid. A valid password must contain at least %s characters and %s numerals. Using special characters makes the password even more secure.</label>
 
 		</languageKey>
 
@@ -47,6 +49,8 @@
 			<!-- SUCCESS -->
 			<label index="success_password_change_headline">Änderung erfolgreich</label>
 			<label index="success_password_change_text">Ihr Passwort wurde geändert. Das neue Passwort ist ab sofort gültig.</label>
+			
+			<label index="password_meter_info">Die Statusleiste unterhalb des Eingabefeldes zeigt die Stärḱe des eingegebenen Passworts an. Je voller der Balken, umso stärker und damit sicherer ist das Passwort. Ist der Balken rot eingefärbt entspricht das Passwort nicht den Mindestanforderungen. Ein gültiges Passwort muss aus mindestens %s Zeichen und %s Zahlen bestehen. Die Verwendung von Sonderzeichen macht das Passwort noch sicherer.</label>
 
 		</languageKey>
 
