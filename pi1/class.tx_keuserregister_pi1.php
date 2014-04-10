@@ -141,6 +141,8 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			// add password settings to JS
 			$jsPwdSettings = 'var minLength='.$this->conf['password.']['minLength'].';';
 			$jsPwdSettings .= 'var minNumeric='.$this->conf['password.']['minNumeric'].';';
+			$jsPwdSettings .= 'var lowerChars='.$this->conf['password.']['lowerChars'].';';
+			$jsPwdSettings .= 'var upperChars='.$this->conf['password.']['upperChars'].';';
 			$GLOBALS['TSFE']->getPageRenderer()->addJsInlineCode('keuserregister_pwdsettings', $jsPwdSettings, TRUE, TRUE);
 			
 			// add complexify script
@@ -932,6 +934,14 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				if ($this->conf['usePasswordStrengthMeter']) {
 					$passwordMeterContent = $this->cObj->getSubpart($this->templateCode, '###SUB_PASSWORD_STRENGTH_METER###');
 					$passwordMeterContentText = sprintf($this->pi_getLL('password_meter_info'), $this->conf['password.']['minLength'], $this->conf['password.']['minNumeric']);
+					if ($this->conf['password.']['lowerChars'] && $this->conf['password.']['upperChars']) {
+						$passwordMeterContentText .= ' '.$this->pi_getLL('password_meter_info_lower_upper');
+					} else if ($this->conf['password.']['lowerChars']) {
+						$passwordMeterContentText .= ' '.$this->pi_getLL('password_meter_info_lower');
+					} else if ($this->conf['password.']['upperChars']) {
+						$passwordMeterContentText .= ' '.$this->pi_getLL('password_meter_info_upper');
+					}
+					$passwordMeterContentText .= ' '.$this->pi_getLL('password_meter_info_special');
 					$passwordMeterContent = $this->cObj->substituteMarker($passwordMeterContent, '###PASSWORD_METER_INFO###', $passwordMeterContentText);
 				} else {
 					$passwordMeterContent = '';
@@ -1405,7 +1415,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 
 			// special evalutation for password field
 			if ($fieldName == 'password') {
-
+				
 				// password and password again filled and equal values?
 				if (empty($this->piVars['password']) || empty($this->piVars['password_again']) || ($this->piVars['password'] != $this->piVars['password_again'])) {
 					$errors[$fieldName] = $this->pi_getLL('error_password');
@@ -1414,19 +1424,51 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 				// check password min length
 				else if (strlen($this->piVars['password']) < $this->conf['password.']['minLength']) {
 					$errors[$fieldName] = sprintf($this->pi_getLL('error_password_length'), $this->conf['password.']['minLength']);
-				}
-
-				// check if password contains enough numeric chars
-				else if ($this->conf['password.']['minNumeric'] > 0) {
-					$temp_check = str_split($this->piVars['password']);
-					$temp_nums = 0;
-					foreach ($temp_check as $check_num) {
-						if (is_numeric($check_num)) {
-							$temp_nums++;
+				} else {
+					// check if password contains enough numeric chars
+					if ($this->conf['password.']['minNumeric'] > 0) {
+						$temp_check = str_split($this->piVars['password']);
+						$temp_nums = 0;
+						foreach ($temp_check as $check_num) {
+							if (is_numeric($check_num)) {
+								$temp_nums++;
+							}
+						}
+						if ($temp_nums < $this->conf['password.']['minNumeric']) {
+							$errors[$fieldName] = sprintf($this->pi_getLL('error_password_numerics'), $this->conf['password.']['minNumeric']);
+							continue;
+						}
+						
+					}
+				
+					// check if password contains lower characters
+					if ($this->conf['password.']['lowerChars'] > 0) {
+						$tempCheck = str_split($this->piVars['password']);
+						$tempLower = 0; 
+						foreach ($tempCheck as $checkLower) {
+							if (ctype_lower($checkLower)) {
+								$tempLower++;
+							}
+						}
+						if ($tempLower == 0) {
+							$errors[$fieldName] = sprintf($this->pi_getLL('error_password_lower'), $this->conf['password.']['lowerChars']);
+							continue;
 						}
 					}
-					if ($temp_nums < $this->conf['password.']['minNumeric']) {
-						$errors[$fieldName] = sprintf($this->pi_getLL('error_password_numerics'), $this->conf['password.']['minNumeric']);
+					
+					// check if password contains lower characters
+					if ($this->conf['password.']['upperChars'] > 0) {
+						$tempCheck = str_split($this->piVars['password']);
+						$tempUpper = 0; 
+						foreach ($tempCheck as $checkUpper) {
+							if (ctype_upper($checkUpper)) {
+								$tempUpper++;
+							}
+						}
+						if ($tempUpper == 0) {
+							$errors[$fieldName] = sprintf($this->pi_getLL('error_password_upper'), $this->conf['password.']['upperChars']);
+							continue;
+						}
 					}
 				}
 			}

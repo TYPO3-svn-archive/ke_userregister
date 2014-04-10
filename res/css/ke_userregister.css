@@ -48,7 +48,7 @@
     float: left;
     color: red;
     font-style: italic;
-    margin: 0 0 0 5px;
+    margin: 0 0 0 40px;
 }
 
 .tx-keuserregister-pi3 .confirmation-link {
@@ -67,7 +67,8 @@
 	color: black;
 }
 
-.tx-keuserregister-pi1 input {
+.tx-keuserregister-pi1 input,
+.tx-keuserregister-pi2 input {
     width: 230px;
 }
 

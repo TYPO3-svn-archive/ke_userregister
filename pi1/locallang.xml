@@ -38,6 +38,8 @@
 			<label index="error_password">Please enter the same password twice.</label>
 			<label index="error_password_length">The password must contain of at least %s characters.</label>
 			<label index="error_password_numerics">The password must contain of at least %s numeric characters.</label>
+			<label index="error_password_lower">The password must contain lower characters.</label>
+			<label index="error_password_upper">The password must contain upper characters.</label>
 			<label index="error_username_existent">This user name is already in use.</label>
 			<label index="error_email_existent">This email address is already in use.</label>
 			<label index="error_upload_no_success">The file upload was not successful.</label>
@@ -99,7 +101,11 @@
 			<label index="admin_mail_subject_userdata_change">A User Changed His Data</label>
 			<label index="admin_mail_text_userdata_change">A user changed his data. These are the current values:</label>
 			<label index="mailfooter_name">User Registration System</label>
-			<label index="password_meter_info">The bar under the password field shows the strength of the password. The more the bar is filled the more secure is the password. A red bar means that the password does not fit the minimum requirements. A green bar shows that the password is valid. A valid password must contain at least %s characters and %s numerals. Using special characters makes the password even more secure.</label>
+			<label index="password_meter_info">The bar under the password field shows the strength of the password. The more the bar is filled the more secure is the password. A red bar means that the password does not fit the minimum requirements. A green bar shows that the password is valid. A valid password must have a minimum length of %s characters and must contain %s numerals.</label>
+			<label index="password_meter_info_lower_upper">The password must contain lower and upper characters.</label>
+			<label index="password_meter_info_lower">The password must contain lower characters.</label>
+			<label index="password_meter_info_upper">The password must contain upper characters.</label>
+			<label index="password_meter_info_special">Using special characters makes the password even more secure.</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="ff.main">Allgemein</label>
@@ -134,6 +140,8 @@
 			<label index="error_password">Bitte geben Sie das gleiche Passwort zweimal ein.</label>
 			<label index="error_password_length">Das Passwort muss mindestens %s Stellen lang sein.</label>
 			<label index="error_password_numerics">Das Passwort muss mindestens %s Zahlen beinhalten.</label>
+			<label index="error_password_lower">Das Passwort muss Kleinbuchstaben enthalten.</label>
+			<label index="error_password_upper">Das Passwort muss Großbuchstaben enthalten.</label>
 			<label index="error_username_existent">Dieser Benutzername ist bereits vergeben.</label>
 			<label index="error_email_existent">Diese E-Mail-Adresse wird bereits verwendet.</label>
 			<label index="error_upload_no_success">Die Datei konnte nicht erfolgreich hochgeladen werden.</label>
@@ -195,7 +203,11 @@
 			<label index="admin_mail_subject_userdata_change">Benutzerregistrierung: Daten wurde geändert</label>
 			<label index="admin_mail_text_userdata_change">Ein Benutzer hat seine Daten geändert. Dies sind die neuen Daten:</label>
 			<label index="mailfooter_name">Benutzervewaltung</label>
-			<label index="password_meter_info">Die Statusleiste unterhalb des Eingabefeldes zeigt die Stärḱe des eingegebenen Passworts an. Je voller der Balken, umso stärker und damit sicherer ist das Passwort. Ist der Balken rot eingefärbt entspricht das Passwort nicht den Mindestanforderungen. Ein gültiges Passwort muss aus mindestens %s Zeichen und %s Zahlen bestehen. Die Verwendung von Sonderzeichen macht das Passwort noch sicherer.</label>
+			<label index="password_meter_info">Die Statusleiste unterhalb des Eingabefeldes zeigt die Stärke des eingegebenen Passworts an. Je voller der Balken, umso stärker und damit sicherer ist das Passwort. Ist der Balken rot eingefärbt entspricht das Passwort nicht den Mindestanforderungen. Ein gültiges Passwort muss aus mindestens %s Zeichen bestehen und %s Zahlen beinhalten.</label>
+			<label index="password_meter_info_lower_upper">Das Passwort muss Groß- und Kleinbuchstaben enthalten.</label>
+			<label index="password_meter_info_lower">Das Passwort muss Kleinbuchstaben enthalten.</label>
+			<label index="password_meter_info_upper">Das Passwort muss Großbuchstaben enthalten.</label>
+			<label index="password_meter_info_special">Die Verwendung von Sonderzeichen macht das Passwort noch sicherer.</label>
 		</languageKey>
 		<languageKey index="fr" type="array">
 			<label index="ff.main">Général</label>

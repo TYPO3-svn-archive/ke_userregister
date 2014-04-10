@@ -18,6 +18,12 @@ plugin.tx_keuserregister {
     # check if password contains at least this amount of numeric characters
     minNumeric = 2
 
+	# check if password must contain lower characters
+	lowerChars = 1
+
+	# check if password must contain upper characters
+	upperChars = 1
+	
     # possible values: none, md5, salted
     # use "salted" if you use the extension "saltedpasswords"
     encryption = salted

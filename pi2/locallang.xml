@@ -19,6 +19,8 @@
 			<label index="error_new_password_same_as_old">The new password must be different from the old one!</label>
 			<label index="error_new_password_length">The new password must contain at least %s characters!</label>
 			<label index="error_new_password_numerics">The new password must contain of at least %s numeric characters.</label>
+			<label index="error_new_password_lower">The new password must contain lower characters.</label>
+			<label index="error_new_password_upper">The new password must contain upper characters.</label>
 			<label index="no_login_headline">Log-in required</label>
 			<label index="no_login_message">Please log-in first.</label>
 
@@ -26,7 +28,11 @@
 			<label index="success_password_change_headline">Update succescul</label>
 			<label index="success_password_change_text">Your password has been updated. The new password is valid from now on.</label>
 			
-			<label index="password_meter_info">The bar under the password field shows the strength of the password. The more the bar is filled the more secure is the password. A red bar means that the password does not fit the minimum requirements. A green bar shows that the password is valid. A valid password must contain at least %s characters and %s numerals. Using special characters makes the password even more secure.</label>
+			<label index="password_meter_info">The bar under the password field shows the strength of the password. The more the bar is filled the more secure is the password. A red bar means that the password does not fit the minimum requirements. A green bar shows that the password is valid. A valid password must have a minimum length of %s characters and must contain %s numerals.</label>
+			<label index="password_meter_info_lower_upper">The password must contain lower and upper characters.</label>
+			<label index="password_meter_info_lower">The password must contain lower characters.</label>
+			<label index="password_meter_info_upper">The password must contain upper characters.</label>
+			<label index="password_meter_info_special">Using special characters makes the password even more secure.</label>
 
 		</languageKey>
 
@@ -43,6 +49,8 @@
 			<label index="error_new_password_same_as_old">Das neue Passwort muss sich vom alten unterscheiden!</label>
 			<label index="error_new_password_length">Das neue Passwort muss mindestens %s Zeichen enthalten!</label>
 			<label index="error_new_password_numerics">Das neue Passwort muss mindestens %s Zahlen beinhalten.</label>
+			<label index="error_new_password_lower">Das Passwort muss Kleinbuchstaben enthalten.</label>
+			<label index="error_new_password_upper">Das Passwort muss Großbuchstaben enthalten.</label>
 			<label index="no_login_headline">Login erforderlich</label>
 			<label index="no_login_message">Bitte loggen Sie sich zunächst ein.</label>
 
@@ -50,7 +58,11 @@
 			<label index="success_password_change_headline">Änderung erfolgreich</label>
 			<label index="success_password_change_text">Ihr Passwort wurde geändert. Das neue Passwort ist ab sofort gültig.</label>
 			
-			<label index="password_meter_info">Die Statusleiste unterhalb des Eingabefeldes zeigt die Stärḱe des eingegebenen Passworts an. Je voller der Balken, umso stärker und damit sicherer ist das Passwort. Ist der Balken rot eingefärbt entspricht das Passwort nicht den Mindestanforderungen. Ein gültiges Passwort muss aus mindestens %s Zeichen und %s Zahlen bestehen. Die Verwendung von Sonderzeichen macht das Passwort noch sicherer.</label>
+			<label index="password_meter_info">Die Statusleiste unterhalb des Eingabefeldes zeigt die Stärke des eingegebenen Passworts an. Je voller der Balken, umso stärker und damit sicherer ist das Passwort. Ist der Balken rot eingefärbt entspricht das Passwort nicht den Mindestanforderungen. Ein gültiges Passwort muss aus mindestens %s Zeichen bestehen und %s Zahlen beinhalten.</label>
+			<label index="password_meter_info_lower_upper">Das Passwort muss Groß- und Kleinbuchstaben enthalten.</label>
+			<label index="password_meter_info_lower">Das Passwort muss Kleinbuchstaben enthalten.</label>
+			<label index="password_meter_info_upper">Das Passwort muss Großbuchstaben enthalten.</label>
+			<label index="password_meter_info_special">Die Verwendung von Sonderzeichen macht das Passwort noch sicherer.</label>
 
 		</languageKey>
 

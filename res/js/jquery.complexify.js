@@ -7,9 +7,11 @@
 
 	$.fn.extend({
 		complexify: function(options, callback) {
-			
+
 			console.log('pwd mindestlänge: ' + minLength);
 			console.log('pwd zahlen: ' + minNumeric);
+			console.log('pwd lower: ' + lowerChars);
+			console.log('pwd upper: ' + upperChars);
 
 			var MIN_COMPLEXITY = 49; // 12 chars with Upper, Lower and Number
 			var MAX_COMPLEXITY = 90; //  25 chars, all charsets
@@ -157,12 +159,10 @@
 
 				// Reset complexity to 0 when banned password is found
 				if (!inBanlist(password)) {
-
 					// Add character complexity
 					for (var i = CHARSETS.length - 1; i >= 0; i--) {
 						complexity += additionalComplexityForCharset(password, CHARSETS[i]);
 					}
-
 				} else {
 					complexity = 1;
 				}
@@ -170,11 +170,8 @@
 				// Use natural log to produce linear scale
 				complexity = Math.log(Math.pow(complexity, password.length)) * (1 / options.strengthScaleFactor);
 
-				// valid = (complexity > MIN_COMPLEXITY && password.length >= options.minimumChars);
-				
+				// check ke_userregister password rules
 				valid = checkValidity(password);
-				
-				
 
 				// Scale to percentage, so it can be used for a progress bar
 				complexity = (complexity / MAX_COMPLEXITY) * 100;
@@ -182,14 +179,43 @@
 
 				callback.call(this, valid, complexity);
 			}
-			
+
+			// check if password fits ke_userregister settings
 			function checkValidity(password) {
+				numericsCheck = false;
+				lengthCheck = false;
+				lowerCheck = false;
+				upperCheck = false;
+
 				numerics = password.replace(/\D/g, '').length;
-				if (numerics >= minNumeric && password.length >= minLength) {
-					return true;
-				} else return false;
+				if ((minNumeric === "undefined" || minNumeric === "" || minNumeric === 0) || numerics >= minNumeric) {
+					numericsCheck = true;
+				}
+
+				if ((minLength === "undefined" || minLength === "" || minLength === 0) || password.length >= minLength) {
+					lengthCheck = true;
+				}
+
+				if (lowerChars) {
+					lowerCheck = hasLowerCase(password);
+				}
+				
+				if (upperChars) {
+					upperCheck  = hasUpperCase(password);
+					console.log(upperCheck);
+				}
+				
+				return (numericsCheck === true && lengthCheck === true && lowerCheck === true && upperCheck === true);
+			}
+
+			function hasLowerCase(str) {
+				return (/[a-z]/.test(str));
 			}
 			
+			function hasUpperCase(str) {
+				return (/[A-Z]/.test(str));
+			}
+
 			if (options.evaluateOnInit) {
 				this.each(function() {
 					evaluateSecurity.apply(this);
@@ -209,21 +235,21 @@
 
 $(function() {
 	$("#keuserregister_password").complexify(
-		{},
-		function(valid, complexity) {
-			console.log(complexity);
-			if (!valid) {
-				$('#progress').css({'width': complexity + '%'}).removeClass('progressbarValid').addClass('progressbarInvalid');
-			} else {
-				$('#progress').css({'width': complexity + '%'}).removeClass('progressbarInvalid').addClass('progressbarValid');
+			{},
+			function(valid, complexity) {
+				console.log(complexity);
+				if (!valid) {
+					$('#progress').css({'width': complexity + '%'}).removeClass('progressbarValid').addClass('progressbarInvalid');
+				} else {
+					$('#progress').css({'width': complexity + '%'}).removeClass('progressbarInvalid').addClass('progressbarValid');
+				}
 			}
-		}
 	);
-	$('#passwordstrength_info img').on('mouseover', function(){
+	$('#passwordstrength_info img').on('mouseover', function() {
 		$('div#passwordstrength_infotext').fadeIn('fast');
 	});
-	$('#passwordstrength_info img').on('mouseout', function(){
+	$('#passwordstrength_info img').on('mouseout', function() {
 		$('div#passwordstrength_infotext').fadeOut('fast');
 	});
-	
+
 });
