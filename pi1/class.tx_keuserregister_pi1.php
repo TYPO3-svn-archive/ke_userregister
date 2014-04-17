@@ -393,6 +393,7 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		// send mail to user, ignore enable fields in "decline" mode, since
 		// the user is not enabled yet
 		$userData = $this->getUserRecord($userUid, ($action == 'decline'));
+		#\TYPO3\CMS\Core\Utility\DebugUtility::debug($userData);
 
 		if (is_array($userData)) {
 			// use salutation based on users gender
@@ -406,6 +407,11 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			    'farewell_text' => $this->pi_getLL('farewell_text'),
 			    'site_url' => GeneralUtility::getIndpEnv('TYPO3_SITE_URL'),
 			);
+			
+			if ($this->conf['emailIsUsername']) {
+				$mailMarkerArray['first_name'] = $userData['email'];
+				$mailMarkerArray['last_name'] = '';
+			}
 
 			switch ($action) {
 				case 'decline':
@@ -1708,6 +1714,13 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			    'site_url' => GeneralUtility::getIndpEnv('TYPO3_SITE_URL'),
 			    'hash' => $hash,
 			);
+			
+			if ($this->conf['emailIsUsername']) {
+				$markerArray['first_name'] = $this->lib->removeXSS($this->piVars['email']);
+				$markerArray['last_name'] = '';
+			} 
+			
+			
 			$htmlBody = $this->cObj->substituteMarkerArray($htmlBody, $markerArray, $wrap = '###|###', $uppercase = 1);
 
 			// send double-opt-in-mail
@@ -1723,6 +1736,11 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 			    'last_name' => $this->piVars['last_name'],
 			    'form_success_text' => $this->pi_getLL('form_success_text'),
 			);
+			
+			if ($this->conf['emailIsUsername']) {
+				$markerArray['first_name'] = $this->lib->removeXSS($this->piVars['email']);
+				$markerArray['last_name'] = '';
+			} 
 			$content = $this->cObj->substituteMarkerArray($content, $markerArray, $wrap = '###|###', $uppercase = 1);
 			return $content;
 		}
