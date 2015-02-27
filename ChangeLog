@@ -1,5 +1,7 @@
 ChangeLog
 
+CURRENT TRUNK, TER version 0.2.1
+
 TER version 0.2.0 (2015/02)
 * bugfix: fix normal backlinkParams, see http://forge.typo3.org/issues/50818, thanks to Stano Paska
 * feature: hook for generating backlinkParams, thanks to Stano Paska
