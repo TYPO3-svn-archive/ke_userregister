@@ -1812,21 +1812,23 @@ class tx_keuserregister_pi1 extends tslib_pibase {
 		// save data in db
 		if ($GLOBALS['TYPO3_DB']->exec_UPDATEquery($table, $where, $fields_values, $no_quote_fields = FALSE)) {
 
-			// delete all mm entries in db
-			$GLOBALS['TYPO3_DB']->exec_DELETEquery('sys_dmail_feuser_category_mm', 'uid_local="' . $GLOBALS['TSFE']->fe_user->user['uid'] . '"');
+			// make changes related to direct_mail
+			if (t3lib_extMgm::isLoaded('direct_mail')) {
+				// delete all mm entries in db
+				$GLOBALS['TYPO3_DB']->exec_DELETEquery('sys_dmail_feuser_category_mm', 'uid_local="' . $GLOBALS['TSFE']->fe_user->user['uid'] . '"');
 
-			// process directmail values
-			if (is_array($dmailInsertValues)) {
-				foreach ($dmailInsertValues as $key => $catUid) {
-					$table = 'sys_dmail_feuser_category_mm';
-					$fields_values = array(
-					    'uid_local' => $GLOBALS['TSFE']->fe_user->user['uid'],
-					    'uid_foreign' => $catUid,
-					);
-					$GLOBALS['TYPO3_DB']->exec_INSERTquery($table, $fields_values, $no_quote_fields = FALSE);
+				// process directmail values
+				if (is_array($dmailInsertValues)) {
+					foreach ($dmailInsertValues as $key => $catUid) {
+						$table = 'sys_dmail_feuser_category_mm';
+						$fields_values = array(
+							'uid_local' => $GLOBALS['TSFE']->fe_user->user['uid'],
+							'uid_foreign' => $catUid,
+						);
+						$GLOBALS['TYPO3_DB']->exec_INSERTquery($table, $fields_values, $no_quote_fields = FALSE);
+					}
 				}
 			}
-
 
 			$content = $this->cObj->getSubpart($this->templateCode, '###SUB_MESSAGE###');
 			$content = $this->cObj->substituteMarker($content, '###HEADLINE###', $this->pi_getLL('edit_success_headline'));

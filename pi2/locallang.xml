@@ -12,6 +12,7 @@
 			<!-- FORM FIELD LABELS -->
 			<label index="label_old_password">Old password</label>
 			<label index="label_new_password">New password</label>
+			<label index="label_password_again">Repeat password</label>
 
 			<!-- ERRORS -->
 			<label index="error_old_password">The old password is not correct!</label>
@@ -42,6 +43,7 @@
 			<!-- FORM FIELD LABELS -->
 			<label index="label_old_password">Altes Passwort</label>
 			<label index="label_new_password">Neues Passwort</label>
+			<label index="label_password_again">Passwort-Wiederholung</label>
 
 			<!--ERRORS  -->
 			<label index="error_old_password">Das alte Passwort stimmt nicht!</label>

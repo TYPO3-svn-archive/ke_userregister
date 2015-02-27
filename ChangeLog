@@ -1,8 +1,13 @@
 ChangeLog
 
-Current trunk
+TER version 0.2.0 (2015/02)
 * bugfix: fix normal backlinkParams, see http://forge.typo3.org/issues/50818, thanks to Stano Paska
 * feature: hook for generating backlinkParams, thanks to Stano Paska
+* task: upload current trunk version to TER which is compatible with TYPO3 6.2
+* bugfix: check if direct_mail is installed before changing values in the database related to direct_mail
+* feature: add password strength meter, needs jquery (inclusion of jquery can be enablen in typoscript)
+* bugfix: fix css which made passwort strength meter progress bar disappear under password input field
+* bugfix: add missing label "reapeat password" in change password plugin (pi2)
 
 TER version 0.1.6 (2013/09)
 * security fix: clean hashes

@@ -74,6 +74,11 @@ class tx_keuserregister_pi2 extends tslib_pibase {
 			if (GeneralUtility::compat_version('6.0')) $GLOBALS['TSFE']->getPageRenderer()->addCssFile($cssFile);
 			else $GLOBALS['TSFE']->additionalHeaderData[$this->prefixId.'_css'] = '<link rel="stylesheet" type="text/css" href="'.$cssFile.'" />';
 		}
+
+		// include jQuery
+		if ($this->conf['includeJQuery']) {
+			$GLOBALS['TSFE']->getPageRenderer()->addJsLibrary('jQuery', $this->conf['jQuerySource']);
+		}
 		
 		// include js for password meter
 		if ($this->conf['usePasswordStrengthMeter']) {
@@ -125,6 +130,7 @@ class tx_keuserregister_pi2 extends tslib_pibase {
 			'input_old_password' => $this->renderInputField('old_password'),
 			'error_old_password' => '',
 			'label_new_password' => $this->pi_getLL('label_new_password'),
+			'label_password_again' => $this->pi_getLL('label_password_again'),
 			'input_new_password' => $this->renderInputField('new_password'),
 			'error_new_password' => '',
 			'clearer' => $this->cObj->getSubpart($this->templateCode,'###SUB_CLEARER###'),
